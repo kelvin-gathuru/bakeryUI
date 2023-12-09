@@ -17,4 +17,10 @@ export class ApiService {
    
     return this.http.get<any[]>(endpoint);
   }
+
+  getRegions(): Observable<any[]> {
+    const endpoint = `${this.baseUrl}listStations.php`;
+   
+    return this.http.get<any[]>(endpoint);
+  }
 }

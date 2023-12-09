@@ -11,18 +11,16 @@
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <!-- <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import"
-                        chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload> -->
                     <button pButton pRipple label="Export to Excel" icon="pi pi-upload" class="p-button-help"
                         (click)="dt.exportCSV()"></button>
                 </ng-template>
             </p-toolbar>
 
             <p-table #dt [value]="clients" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                [globalFilterFields]="['name','phone_number','entity_code','active']" [paginator]="true"
+                [globalFilterFields]="['name','phone_number','entity_code','active','region','client_type','entity_type']" [paginator]="true"
                 [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [(selection)]="selectedProducts" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                [(selection)]="selectedClients" selectionMode="multiple" [rowHover]="true" dataKey="id">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                         <h5 class="m-0">Clients</h5>
@@ -35,45 +33,52 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <!-- <th style="width: 3rem">
-                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                        </th> -->
                         <th>#</th>
                         <th pSortableColumn="entity_code">Client ID <p-sortIcon field="entity_code"></p-sortIcon></th>
                         <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
                         <th pSortableColumn="phone_number">Tel <p-sortIcon field="phone_number"></p-sortIcon></th>
-                        <th pSortableColumn="active">Status <p-sortIcon field="active"></p-sortIcon>
-                        </th>
-                        <th></th>
+                        <th pSortableColumn="active">Status <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="region">Region <p-sortIcon field="region"></p-sortIcon> </th>
+                        <th pSortableColumn="client_type">Client Type <p-sortIcon field="client_type"></p-sortIcon> </th>
+                        <th pSortableColumn="entity_type">Reg Type <p-sortIcon field="entity_type"></p-sortIcon> </th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-clients let-rowIndex="rowIndex">
+                <ng-template pTemplate="body" let-client let-rowIndex="rowIndex">
                     <tr>
-                        <!-- <td>
-                            <p-tableCheckbox [value]="clients"></p-tableCheckbox>
-                        </td> -->
                         <td>
                             {{rowIndex + 1 }}
                         </td>
-                        <td style="width:15%; min-width:20rem;">
+                        <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Client ID</span>
-                            {{clients.entity_code}}
+                            {{client.entity_code}}
                         </td>
-                        <td style="width:15%; min-width:30rem;">
+                        <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Name</span>
-                            {{clients.name}}
+                            {{client.name}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Tel</span>
-                            {{clients.phone_number}}
+                            {{client.phone_number}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Status</span>
-                            {{clients.active}}
+                            {{client.active}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">region</span>
+                            {{client.region}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">CLient Type</span>
+                            {{client.client_type}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Reg Type</span>
+                            {{client.entity_type}}
                         </td>
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editProduct(product)"></button>
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editClient(client)"></button>
                             </div>
                         </td>
                     </tr>
@@ -87,43 +92,43 @@
 
                 <div class="formgrid grid">
                     <div class="field col">
-                        <label for="regType">Registration Type</label>
-                        <p-dropdown [options]="regType" placeholder="Select">
+                        <label for="entity_type">Registration Type</label>
+                        <p-dropdown [(ngModel)]="client.entity_type" inputId="entity_type" [options]="regType" placeholder="Select">
                         </p-dropdown>
                     </div>
                     <div class="field col">
-                        <label for="salesType">Sales Type</label>
-                        <p-dropdown [options]="salesType" placeholder="Select">
+                        <label for="client_type">Sales Type</label>
+                        <p-dropdown [(ngModel)]="client.client_type" inputId="client_type" [options]="salesType" placeholder="Select">
                         </p-dropdown>
                     </div>
                 </div>
                 <div class="field">
                     <label for="region">Region</label>
-                    <p-dropdown [options]="regions" placeholder="Select">
+                    <p-dropdown [options]="regions.items" [(ngModel)]="client.region" inputId="region"  optionLabel="name" placeholder="Select">
                     </p-dropdown>
                 </div>
                 <div class="field">
-                    <label for="status">Status</label>
-                    <p-dropdown [options]="statuses" placeholder="Select">
+                    <label for="active">Status</label>
+                    <p-dropdown [options]="statuses" [(ngModel)]="client.active" inputId="active" optionValue="label"  placeholder="Select">
                     </p-dropdown>
                 </div>
-                
                 <div class="formgrid grid">
                     <div class="field col">
                         <label for="clientId">Client/Agent ID</label>
-                        <input type="text" id="clientId" pInputText>
+                        <input type="text" pInputText id="clientId" [(ngModel)]="client.entity_code" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.entity_code}">
                     </div>
                     <div class="field col">
-                        <label for="names">Telephone</label>
+                        <label for="tel">Telephone</label>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">+254</span>
-                            <input type="text" pInputText>
+                            <input type="text" pInputText id="tel" [(ngModel)]="client.phone_number" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.phone_number}">
                         </div>
                     </div>
                 </div>
                 <div class="field">
-                    <label for="names">Names</label>
-                    <input id="names" pInputText>
+                    <label for="name">Names</label>
+                    <input pInputText id="name" [(ngModel)]="client.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.name}">
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
 				</div>
                 
             </ng-template>
