@@ -33,8 +33,8 @@ export class AppTopBarComponent {
                 icon: 'pi pi-fw pi-cog',
                 items: [
                     { label: 'Clients', icon: 'pi pi-fw pi-id-card', routerLink: ['/dashboard/settings/clients'] },
-                    { label: 'Sales Agents', icon: 'pi pi-fw pi-user', routerLink: ['/dasbboard/uikit/input'] },
-                    { label: 'Sales Regions', icon: 'pi pi-fw pi-map-marker', routerLink: ['/uikit/floatlabel'] },
+                    // { label: 'Sales Agents', icon: 'pi pi-fw pi-user', routerLink: ['/dasbboard/uikit/input'] },
+                    { label: 'Sales Regions', icon: 'pi pi-fw pi-map-marker', routerLink: ['/dashboard/settings/regions'] },
                     { label: 'Suppliers', icon: 'pi pi-fw pi-users', routerLink: ['/uikit/invalidstate'] },
                 ]
             },
