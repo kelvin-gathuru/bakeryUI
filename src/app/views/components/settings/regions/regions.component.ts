@@ -111,7 +111,10 @@ export class RegionsComponent implements OnInit {
     }
       loadRegions() {
         this.apiService.getRegions().subscribe(
-          (data: any[]) => {
+          (data: any) => {
+            if(data.success==false){
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: data.message, life: 3000 });
+            }
             this.regions = data;
           },
           (error) => {
