@@ -1,0 +1,126 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="New Account" icon="pi pi-plus" class="p-button-success mr-2"
+                           ></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <div class="my-2">
+                        <button pButton pRipple label="New Invoice(Bills)" icon="pi pi-plus" class="p-button-success mr-2"
+                           ></button>
+                    </div>
+                    <button pButton pRipple label="Export to Excel" icon="pi pi-upload" class="p-button-help"
+                        (click)="dt.exportCSV()"></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="bills" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['name','code','active']" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedRegions" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Bills Management</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search ..."
+                                class="w-full sm:w-auto" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>#</th>
+                        <th pSortableColumn="code">Date <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="name">Service <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="active">Account Number <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="code">Prev Read <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="name">Curr Read <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="active">Consumption <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="code">Service Cost <p-sortIcon field="code"></p-sortIcon></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-bill let-rowIndex="rowIndex">
+                    <tr>
+                        <td>
+                            {{rowIndex + 1 }}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Date</span>
+                            {{bill.date}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Service</span>
+                            {{bill.service}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Account number</span>
+                            {{bill.accountNumber}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Prev Read</span>
+                            {{bill.prevRead}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Curr Read</span>
+                            {{bill.currRead}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Consumption</span>
+                            {{bill.consumption}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Service Cost</span>
+                            {{bill.serviceCost}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editRegion(region)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="regionsDialog" [style]="{width: '450px'}" header="Region/Area Registration" [modal]="true"
+            class="p-fluid">
+            <ng-template pTemplate="content">
+
+                <div class="field">
+                    <label for="name">Names</label>
+                    <input pInputText id="name" [(ngModel)]="region.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !region.name}">
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
+				</div>
+                
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="code">Region Code</label>
+                        <input pInputText id="code" [(ngModel)]="region.code" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !region.code}">
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
+                    </div>
+                    <div class="field col">
+                        <label for="active">Status</label>
+                        <p-dropdown [options]="statuses" [(ngModel)]="region.active" inputId="active" optionValue="label"  placeholder="Select">
+                        </p-dropdown>
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                    (click)="hideDialog()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                    (click)="saveProduct()"></button>
+            </ng-template>
+        </p-dialog>
+
+    </div>
+</div>

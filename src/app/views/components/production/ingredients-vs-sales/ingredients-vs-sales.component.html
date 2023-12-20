@@ -1,0 +1,136 @@
+<div class="grid">
+    <div class="col-12 lg:col-6 xl:col-12">
+        <p-toast></p-toast>
+        <p-toolbar styleClass="mb-4">
+            <ng-template pTemplate="left">
+                <div class="my-2">
+                    <!-- <span class="block mt-2 md:mt-0 p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
+                            class="w-full sm:w-auto" />
+                    </span> -->
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="right">
+                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
+                        class="w-full sm:w-auto" />
+                </span>
+            </ng-template>
+        </p-toolbar>
+    </div>
+    
+
+    <div class="col-12 xl:col-6">
+        <div class="card">
+
+            <p-table #dt [value]="ingredients" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['name','code','active']" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedRegions" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Ingredients</h5>
+                        
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>#</th>
+                        <th pSortableColumn="code">Date <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="name">Ingredient <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="active">QNTY <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="active">Expenditure <p-sortIcon field="active"></p-sortIcon></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-ingredient let-rowIndex="rowIndex">
+                    <tr>
+                        <td>
+                            {{rowIndex + 1 }}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Date</span>
+                            {{ingredient.date}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Ingredient</span>
+                            {{ingredient.ingredient}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">QNTY</span>
+                            {{ingredient.qnty}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Expenditure</span>
+                            {{ingredient.expenditure}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editRegion(region)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        
+    </div>
+    <div class="col-12 xl:col-6">
+        <div class="card">
+
+            <p-table #dt [value]="products" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['name','code','active']" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedRegions" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Products</h5>
+                        
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>#</th>
+                        <th pSortableColumn="code">Date <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="name">Product <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="active">QNTY <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="active">Income <p-sortIcon field="active"></p-sortIcon></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+                    <tr>
+                        <td>
+                            {{rowIndex + 1 }}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Date</span>
+                            {{product.date}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Product</span>
+                            {{product.product}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">QNTY</span>
+                            {{product.qnty}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Income</span>
+                            {{product.income}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editRegion(region)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+</div>
+</div>
+

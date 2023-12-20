@@ -12,7 +12,11 @@ import { LoginComponent } from './views/components/login/login.component';
                 path: 'dashboard', component: AppLayoutComponent,
                 children: [
                     { path: '', loadChildren: () => import('./views/components/dashboard/dashboard.module').then(m => m.DashboardModule) },
-                    { path: 'settings', loadChildren: () => import('./views/components/settings/settings.module').then(m => m.SettingsModule) }
+                    { path: 'settings', loadChildren: () => import('./views/components/settings/settings.module').then(m => m.SettingsModule) },
+                    { path: 'consumables', loadChildren: () => import('./views/components/consumables/consumables.module').then(m => m.ConsumablesModule) },
+                    { path: 'payroll', loadChildren: () => import('./views/components/payroll/payroll.module').then(m => m.PayrollModule) },
+                    { path: 'production', loadChildren: () => import('./views/components/production/production.module').then(m => m.ProductionModule) },
+                    { path: 'reports', loadChildren: () => import('./views/components/reports/reports.module').then(m => m.ReportsModule) }
                 ]
             },
             { path: 'notfound', component: NotfoundComponent },

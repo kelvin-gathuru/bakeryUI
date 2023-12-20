@@ -1,0 +1,145 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    
+                    <button pButton pRipple label="Export to Excel" icon="pi pi-upload" class="p-button-help"
+                        (click)="dt.exportCSV()"></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="products" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['name','code','active']" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedClients" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Dispatch Sales Report</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
+                                class="w-full sm:w-auto" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>#</th>
+                        <th pSortableColumn="code"> Product <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="name">Agent <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="active">Issued To<p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="code">Returned <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="name">Spoiled <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="active">Date <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="code">Balance <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="code">Expired <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="code">Closing <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="code">Dispatch <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="code">Produced <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="code">B/BF <p-sortIcon field="code"></p-sortIcon></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+                    <tr>
+                        <td>
+                            {{rowIndex + 1 }}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Product</span>
+                            {{product.item}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Agent</span>
+                            {{product.agent}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Issued To</span>
+                            {{product.issuedTo}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Returned</span>
+                            {{product.returned}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Spoiled</span>
+                            {{product.spoiled}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Date</span>
+                            {{product.date}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Balance</span>
+                            {{product.balance}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Expired</span>
+                            {{product.expired}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Closing</span>
+                            {{product.closing}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Dispatch</span>
+                            {{product.dispatch}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Produced</span>
+                            {{product.produced}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">B/BF</span>
+                            {{product.bf}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editRegion(region)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="clientsDialog" [style]="{width: '450px'}" header="Region/Area Registration" [modal]="true"
+            class="p-fluid">
+            <ng-template pTemplate="content">
+
+                <div class="field">
+                    <label for="name">Names</label>
+                    <input pInputText id="name" [(ngModel)]="region.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !region.name}">
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
+				</div>
+                
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="code">Region Code</label>
+                        <input pInputText id="code" [(ngModel)]="region.code" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !region.code}">
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
+                    </div>
+                    <div class="field col">
+                        <label for="active">Status</label>
+                        <p-dropdown [options]="statuses" [(ngModel)]="region.active" inputId="active" optionValue="label"  placeholder="Select">
+                        </p-dropdown>
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                    (click)="hideDialog()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                    (click)="saveProduct()"></button>
+            </ng-template>
+        </p-dialog>
+
+    </div>
+</div>

@@ -1,0 +1,170 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="New Material" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="openNew()"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <div class="my-2">
+                        <button pButton pRipple label="Stock Taking" icon="pi pi-plus" class="p-button-success mr-2"
+                            ></button>
+                    </div>
+
+                    <button pButton pRipple label="Export to Excel" icon="pi pi-upload" class="p-button-help"
+                        (click)="dt.exportCSV()"></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="consumables" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['name','phone_number','entity_code','active','region','client_type','entity_type']" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedClients" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Consumables</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search Consumables..."
+                                class="w-full sm:w-auto" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>#</th>
+                        <th pSortableColumn="entity_code"> Item Code <p-sortIcon field="entity_code"></p-sortIcon></th>
+                        <th pSortableColumn="name">Ingredient <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="phone_number">Remaining <p-sortIcon field="phone_number"></p-sortIcon></th>
+                        <th pSortableColumn="active">Metrics <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="region">Physical <p-sortIcon field="region"></p-sortIcon> </th>
+                        <th pSortableColumn="client_type">Variation <p-sortIcon field="client_type"></p-sortIcon> </th>
+                        <th pSortableColumn="entity_type">Max Level <p-sortIcon field="entity_type"></p-sortIcon> </th>
+                        <th pSortableColumn="entity_type">Min Level <p-sortIcon field="entity_type"></p-sortIcon> </th>
+                        <th pSortableColumn="entity_type">Reorder Level <p-sortIcon field="entity_type"></p-sortIcon> </th>
+                        <th pSortableColumn="entity_type">Price <p-sortIcon field="entity_type"></p-sortIcon> </th>
+                        <th pSortableColumn="entity_type">Stock <p-sortIcon field="entity_type"></p-sortIcon> </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-consumable let-rowIndex="rowIndex">
+                    <tr>
+                        <td>
+                            {{rowIndex + 1 }}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Item Code</span>
+                            {{consumable.itemCode}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Ingredient</span>
+                            {{consumable.ingredients}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Remaining</span>
+                            {{consumable.remaining}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Metrics</span>
+                            {{consumable.metrics}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Physical</span>
+                            {{consumable.physical}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Variation</span>
+                            {{consumable.variation}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Max Level</span>
+                            {{consumable.maxLevel}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Min Level</span>
+                            {{consumable.minLevel}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Reorder Level</span>
+                            {{consumable.reorderLevel}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Price</span>
+                            {{consumable.price}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Stock</span>
+                            {{consumable.stock}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editClient(client)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="clientsDialog" [style]="{width: '450px'}" header="New Material/Product" [modal]="true"
+            class="p-fluid">
+            <ng-template pTemplate="content">
+
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="entity_type">Type</label>
+                        <p-dropdown [(ngModel)]="client.entity_type" inputId="entity_type" [options]="MaterialType" placeholder="Select">
+                        </p-dropdown>
+                    </div>
+                    <div class="field col">
+                        <label for="name">Code</label>
+                        <input pInputText id="name" [(ngModel)]="client.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.name}">
+                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input pInputText id="name" [(ngModel)]="client.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.name}">
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
+				</div>
+                <div class="field">
+                    <label for="name">Initial Stock</label>
+                    <input pInputText id="name" [(ngModel)]="client.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.name}">
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
+				</div>
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="clientId">Reorder Level</label>
+                        <input type="text" pInputText id="clientId" [(ngModel)]="client.entity_code" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.entity_code}">
+                    </div>
+                    <div class="field col">
+                        <label for="tel">Price</label>
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">KSh.</span>
+                            <input type="text" pInputText id="tel" [(ngModel)]="client.phone_number" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.phone_number}">
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="name">Metrics</label>
+                    <input pInputText id="name" [(ngModel)]="client.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.name}">
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
+				</div>
+                
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                    (click)="hideDialog()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                    (click)="saveProduct()"></button>
+            </ng-template>
+        </p-dialog>
+
+    </div>
+</div>

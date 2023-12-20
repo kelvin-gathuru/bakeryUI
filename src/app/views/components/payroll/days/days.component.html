@@ -1,0 +1,149 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="New Days Worked" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="openNew()"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <button pButton pRipple label="Export to Excel" icon="pi pi-upload" class="p-button-help"
+                        (click)="dt.exportCSV()"></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="days" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['name','code','active']" [paginator]="true"
+                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedDays" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Days Worked</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
+                                class="w-full sm:w-auto" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>#</th>
+                        <th pSortableColumn="code">PF Number <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="name">Narration <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="active">Name <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="active">Client <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="active">Assignment <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="active">From Date <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="active">To Date <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="active">Number of Days <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="active">Paid <p-sortIcon field="active"></p-sortIcon></th>
+                        <th pSortableColumn="active"> Active<p-sortIcon field="active"></p-sortIcon></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-days let-rowIndex="rowIndex">
+                    <tr>
+                        <td>
+                            {{rowIndex + 1 }}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">PF Number</span>
+                            {{days.pfNumber}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Narration</span>
+                            {{days.narration}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Name</span>
+                            {{days.name}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title"> Client</span>
+                            {{days.client}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Assignment</span>
+                            {{days.assignment}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">From Date</span>
+                            {{days.fromDate}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">To Date</span>
+                            {{days.toDate}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Number Of Days</span>
+                            {{days.numberOfDays}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Paid</span>
+                            {{days.paid}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Active</span>
+                            {{days.active}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editRegion(region)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="daysDialog" [style]="{width: '450px'}" header="Employee days" [modal]="true"
+            class="p-fluid">
+            <ng-template pTemplate="content">
+
+                <div class="field">
+                    <label for="name">Names</label>
+                    <input pInputText id="name" [(ngModel)]="region.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !region.name}">
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
+				</div>
+
+                <div class="field">
+                    <label for="code">PF Number</label>
+                    <input pInputText id="code" [(ngModel)]="region.code" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !region.code}">
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
+                </div>
+                
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="active"> From Date</label>
+                        <p-calendar inputId="active" >
+                        </p-calendar>
+                    </div>
+                    <div class="field col">
+                        <label for="active">To Date</label>
+                        <p-calendar inputId="active" >
+                        </p-calendar>
+                    </div>
+                </div>
+            
+                <div class="field">
+                    <label for="code">Days Worked</label>
+                    <input pInputText id="code" [(ngModel)]="region.code" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !region.code}">
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                    (click)="hideDialog()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                    (click)="saveProduct()"></button>
+            </ng-template>
+        </p-dialog>
+
+    </div>
+</div>
