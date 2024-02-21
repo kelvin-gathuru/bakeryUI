@@ -21,6 +21,7 @@
         width: 300px;
         border-radius: 12px;
 
+
         img {
             height: 2.5rem;
             margin-right: .5rem;
@@ -29,7 +30,13 @@
         &:focus {
             @include focused();
         }
+       
     }
+    @media screen and (max-width: 507px) {
+        .layout-topbar-logo {
+          display: none; /* Hide the element */
+        }
+      }
 
     .layout-topbar-button {
         display: inline-flex;

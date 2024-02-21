@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://3modernsystems.co.ke/bakery/php/',
+  apiUrl: 'http://localhost:8080/api/',
 };
 
 /*

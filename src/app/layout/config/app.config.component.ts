@@ -1,102 +1,116 @@
 import { Component, Input } from '@angular/core';
-import { LayoutService } from "../service/app.layout.service";
-import { MenuService } from "../app.menu.service";
+import { LayoutService } from '../service/app.layout.service';
+import { MenuService } from '../app.menu.service';
+import { ApiService } from 'src/app/views/api/api.service';
+import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'app-config',
-    templateUrl: './app.config.component.html'
+    templateUrl: './app.config.component.html',
+    providers: [MessageService],
 })
 export class AppConfigComponent {
+    display: boolean = false;
 
-    @Input() minimal: boolean = false;
+    submitted: boolean = false;
 
-    scales: number[] = [12, 13, 14, 15, 16];
+    currentPassword: any;
 
-    constructor(public layoutService: LayoutService, public menuService: MenuService) { }
+    newPassword: any;
 
-    get visible(): boolean {
-        return this.layoutService.state.configSidebarVisible;
-    }
+    confirmNewPassword: any;
 
-    set visible(_val: boolean) {
-        this.layoutService.state.configSidebarVisible = _val;
-    }
+    showSpinner: boolean = false;
 
-    get scale(): number {
-        return this.layoutService.config.scale;
-    }
+    disableButton: boolean = false;
 
-    set scale(_val: number) {
-        this.layoutService.config.scale = _val;
-    }
+    constructor(
+        private apiService: ApiService,
+        public layoutService: LayoutService,
+        public menuService: MenuService,
+        private router: Router,
+        private messageService: MessageService
+    ) {}
 
-    get menuMode(): string {
-        return this.layoutService.config.menuMode;
-    }
+    // Boolean to track the state of the sidebar (open or closed)
+    isSidebarOpen: boolean = false;
 
-    set menuMode(_val: string) {
-        this.layoutService.config.menuMode = _val;
-    }
-
-    get inputStyle(): string {
-        return this.layoutService.config.inputStyle;
-    }
-
-    set inputStyle(_val: string) {
-        this.layoutService.config.inputStyle = _val;
-    }
-
-    get ripple(): boolean {
-        return this.layoutService.config.ripple;
-    }
-
-    set ripple(_val: boolean) {
-        this.layoutService.config.ripple = _val;
-    }
-
+    // Function triggered when the config button is clicked
     onConfigButtonClick() {
-        this.layoutService.showConfigSidebar();
+        this.isSidebarOpen = true;
     }
 
-    changeTheme(theme: string, colorScheme: string) {
-        const themeLink = <HTMLLinkElement>document.getElementById('theme-css');
-        const newHref = themeLink.getAttribute('href')!.replace(this.layoutService.config.theme, theme);
-        this.layoutService.config.colorScheme
-        this.replaceThemeLink(newHref, () => {
-            this.layoutService.config.theme = theme;
-            this.layoutService.config.colorScheme = colorScheme;
-            this.layoutService.onConfigUpdate();
+    // Function to handle user logout
+    logout() {
+        this.router.navigate(['']);
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('userType');
+        sessionStorage.removeItem('name');
+        this.isSidebarOpen = false;
+    }
+    // Function to initiate the password change process
+    changePassword() {
+        this.display = true;
+    }
+
+    // Function to reset input fields when resetting the for
+    onReset() {
+        this.display = true;
+        const inputFields = document.querySelectorAll('input'); // Get all the input fields
+        inputFields.forEach((input: HTMLInputElement) => {
+            input.value = ''; // Reset the value of each input field
         });
     }
+    onChangePassword() {
+        this.display = true;
+        this.submitted = true;
+        if(this.confirmNewPassword !== this.newPassword){
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: "Passwords do not match",
+            });
+        }
+        else if (
+            this.newPassword?.trim() &&
+            this.currentPassword?.trim() &&
+            this.confirmNewPassword?.trim()
+        ) {
+            this.disableButton = true;
+            this.showSpinner = true;
 
-    replaceThemeLink(href: string, onComplete: Function) {
-        const id = 'theme-css';
-        const themeLink = <HTMLLinkElement>document.getElementById('theme-css');
-        const cloneLinkElement = <HTMLLinkElement>themeLink.cloneNode(true);
+            const payload = {
+                currentPassword: this.currentPassword,
+                newPassword: this.newPassword,
+            };
 
-        cloneLinkElement.setAttribute('href', href);
-        cloneLinkElement.setAttribute('id', id + '-clone');
+            this.apiService.changePassword(payload).subscribe(
+                (result: any) => {
+                    if (result.success === true) {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: result.message,
+                        });
+                        this.router.navigate(['/dashboard']);
 
-        themeLink.parentNode!.insertBefore(cloneLinkElement, themeLink.nextSibling);
-
-        cloneLinkElement.addEventListener('load', () => {
-            themeLink.remove();
-            cloneLinkElement.setAttribute('id', id);
-            onComplete();
-        });
-    }
-
-    decrementScale() {
-        this.scale--;
-        this.applyScale();
-    }
-
-    incrementScale() {
-        this.scale++;
-        this.applyScale();
-    }
-
-    applyScale() {
-        document.documentElement.style.fontSize = this.scale + 'px';
+                        this.showSpinner = false;
+                        this.disableButton = false;
+                        this.display = false;
+                    }
+                },
+                (error) => {
+                    console.error(error);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    });
+                    this.showSpinner = false;
+                    this.disableButton = false;
+                }
+            );
+        }
     }
 }

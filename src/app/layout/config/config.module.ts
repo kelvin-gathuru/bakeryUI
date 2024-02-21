@@ -6,6 +6,11 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { ButtonModule } from 'primeng/button';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AppConfigComponent } from './app.config.component';
+import { DialogModule } from 'primeng/dialog';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { ToastModule } from 'primeng/toast';
+import { PasswordModule } from 'primeng/password';
 
 @NgModule({
     imports: [
@@ -14,7 +19,12 @@ import { AppConfigComponent } from './app.config.component';
         SidebarModule,
         RadioButtonModule,
         ButtonModule,
-        InputSwitchModule
+        InputSwitchModule,
+        DialogModule,
+        InputNumberModule,
+        InputTextModule,
+        ToastModule,
+        PasswordModule
     ],
     declarations: [
         AppConfigComponent

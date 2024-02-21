@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { CommonModule, HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppLayoutModule } from './layout/app.layout.module';
@@ -14,10 +14,14 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { PasswordModule } from 'primeng/password';
+import { ForgotPasswordComponent } from './views/components/forgot-password/forgot-password.component';
+import { ToastModule } from 'primeng/toast';
+import { EmailSentComponent } from './views/components/email-sent/email-sent.component';
+import { ResetPasswordComponent } from './views/components/reset-password/reset-password.component';
 
 @NgModule({
     declarations: [
-        AppComponent, NotfoundComponent, LoginComponent
+        AppComponent, NotfoundComponent, LoginComponent, ForgotPasswordComponent, EmailSentComponent, ResetPasswordComponent
     ],
     imports: [
         AppRoutingModule,
@@ -27,6 +31,8 @@ import { PasswordModule } from 'primeng/password';
         InputTextModule,
         FormsModule,
         PasswordModule,
+        CommonModule,
+        ToastModule
     ],
     providers: [
         { provide: PathLocationStrategy, useClass: PathLocationStrategy },

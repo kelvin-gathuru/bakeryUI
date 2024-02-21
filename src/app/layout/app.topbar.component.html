@@ -1,11 +1,24 @@
-<div class="layout-topbar">
-    <a class="layout-topbar-logo" routerLink="/dashboard">
+<!-- <div class="layout-topbar">
+    <a class="layout-topbar-logo" routerLink="/dashboard" style="margin-right: 30px;">
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
         <span style="margin-left: 10px;">BAKERY MANAGER</span>
     </a>
-    <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+    <div #topbarmenu  [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
         <p-menubar [model]="tieredItems" style="margin-right: 200px;">
             
         </p-menubar>
     </div>
+</div> -->
+
+<div class="layout-topbar" style="display: flex; justify-content: space-between;" >
+    <a class="layout-topbar-logo" routerLink="/dashboard" style="margin-right: 30px;">
+        <i class="pi pi-spin pi-palette" style="font-size: 2rem"></i>
+        <span style="margin-left: 15px;">Bakersuite</span>
+    </a>
+
+<div style="margin-top: 5px;">  
+    <p-menubar [model]="tieredItems">
+        <div style="width: 200px;"></div> 
+    </p-menubar>
+</div>
 </div>
