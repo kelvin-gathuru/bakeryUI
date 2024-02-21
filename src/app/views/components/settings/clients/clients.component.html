@@ -17,7 +17,7 @@
             </p-toolbar>
 
             <p-table #dt [value]="clients" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                [globalFilterFields]="['name','phone_number','entity_code','active','region','client_type','entity_type']" [paginator]="true"
+                [globalFilterFields]="['name','phone','salesType','registrationType','region','status']" [paginator]="true"
                 [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                 [(selection)]="selectedClients" selectionMode="multiple" [rowHover]="true" dataKey="id">
@@ -34,13 +34,12 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th>#</th>
-                        <th pSortableColumn="entity_code">Client ID <p-sortIcon field="entity_code"></p-sortIcon></th>
                         <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
-                        <th pSortableColumn="phone_number">Tel <p-sortIcon field="phone_number"></p-sortIcon></th>
-                        <th pSortableColumn="active">Status <p-sortIcon field="active"></p-sortIcon></th>
-                        <th pSortableColumn="region">Region <p-sortIcon field="region"></p-sortIcon> </th>
-                        <th pSortableColumn="client_type">Client Type <p-sortIcon field="client_type"></p-sortIcon> </th>
-                        <th pSortableColumn="entity_type">Reg Type <p-sortIcon field="entity_type"></p-sortIcon> </th>
+                        <th pSortableColumn="phone">Phone <p-sortIcon field="phone"></p-sortIcon></th>
+                        <th pSortableColumn="salesType">Sales Type <p-sortIcon field="salesType"></p-sortIcon></th>
+                        <th pSortableColumn="registrationType">Registration Type <p-sortIcon field="registrationType"></p-sortIcon> </th>
+                        <th pSortableColumn="status">Status<p-sortIcon field="status"></p-sortIcon> </th>
+                        <th pSortableColumn="region">Region<p-sortIcon field="region"></p-sortIcon> </th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-client let-rowIndex="rowIndex">
@@ -49,32 +48,28 @@
                             {{rowIndex + 1 }}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Client ID</span>
-                            {{client.entity_code}}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Name</span>
                             {{client.name}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Tel</span>
-                            {{client.phone_number}}
+                            <span class="p-column-title">Phone</span>
+                            {{client.phone}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Sales Type</span>
+                            {{client.salesType}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Registration Type</span>
+                            {{client.registrationType}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Status</span>
-                            {{client.active}}
+                            {{client.status}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">region</span>
-                            {{client.region}}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">CLient Type</span>
-                            {{client.client_type}}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Reg Type</span>
-                            {{client.entity_type}}
+                            <span class="p-column-title">Region</span>
+                            {{client.region.name}}
                         </td>
                         <td>
                             <div class="flex">
@@ -92,36 +87,33 @@
 
                 <div class="formgrid grid">
                     <div class="field col">
-                        <label for="entity_type">Registration Type</label>
-                        <p-dropdown [(ngModel)]="client.entity_type" inputId="entity_type" [options]="regType" placeholder="Select">
+                        <label for="registrationType">Registration Type</label>
+                        <p-dropdown [(ngModel)]="client.registrationType" inputId="registrationType" [options]="regType" placeholder="Select">
                         </p-dropdown>
                     </div>
                     <div class="field col">
-                        <label for="client_type">Sales Type</label>
-                        <p-dropdown [(ngModel)]="client.client_type" inputId="client_type" [options]="salesType" placeholder="Select">
+                        <label for="salesType">Sales Type</label>
+                        <p-dropdown [(ngModel)]="client.salesType" inputId="salesType" [options]="salesType" placeholder="Select">
                         </p-dropdown>
                     </div>
                 </div>
                 <div class="field">
                     <label for="region">Region</label>
-                    <p-dropdown [options]="regions.items" [(ngModel)]="client.region" inputId="region"  optionLabel="name" placeholder="Select">
-                    </p-dropdown>
-                </div>
-                <div class="field">
-                    <label for="active">Status</label>
-                    <p-dropdown [options]="statuses" [(ngModel)]="client.active" inputId="active" optionValue="label"  placeholder="Select">
+                    <p-dropdown [options]="regions" [(ngModel)]="client.region" inputId="region"  optionLabel="name" placeholder="Select">
                     </p-dropdown>
                 </div>
                 <div class="formgrid grid">
                     <div class="field col">
-                        <label for="clientId">Client/Agent ID</label>
-                        <input type="text" pInputText id="clientId" [(ngModel)]="client.entity_code" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.entity_code}">
+                        <label for="active">Status</label>
+                        <p-dropdown [options]="statuses" [(ngModel)]="client.status" inputId="active" optionValue="label"  placeholder="Select">
+                        </p-dropdown>
                     </div>
                     <div class="field col">
-                        <label for="tel">Telephone</label>
+                        <label for="phone">Telephone</label>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">+254</span>
-                            <input type="text" pInputText id="tel" [(ngModel)]="client.phone_number" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.phone_number}">
+                            <input type="text" pInputText id="phone" [(ngModel)]="client.phone" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.phone}">
+                            <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.phone">Description is required.</small>
                         </div>
                     </div>
                 </div>
@@ -137,7 +129,7 @@
                 <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
                     (click)="hideDialog()"></button>
                 <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
-                    (click)="saveProduct()"></button>
+                    (click)="saveClient()"></button>
             </ng-template>
         </p-dialog>
 

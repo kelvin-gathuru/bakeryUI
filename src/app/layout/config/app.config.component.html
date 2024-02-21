@@ -46,7 +46,7 @@
 
             <div class="field">
                 <label for="newPassword">New Password</label>
-                <p-password id="newPassword" [(ngModel)]="newPassword" [toggleMask]="true" required autofocus
+                <p-password id="newPassword" [feedback]="false" [(ngModel)]="newPassword" [toggleMask]="true" required autofocus
                     [ngClass]="{'ng-invalid ng-dirty' : submitted && !newPassword}">
                     <small class="ng-dirty ng-invalid" *ngIf="submitted && !newPassword">New Password is
                         required.</small>
@@ -55,7 +55,7 @@
 
             <div class="field">
                 <label for="confirmNewPassword">Confirm New Password</label>
-                <p-password id="confirmNewPassword" [(ngModel)]="confirmNewPassword" [toggleMask]="true" required
+                <p-password id="confirmNewPassword" [feedback]="false" [(ngModel)]="confirmNewPassword" [toggleMask]="true" required
                     autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !confirmNewPassword}">
                     <small class="ng-dirty ng-invalid" *ngIf="submitted && !confirmNewPassword">Confirm New Password is
                         required.</small>

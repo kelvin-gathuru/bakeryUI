@@ -39,15 +39,33 @@ export class ApiService {
   }
 
   getClients(): Observable<any[]> {
-    const endpoint = `${this.baseUrl}listClients.php`;
-   
-    return this.http.get<any[]>(endpoint);
+    const endpoint = `${this.baseUrl}sales/client/get`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.get<any[]>(endpoint, {headers});
   }
 
   getRegions(): Observable<any[]> {
-    const endpoint = `${this.baseUrl}listStations.php`;
-   
-    return this.http.get<any[]>(endpoint);
+    const endpoint = `${this.baseUrl}sales/region/get`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.get<any[]>(endpoint, {headers});
+  }
+  createClient(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/client/create`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.post<any[]>(endpoint, payload, {headers});
+  }
+  updateClient(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/client/update`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.post<any[]>(endpoint, payload, {headers});
   }
 
 }

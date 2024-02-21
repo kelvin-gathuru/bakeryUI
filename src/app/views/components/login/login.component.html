@@ -18,7 +18,7 @@
                         pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" />
 
                     <label class="block text-900 font-small text-m mb-2">PASSWORD</label>
-                    <p-password id="password1" [(ngModel)]="password" placeholder="Password" [toggleMask]="true"
+                    <p-password id="password1" [(ngModel)]="password" [feedback]="false" placeholder="Password" [toggleMask]="true"
                         required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !password}"
                         styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem"></p-password>
 

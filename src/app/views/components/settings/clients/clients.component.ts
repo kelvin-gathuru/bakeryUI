@@ -5,15 +5,14 @@ import { ApiService } from 'src/app/views/api/api.service';
 
 @Component({
     templateUrl: './clients.component.html',
-    providers: [MessageService]
+    providers: [MessageService],
 })
 export class ClientsComponent implements OnInit {
-
     clientsDialog: boolean = false;
 
     client: any = {};
 
-    selectedClients: any[]
+    selectedClients: any[];
 
     submitted: boolean = false;
 
@@ -25,44 +24,42 @@ export class ClientsComponent implements OnInit {
 
     clients: any[];
 
-    regions: any[] ;
+    regions: any[];
 
-    regType: { label: string; value: string; }[];
-    salesType: { label: string; value: string; }[];
+    regType: { label: string; value: string }[];
+    salesType: { label: string; value: string }[];
 
-    constructor(private messageService: MessageService, private apiService: ApiService) { }
+    constructor(
+        private messageService: MessageService,
+        private apiService: ApiService
+    ) {}
 
     ngOnInit() {
-
         this.loadClients();
 
         this.loadRegions();
 
         this.cols = [
             { field: 'name', header: 'Name' },
-            { field: 'phone_number', header: 'Tel' },
-            { field: 'entity_code', header: 'Client/Agent ID' },
-            { field: 'active', header: 'Status' },
-            { field: 'region', header: 'Region' },
-            { field: 'client_type', header: 'Client Type' },
-            { field: 'entity_type', header: 'Entity Type' }
+            { field: 'phone', header: 'Phone' },
+            { field: 'salesType', header: 'Sales Type' },
+            { field: 'registrationType', header: 'Registration Type' },
+            { field: 'region.name', header: 'Region' },
         ];
 
         this.statuses = [
-            { label: 'ACTIVE', value: 'active' },
-            { label: 'INACTIVE', value: 'inactive' }
+            { label: 'ACTIVE', value: 'ACTIVE' },
+            { label: 'INACTIVE', value: 'ACTIVE' },
         ];
 
         this.regType = [
-            { label: 'CLIENT', value: 'client' },
-            { label: 'SALES AGENT', value: 'salesAgent' },
-            { label: 'OTHERS', value: 'others' }
+            { label: 'CLIENT', value: 'CLIENT' },
+            { label: 'SALES AGENT', value: 'SALES_AGENT' },
         ];
 
         this.salesType = [
-            { label: 'BULK', value: 'bulk' },
-            { label: 'RETAIL', value: 'retail' },
-            { label: 'OTHERS', value: 'others' }
+            { label: 'BULK', value: 'BULK' },
+            { label: 'RETAIL', value: 'RETAIL' },
         ];
     }
 
@@ -81,80 +78,117 @@ export class ClientsComponent implements OnInit {
         this.clientsDialog = true;
     }
 
-    // saveProduct() {
-    //     this.submitted = true;
-
-    //     if (this.product.name?.trim()) {
-    //         if (this.product.id) {
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus.value ? this.product.inventoryStatus.value : this.product.inventoryStatus;
-    //             this.products[this.findIndexById(this.product.id)] = this.product;
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-    //         } else {
-    //             this.product.id = this.createId();
-    //             this.product.code = this.createId();
-    //             this.product.image = 'product-placeholder.svg';
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus ? this.product.inventoryStatus.value : 'INSTOCK';
-    //             this.products.push(this.product);
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-    //         }
-
-    //         this.products = [...this.products];
-    //         this.clientsDialog = false;
-    //         this.product = {};
-    //     }
-    // }
-
-    // findIndexById(id: string): number {
-    //     let index = -1;
-    //     for (let i = 0; i < this.products.length; i++) {
-    //         if (this.products[i].id === id) {
-    //             index = i;
-    //             break;
-    //         }
-    //     }
-
-    //     return index;
-    // }
-
-    createId(): string {
-        let id = '';
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
-    }
-
     onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
+        );
     }
 
     loadClients() {
         this.apiService.getClients().subscribe(
-          (data: any) => {
-            if(data.success==false){
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: data.message, life: 3000 });
+            (data: any) => {
+                if (data.success == false) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: data.error.error.message,
+                        life: 3000,
+                    });
+                }
+                this.clients = data.data;
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                    life: 3000,
+                });
             }
-            this.clients = data;
-          },
-          (error) => {
-            console.error('Error fetching clients data:', error);
-          }
         );
-      }
-      loadRegions() {
+    }
+    loadRegions() {
         this.apiService.getRegions().subscribe(
-          (data: any) => {
-            if(data.success==false){
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: data.message, life: 3000 });
+            (data: any) => {
+                if (data.success == false) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: data.error.message,
+                        life: 3000,
+                    });
+                }
+                this.regions = data.data;
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                    life: 3000,
+                });
             }
-            this.regions = data;
-          },
-          (error) => {
-            console.error('Error fetching regions data:', error);
-          }
         );
-      }
+    }
+    saveClient() {
+        this.submitted = true;
+
+        if (this.client.name?.trim() && this.client.phone?.trim()) {
+            const payload = {
+                name: this.client.name,
+                phone: this.client.phone,
+                salesType: this.client.salesType,
+                status: this.client.status,
+                registrationType: this.client.registrationType,
+                regionID: this.client.region.regionID,
+            };
+            if (this.client.clientID) {
+                this.apiService.updateClient(payload).subscribe(
+                    (result: any) => {
+                        if (result.success === true) {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Success',
+                                detail: result.message,
+                            });
+                            this.loadClients();
+                        }
+                    },
+                    (error) => {
+                        console.error(error);
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: error.error.message,
+                        });
+                    }
+                );
+            } else {
+                this.apiService.createClient(payload).subscribe(
+                    (result: any) => {
+                        if (result.success === true) {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Success',
+                                detail: result.message,
+                            });
+                            this.loadClients();
+                           
+                        }
+                    },
+                    (error) => {
+                        console.error(error);
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: error.error.message,
+                        });
+                    }
+                );
+            }
+        }
+        this.clientsDialog = false;
+        this.client = {};
+    }
 }
