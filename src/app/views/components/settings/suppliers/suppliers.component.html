@@ -17,28 +17,26 @@
             </p-toolbar>
 
             <p-table #dt [value]="suppliers" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                [globalFilterFields]="['name','phone_number','entity_code','active','region','client_type','entity_type']" [paginator]="true"
-                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                [globalFilterFields]="['name','phone','alternativeContact']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+                [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [(selection)]="selectedClients" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                [(selection)]="selectedSupplier" selectionMode="multiple" [rowHover]="true" dataKey="id">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">Suppliers</h5>
+                        <h5 class="m-0">suppliers</h5>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search Supplier..."
-                                class="w-full sm:w-auto" />
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search Supplier..." class="w-full sm:w-auto" />
                         </span>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
                         <th>#</th>
-                        <th pSortableColumn="entity_code">Supplier Code <p-sortIcon field="entity_code"></p-sortIcon></th>
-                        <th pSortableColumn="name">Supplier Name <p-sortIcon field="name"></p-sortIcon></th>
-                        <th pSortableColumn="phone_number">Item Code <p-sortIcon field="phone_number"></p-sortIcon></th>
-                        <th pSortableColumn="active">Supply Price <p-sortIcon field="active"></p-sortIcon></th>
-                        <th pSortableColumn="region">Update <p-sortIcon field="region"></p-sortIcon> </th>
+                        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="phone">Phone <p-sortIcon field="phone"></p-sortIcon></th>
+                        <th pSortableColumn="alternativecontact">Alternative Contact/Email<p-sortIcon field="alternativecontact"></p-sortIcon></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-supplier let-rowIndex="rowIndex">
@@ -46,29 +44,23 @@
                         <td>
                             {{rowIndex + 1 }}
                         </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Supplier Code</span>
-                            {{supplier.supplierCode}}
+                        <td style="width:25%; min-width:10rem;">
+                            <span class="p-column-title">Name</span>
+                            {{supplier.name}}
                         </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Supplier Name</span>
-                            {{supplier.supplierName}}
+                        <td style="width:25%; min-width:10rem;">
+                            <span class="p-column-title">Phone</span>
+                            {{supplier.phone}}
                         </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">ItemCode</span>
-                            {{supplier.itemCode}}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Supply Price</span>
-                            {{supplier.supplyPrice}}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">update</span>
-                            {{supplier.update}}
+                        <td style="width:25%; min-width:10rem;">
+                            <span class="p-column-title">Alternative Contact/Email</span>
+                            {{supplier.alternativeContact}}
                         </td>
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editClient(client)"></button>
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="editSupplier(supplier)"></button>
                             </div>
                         </td>
                     </tr>
@@ -76,50 +68,38 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="clientsDialog" [style]="{width: '450px'}" header="Supplier Registration" [modal]="true"
+        <p-dialog [(visible)]="supplierDialog" [style]="{width: '450px'}" header="Region Creation" [modal]="true"
             class="p-fluid">
             <ng-template pTemplate="content">
 
-                <div class="formgrid grid">
-                    <div class="field col">
-                        <label for="entity_type">Supplier</label>
-                        <p-dropdown [(ngModel)]="client.entity_type" inputId="entity_type" [options]="suppliers" placeholder="Select">
-                        </p-dropdown>
-                    </div>
-                    <div class="field col">
-                        <label for="client_type">Item Type</label>
-                        <p-dropdown [(ngModel)]="client.client_type" inputId="client_type" [options]="salesType" placeholder="Select">
-                        </p-dropdown>
-                    </div>
-                </div>
                 <div class="field">
-                    <label for="region">Name</label>
-                    <p-dropdown [options]="regions.items" [(ngModel)]="client.region" inputId="region"  optionLabel="name" placeholder="Select">
-                    </p-dropdown>
+                    <label for="name">Names</label>
+                    <input pInputText id="name" [(ngModel)]="supplier.name" required autofocus
+                        [ngClass]="{'ng-invalid ng-dirty' : submitted && !supplier.name}">
                 </div>
-                
-                <div class="formgrid grid">
-                    <div class="field col">
-                        <label for="clientId">Item</label>
-                        <input type="text" pInputText id="clientId" [(ngModel)]="client.entity_code" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.entity_code}">
-                    </div>
-                    <div class="field col">
-                        <label for="tel">Price</label>
-                        <div class="p-inputgroup">
-                            <span class="p-inputgroup-addon">KSh.</span>
-                            <input type="text" pInputText id="tel" [(ngModel)]="client.phone_number" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.phone_number}">
-                        </div>
+
+                <div class="field">
+                    <label for="phone">Telephone</label>
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">+254</span>
+                        <input type="text" pInputText id="phone" [(ngModel)]="supplier.phone" required autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !supplier.phone}">
                     </div>
                 </div>
-                
-                
+
+                <div class="field">
+                    <label for="alternativeContact">Alternative Contact/ Email</label>
+                    <input pInputText id="name" [(ngModel)]="supplier.alternativeContact" required autofocus
+                        [ngClass]="{'ng-invalid ng-dirty' : submitted && !supplier.alternativeContact}">
+                </div>
+
             </ng-template>
 
             <ng-template pTemplate="footer">
                 <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
                     (click)="hideDialog()"></button>
                 <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
-                    (click)="saveProduct()"></button>
+                    (click)="saveSupplier()"></button>
             </ng-template>
         </p-dialog>
 

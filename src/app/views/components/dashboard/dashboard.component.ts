@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
+import { ApiService } from '../../api/api.service';
 
 @Component({
     templateUrl: './dashboard.component.html',
+    providers: [MessageService],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
@@ -12,20 +14,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     chartData: any;
 
-    products: any;
+    materials: any;
+
+    analytics: any;
 
     chartOptions: any;
 
     subscription!: Subscription;
 
-    constructor(public layoutService: LayoutService) {
+    constructor(private messageService: MessageService,
+        private apiService: ApiService,
+        public layoutService: LayoutService) {
         this.subscription = this.layoutService.configUpdate$.subscribe(() => {
             this.initChart();
         });
     }
+    
 
     ngOnInit() {
         this.initChart();
+
+        this.loadAnalytics();
 
         this.items = [
             { label: 'Add New', icon: 'pi pi-fw pi-plus' },
@@ -88,5 +97,29 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
+    }
+    loadAnalytics() {
+        this.apiService.getAnalytics().subscribe(
+            (data: any) => {
+                if (data.success == false) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: data.error.message,
+                        life: 3000,
+                    });
+                }
+                this.analytics = data.data;
+                this.materials = data.data.recentMaterials;
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                    life: 3000,
+                });
+            }
+        );
     }
 }

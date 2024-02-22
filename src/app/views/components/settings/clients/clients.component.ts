@@ -8,6 +8,7 @@ import { ApiService } from 'src/app/views/api/api.service';
     providers: [MessageService],
 })
 export class ClientsComponent implements OnInit {
+  
     clientsDialog: boolean = false;
 
     client: any = {};
@@ -26,7 +27,10 @@ export class ClientsComponent implements OnInit {
 
     regions: any[];
 
+    deleteClientDialog: boolean = false;
+
     regType: { label: string; value: string }[];
+
     salesType: { label: string; value: string }[];
 
     constructor(
@@ -144,7 +148,8 @@ export class ClientsComponent implements OnInit {
                 regionID: this.client.region.regionID,
             };
             if (this.client.clientID) {
-                this.apiService.updateClient(payload).subscribe(
+                const updatePayload = this.client;
+                this.apiService.updateClient(updatePayload).subscribe(
                     (result: any) => {
                         if (result.success === true) {
                             this.messageService.add({
@@ -191,4 +196,35 @@ export class ClientsComponent implements OnInit {
         this.clientsDialog = false;
         this.client = {};
     }
+
+    deleteClient(client: any) {
+      this.deleteClientDialog = true;
+      this.client = { ...client };
+  }
+
+    confirmDelete() {
+        
+      this.apiService.deleteClient(this.client).subscribe(
+          (result: any) => {
+              if (result.success === true) {
+                  this.messageService.add({
+                      severity: 'success',
+                      summary: 'Success',
+                      detail: result.message,
+                  });
+                  this.loadClients()
+              } 
+          },
+          (error) => {
+              console.error(error);
+              this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: error.error.message,
+              });
+          }
+      );
+      this.client = {};
+      this.deleteClientDialog = false;
+  }
 }

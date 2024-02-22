@@ -17,8 +17,8 @@
             </p-toolbar>
 
             <p-table #dt [value]="clients" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                [globalFilterFields]="['name','phone','salesType','registrationType','region','status']" [paginator]="true"
-                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                [globalFilterFields]="['name','phone','salesType','registrationType','region.name','status']"
+                [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                 [(selection)]="selectedClients" selectionMode="multiple" [rowHover]="true" dataKey="id">
                 <ng-template pTemplate="caption">
@@ -26,8 +26,8 @@
                         <h5 class="m-0">Clients</h5>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search Client..."
-                                class="w-full sm:w-auto" />
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search Client..." class="w-full sm:w-auto" />
                         </span>
                     </div>
                 </ng-template>
@@ -37,9 +37,10 @@
                         <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
                         <th pSortableColumn="phone">Phone <p-sortIcon field="phone"></p-sortIcon></th>
                         <th pSortableColumn="salesType">Sales Type <p-sortIcon field="salesType"></p-sortIcon></th>
-                        <th pSortableColumn="registrationType">Registration Type <p-sortIcon field="registrationType"></p-sortIcon> </th>
+                        <th pSortableColumn="registrationType">Registration Type <p-sortIcon
+                                field="registrationType"></p-sortIcon> </th>
                         <th pSortableColumn="status">Status<p-sortIcon field="status"></p-sortIcon> </th>
-                        <th pSortableColumn="region">Region<p-sortIcon field="region"></p-sortIcon> </th>
+                        <th pSortableColumn="region.name">Region<p-sortIcon field="region.name"></p-sortIcon> </th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-client let-rowIndex="rowIndex">
@@ -73,7 +74,10 @@
                         </td>
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editClient(client)"></button>
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="editClient(client)"></button>
+                                <!-- <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-help mr-2" (click)="deleteClient(client)"></button> -->
                             </div>
                         </td>
                     </tr>
@@ -81,48 +85,53 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="clientsDialog" [style]="{width: '450px'}" header="Client/Agent Registration" [modal]="true"
-            class="p-fluid">
+        <p-dialog [(visible)]="clientsDialog" [style]="{width: '450px'}" header="Client/Agent Registration"
+            [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
 
                 <div class="formgrid grid">
                     <div class="field col">
                         <label for="registrationType">Registration Type</label>
-                        <p-dropdown [(ngModel)]="client.registrationType" inputId="registrationType" [options]="regType" placeholder="Select">
+                        <p-dropdown [(ngModel)]="client.registrationType" inputId="registrationType" [options]="regType"
+                            placeholder="Select">
                         </p-dropdown>
                     </div>
                     <div class="field col">
                         <label for="salesType">Sales Type</label>
-                        <p-dropdown [(ngModel)]="client.salesType" inputId="salesType" [options]="salesType" placeholder="Select">
+                        <p-dropdown [(ngModel)]="client.salesType" inputId="salesType" [options]="salesType"
+                            placeholder="Select">
                         </p-dropdown>
                     </div>
                 </div>
                 <div class="field">
                     <label for="region">Region</label>
-                    <p-dropdown [options]="regions" [(ngModel)]="client.region" inputId="region"  optionLabel="name" placeholder="Select">
+                    <p-dropdown [options]="regions" [(ngModel)]="client.region" inputId="region" optionLabel="name"
+                        placeholder="Select">
                     </p-dropdown>
                 </div>
                 <div class="formgrid grid">
                     <div class="field col">
                         <label for="active">Status</label>
-                        <p-dropdown [options]="statuses" [(ngModel)]="client.status" inputId="active" optionValue="label"  placeholder="Select">
+                        <p-dropdown [options]="statuses" [(ngModel)]="client.status" inputId="active"
+                            optionValue="label" placeholder="Select">
                         </p-dropdown>
                     </div>
                     <div class="field col">
                         <label for="phone">Telephone</label>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">+254</span>
-                            <input type="text" pInputText id="phone" [(ngModel)]="client.phone" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.phone}">
-                            <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.phone">Description is required.</small>
+                            <input type="text" pInputText id="phone" [(ngModel)]="client.phone" required autofocus
+                                [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.phone}">
                         </div>
                     </div>
                 </div>
                 <div class="field">
                     <label for="name">Names</label>
-                    <input pInputText id="name" [(ngModel)]="client.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.name}">
+                    <input pInputText id="name" [(ngModel)]="client.name" required autofocus
+                        [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.name}">
                     <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
-				</div>
-                
+                </div>
+
             </ng-template>
 
             <ng-template pTemplate="footer">
@@ -130,6 +139,19 @@
                     (click)="hideDialog()"></button>
                 <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
                     (click)="saveClient()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteClientDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="client">Are you sure you want to delete <b>{{client.name}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                    (click)="deleteClientDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+                    (click)="confirmDelete()"></button>
             </ng-template>
         </p-dialog>
 

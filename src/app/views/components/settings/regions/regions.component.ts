@@ -5,13 +5,15 @@ import { ApiService } from 'src/app/views/api/api.service';
 
 @Component({
     templateUrl: './regions.component.html',
-    providers: [MessageService]
+    providers: [MessageService],
 })
 export class RegionsComponent implements OnInit {
 
     regionsDialog: boolean = false;
 
-    selectedRegions: any[]
+    deleteRegionDialog: boolean = false;
+
+    selectedRegion: any[];
 
     submitted: boolean = false;
 
@@ -25,24 +27,24 @@ export class RegionsComponent implements OnInit {
 
     region: any = {};
 
-    constructor(private messageService: MessageService, private apiService: ApiService) { }
+    constructor(
+        private messageService: MessageService,
+        private apiService: ApiService
+    ) {}
 
     ngOnInit() {
-
         this.loadRegions();
 
         this.cols = [
             { field: 'name', header: 'Name' },
-            { field: 'code', header: 'Area Code' },
-            { field: 'active', header: 'Status' },
+            { field: 'status', header: 'Status' },
+            { field: 'user.name', header: 'Created by' },
         ];
 
         this.statuses = [
-            { label: 'ACTIVE', value: 'active' },
-            { label: 'INACTIVE', value: 'inactive' }
+            { label: 'ACTIVE', value: 'ACTIVE' },
+            { label: 'INACTIVE', value: 'INACTIVE' },
         ];
-
-        
     }
 
     openNew() {
@@ -60,29 +62,121 @@ export class RegionsComponent implements OnInit {
         this.regionsDialog = true;
     }
 
-    createId(): string {
-        let id = '';
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
+    onGlobalFilter(table: Table, event: Event) {
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
+        );
     }
 
-    onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-    }
-      loadRegions() {
+    loadRegions() {
         this.apiService.getRegions().subscribe(
-          (data: any) => {
-            if(data.success==false){
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: data.message, life: 3000 });
+            (data: any) => {
+                if (data.success == false) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: data.error.message,
+                        life: 3000,
+                    });
+                }
+                this.regions = data.data;
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                    life: 3000,
+                });
             }
-            this.regions = data;
-          },
-          (error) => {
-            console.error('Error fetching regions data:', error);
-          }
         );
-      }
+    }
+
+    saveRegion() {
+        this.submitted = true;
+
+        if (this.region.name?.trim()) {
+            const payload = {
+                name: this.region.name.toUpperCase(),
+                status: this.region.status,
+            };
+            if (this.region.regionID) {
+                const updatePayload = this.region;
+                this.apiService.updateRegion(updatePayload).subscribe(
+                    (result: any) => {
+                        if (result.success === true) {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Success',
+                                detail: result.message,
+                            });
+                            this.loadRegions();
+                        }
+                    },
+                    (error) => {
+                        console.error(error);
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: error.error.message,
+                        });
+                    }
+                );
+            } else {
+                this.apiService.createRegion(payload).subscribe(
+                    (result: any) => {
+                        if (result.success === true) {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Success',
+                                detail: result.message,
+                            });
+                            this.loadRegions();
+                        }
+                    },
+                    (error) => {
+                        console.error(error);
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: error.error.message,
+                        });
+                    }
+                );
+            }
+        }
+        this.regionsDialog = false;
+        this.region = {};
+    }
+
+    deleteRegion(region: any) {
+        this.deleteRegionDialog = true;
+        this.region = { ...region };
+    }
+
+    confirmDelete() {
+        this.apiService.deleteRegion(this.region).subscribe(
+            (result: any) => {
+                if (result.success === true) {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: result.message,
+                    });
+                    this.loadRegions();
+                }
+            },
+            (error) => {
+                console.error(error);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                });
+            }
+        );
+        this.region = {};
+        this.deleteRegionDialog = false;
+    }
 }

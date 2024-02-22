@@ -38,7 +38,7 @@ export class AppTopBarComponent {
                 ]
             },
             {
-                label: 'Consumables',
+                label: 'Materials',
                 icon: 'pi pi-fw pi-list',
                 items: [
                     { label: 'Consumables', icon: 'pi pi-fw pi-palette', routerLink: ['/dashboard/consumables/consumables'] },
