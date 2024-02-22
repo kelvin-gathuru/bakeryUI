@@ -5,156 +5,142 @@ import { ApiService } from 'src/app/views/api/api.service';
 
 @Component({
     templateUrl: './types.component.html',
-    providers: [MessageService]
+    providers: [MessageService],
 })
 export class TypesComponent implements OnInit {
+    productDialog: boolean = false;
 
-    clientsDialog: boolean = false;
+    product: any = {};
 
-    client: any = {};
-
-    selectedClients: any[]
+    selectedProduct: any[];
 
     submitted: boolean = false;
 
     cols: any[] = [];
 
-    statuses: any[] = [];
-
     rowsPerPageOptions = [5, 10, 20];
 
-    clients: any[];
+    products: any[];
 
-    products: any[] ;
-
-    regType: { label: string; value: string; }[];
-    salesType: { label: string; value: string; }[];
-
-    constructor(private messageService: MessageService, private apiService: ApiService) { }
+    constructor(
+        private messageService: MessageService,
+        private apiService: ApiService
+    ) {}
 
     ngOnInit() {
-
-        this.loadClients();
-
-        // this.loadRegions();
+        this.loadProducts();
 
         this.cols = [
             { field: 'name', header: 'Name' },
-            { field: 'phone_number', header: 'Tel' },
-            { field: 'entity_code', header: 'Client/Agent ID' },
-            { field: 'active', header: 'Status' },
-            { field: 'region', header: 'Region' },
-            { field: 'client_type', header: 'Client Type' },
-            { field: 'entity_type', header: 'Entity Type' }
-        ];
-
-        this.statuses = [
-            { label: 'ACTIVE', value: 'active' },
-            { label: 'INACTIVE', value: 'inactive' }
-        ];
-
-        this.regType = [
-            { label: 'CLIENT', value: 'client' },
-            { label: 'SALES AGENT', value: 'salesAgent' },
-            { label: 'OTHERS', value: 'others' }
-        ];
-
-        this.salesType = [
-            { label: 'BULK', value: 'bulk' },
-            { label: 'RETAIL', value: 'retail' },
-            { label: 'OTHERS', value: 'others' }
+            { field: 'metric', header: 'Metric' },
+            { field: 'unitPrice', header: 'Unit price' },
         ];
     }
 
     openNew() {
-        this.client = {};
+        this.product = {};
         this.submitted = false;
-        this.clientsDialog = true;
+        this.productDialog = true;
     }
 
     hideDialog() {
-        this.clientsDialog = false;
+        this.productDialog = false;
     }
 
-    editClient(client: any) {
-        this.client = { ...client };
-        this.clientsDialog = true;
-    }
-
-    // saveProduct() {
-    //     this.submitted = true;
-
-    //     if (this.product.name?.trim()) {
-    //         if (this.product.id) {
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus.value ? this.product.inventoryStatus.value : this.product.inventoryStatus;
-    //             this.products[this.findIndexById(this.product.id)] = this.product;
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-    //         } else {
-    //             this.product.id = this.createId();
-    //             this.product.code = this.createId();
-    //             this.product.image = 'product-placeholder.svg';
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus ? this.product.inventoryStatus.value : 'INSTOCK';
-    //             this.products.push(this.product);
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-    //         }
-
-    //         this.products = [...this.products];
-    //         this.clientsDialog = false;
-    //         this.product = {};
-    //     }
-    // }
-
-    // findIndexById(id: string): number {
-    //     let index = -1;
-    //     for (let i = 0; i < this.products.length; i++) {
-    //         if (this.products[i].id === id) {
-    //             index = i;
-    //             break;
-    //         }
-    //     }
-
-    //     return index;
-    // }
-
-    createId(): string {
-        let id = '';
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
+    editProduct(product: any) {
+        this.product = { ...product };
+        this.productDialog = true;
     }
 
     onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
+        );
     }
 
-    loadClients() {
-        this.apiService.getClients().subscribe(
-          (data: any) => {
-            if(data.success==false){
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: data.message, life: 3000 });
+    loadProducts() {
+        this.apiService.getProducts().subscribe(
+            (data: any) => {
+                if (data.success == false) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: data.error.message,
+                        life: 3000,
+                    });
+                }
+                this.products = data.data;
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                    life: 3000,
+                });
             }
-            this.clients = data;
-          },
-          (error) => {
-            console.error('Error fetching clients data:', error);
-          }
         );
-      }
-      // loadRegions() {
-      //   this.apiService.getRegions().subscribe(
-      //     (data: any) => {
-      //       if(data.success==false){
-      //         this.messageService.add({ severity: 'error', summary: 'Error', detail: data.message, life: 3000 });
-      //       }
-      //       this.regions = data;
-      //     },
-      //     (error) => {
-      //       console.error('Error fetching regions data:', error);
-      //     }
-      //   );
-      // }
+    }
+
+    saveProduct() {
+        this.submitted = true;
+
+        if (
+            this.product.name?.trim() &&
+            this.product.metric?.trim() 
+        ) {
+            const payload = {
+                name: this.product.name.toUpperCase(),
+                metric: this.product.metric,
+                unitPrice: this.product.unitPrice,
+            };
+            if (this.product.productID) {
+                const updatePayload = this.product;
+                this.apiService.updateProduct(updatePayload).subscribe(
+                    (result: any) => {
+                        if (result.success === true) {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Success',
+                                detail: result.message,
+                            });
+                            this.loadProducts();
+                        }
+                    },
+                    (error) => {
+                        console.error(error);
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: error.error.message,
+                        });
+                    }
+                );
+            } else {
+                this.apiService.createProduct(payload).subscribe(
+                    (result: any) => {
+                        if (result.success === true) {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Success',
+                                detail: result.message,
+                            });
+                            this.loadProducts();
+                        }
+                    },
+                    (error) => {
+                        console.error(error);
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: error.error.message,
+                        });
+                    }
+                );
+            }
+        }
+        this.productDialog = false;
+        this.product = {};
+    }
 }

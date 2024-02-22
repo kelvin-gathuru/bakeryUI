@@ -12,6 +12,8 @@ export class AppTopBarComponent {
 
     tieredItems : any [] = [];
 
+    userName: any;
+
     @ViewChild('menubutton') menuButton!: ElementRef;
 
     @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
@@ -19,7 +21,13 @@ export class AppTopBarComponent {
     @ViewChild('topbarmenu') menu!: ElementRef;
 
     constructor(public layoutService: LayoutService) { }
+
     ngOnInit(){
+        
+        const name = sessionStorage.getItem("name");
+
+        this.userName = name;
+
         this.tieredItems = [
             {
                 label: 'Home',
@@ -48,7 +56,7 @@ export class AppTopBarComponent {
                     { label: 'Bills', icon: 'pi pi-fw pi-money-bill', routerLink: ['/dashboard/consumables/bills'] },                  ]
             },
             {
-                label: 'Production',
+                label: 'Products',
                 icon: 'pi pi-fw pi-book',
                 items: [
                     { label: 'Product Types', icon: 'pi pi-fw pi-palette', routerLink: ['/dashboard/production/types'] },

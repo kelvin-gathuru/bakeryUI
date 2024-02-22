@@ -20,6 +20,12 @@ export class ApiService {
     return this.http.post<any[]>(endpoint, payload);
   }
 
+  createUser(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}user/create`;
+   
+    return this.http.post<any[]>(endpoint, payload);
+  }
+
   changePassword(payload: any): Observable<any[]> {
     const endpoint = `${this.baseUrl}user/changePassword`;
     const headers = new HttpHeaders({
@@ -139,6 +145,27 @@ export class ApiService {
   }
   updateMaterial(payload: any): Observable<any[]> {
     const endpoint = `${this.baseUrl}sales/material/update`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.post<any[]>(endpoint, payload, {headers});
+  }
+  getProducts(): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/product/get`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.get<any[]>(endpoint, {headers});
+  }
+  createProduct(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/product/create`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.post<any[]>(endpoint, payload, {headers});
+  }
+  updateProduct(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/product/update`;
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.token}`
     });

@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     chartOptions: any;
 
     subscription!: Subscription;
+    bestPricedProducts: any;
 
     constructor(private messageService: MessageService,
         private apiService: ApiService,
@@ -111,6 +112,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 }
                 this.analytics = data.data;
                 this.materials = data.data.recentMaterials;
+                this.bestPricedProducts = data.data.bestPricedProducts;
             },
             (error) => {
                 this.messageService.add({

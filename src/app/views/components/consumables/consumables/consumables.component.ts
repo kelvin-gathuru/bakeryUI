@@ -33,6 +33,8 @@ export class ConsumablesComponent implements OnInit {
             { field: 'name', header: 'Name' },
             { field: 'metric', header: 'Metric' },
             { field: 'unitPrice', header: 'Unit price' },
+            { field: 'reorderQuantity', header: 'Reorder Quantity' },
+            { field: 'reorderPoint', header: 'reorder Point' },
         ];
 
     }
@@ -86,11 +88,14 @@ export class ConsumablesComponent implements OnInit {
     saveMaterial() {
         this.submitted = true;
 
-        if (this.material.name?.trim()&&this.material.metric?.trim()&&this.material.unitPrice?.trim()) {
+        if (this.material.name?.trim() && this.material.metric?.trim() ) {
             const payload = {
                 name: this.material.name.toUpperCase(),
                 metric: this.material.metric,
                 unitPrice: this.material.unitPrice,
+                reorderQuantity: this.material.reorderQuantity,
+                reorderPoint: this.material.reorderPoint,
+                remainingQuantity: 0
             };
             if (this.material.materialID) {
                 const updatePayload = this.material;

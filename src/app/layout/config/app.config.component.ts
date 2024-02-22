@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { LayoutService } from '../service/app.layout.service';
 import { MenuService } from '../app.menu.service';
 import { ApiService } from 'src/app/views/api/api.service';
@@ -11,7 +11,10 @@ import { MessageService } from 'primeng/api';
     providers: [MessageService],
 })
 export class AppConfigComponent {
+
     display: boolean = false;
+
+    createUserDialog: boolean = false;
 
     submitted: boolean = false;
 
@@ -25,6 +28,11 @@ export class AppConfigComponent {
 
     disableButton: boolean = false;
 
+    isSuperAdmin: boolean = false;
+    name: any;
+    email: any;
+    phone: any;
+
     constructor(
         private apiService: ApiService,
         public layoutService: LayoutService,
@@ -35,6 +43,14 @@ export class AppConfigComponent {
 
     // Boolean to track the state of the sidebar (open or closed)
     isSidebarOpen: boolean = false;
+
+    ngOnInit(){
+        const userType=sessionStorage.getItem("userType");
+        if(userType == 'SUPER_ADMIN'){
+            this.isSuperAdmin = true;
+        }
+
+    }
 
     // Function triggered when the config button is clicked
     onConfigButtonClick() {
@@ -52,6 +68,10 @@ export class AppConfigComponent {
     // Function to initiate the password change process
     changePassword() {
         this.display = true;
+    }
+    createUser() {
+
+        this.createUserDialog = true;
     }
 
     // Function to reset input fields when resetting the for
@@ -98,6 +118,52 @@ export class AppConfigComponent {
                         this.showSpinner = false;
                         this.disableButton = false;
                         this.display = false;
+                    }
+                },
+                (error) => {
+                    console.error(error);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    });
+                    this.showSpinner = false;
+                    this.disableButton = false;
+                }
+            );
+        }
+    }
+    onCreateUser() {
+        this.createUserDialog = true;
+        this.submitted = true;
+        if (
+            this.name?.trim() &&
+            this.email?.trim() &&
+            this.phone?.trim()
+        ) {
+            this.disableButton = true;
+            this.showSpinner = true;
+
+            const payload = {
+                name: this.name,
+                email: this.email,
+                phone: this.phone,
+                userType: "ADMIN"
+            };
+
+            this.apiService.createUser(payload).subscribe(
+                (result: any) => {
+                    if (result.success === true) {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: result.message,
+                        });
+                        this.router.navigate(['/dashboard']);
+
+                        this.showSpinner = false;
+                        this.disableButton = false;
+                        this.createUserDialog = false;
                     }
                 },
                 (error) => {

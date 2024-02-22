@@ -3,27 +3,39 @@
 </button>
 
 <p-sidebar [(visible)]="isSidebarOpen" position="right" [transitionOptions]="'.3s cubic-bezier(0, 0, 0.2, 1)'"
-    styleClass="layout-config-sidebar w-25rem">
+    styleClass="layout-config-sidebar w-25rem h-30rem">
     <!-- Sidebar header -->
     <p-toast></p-toast>
-    <div style=" border-bottom: 2px solid blue;">
-        <h2 style="color: blue;">Settings</h2>
-        <hr>
+    <div style="text-align: center; margin-bottom: 15px;" >
+        <h2  class="block text-700 font-medium mb-3">SETTINGS</h2>
     </div>
     <!-- Content within the sidebar -->
+    <div *ngIf="isSuperAdmin" style=" border-bottom: 1px solid black;">
+        <!-- Button for changing password triggers the changePassword()-->
+        <button class="p-link layout-topbar-button" type="submit" (click)="createUser()"
+        style="background: none; height: 60px;width: 100%; cursor: pointer;"
+        class="block text-800 font-medium mb-3">
+            <span>CREATE USER</span>
+            <i class="pi pi-user" style="margin-left: 10px;"></i>
+
+        </button>
+    </div>
+
     <div style=" border-bottom: 1px solid black;">
         <!-- Button for changing password triggers the changePassword()-->
         <button class="p-link layout-topbar-button" type="submit" (click)="changePassword()"
-            style="background: none;color: black;font-size: 14px; font-weight: normal; height: 60px;width: 100%;">
+        style="background: none; height: 60px;width: 100%; cursor: pointer;"
+        class="block text-800 font-medium mb-3">
             <span>CHANGE PASSWORD</span>
             <i class="pi pi-cog" style="margin-left: 10px;"></i>
 
         </button>
     </div>
     <!-- Button for logging out triggers logout()-->
-    <div style=" border-bottom: 1px solid black;">
+    <div>
         <button class="p-link layout-topbar-button" (click)="logout()" type="submit"
-            style="background: none;color: black;font-size: 14px; font-weight: normal; height: 60px;width: 100%;">
+            style="background: none; height: 60px;width: 100%; cursor: pointer;"
+            class="block text-800 font-medium mb-3">
             <span>LOG OUT</span>
             <i class="pi pi-sign-out" style="margin-left: 10px;"></i>
 
@@ -37,7 +49,7 @@
         <ng-template pTemplate="content">
             <div class="field">
                 <label for="currentPassword">Current Password</label>
-                <p-password id="currentPassword" [(ngModel)]="currentPassword" [toggleMask]="true" required autofocus
+                <p-password id="currentPassword" [feedback]="false" [(ngModel)]="currentPassword" [toggleMask]="true" required autofocus
                     [ngClass]="{'ng-invalid ng-dirty' : submitted && !currentPassword}">
                     <small class="ng-dirty ng-invalid" *ngIf="submitted && !currentPassword">Current Password is
                         required.</small>
@@ -75,6 +87,51 @@
                 style="color: red;"></button>
             <button pButton icon="pi pi-eraser" (click)="onReset()" label="Reset" class="p-button-outlined"></button>
             <button pButton icon="pi pi-check" (click)="onChangePassword()" [disabled]="disableButton" label="Ok"
+                class="p-button-outlined"></button>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog header="Create User" [(visible)]="createUserDialog" [modal]="true" showEffect="fade" [style]="{width: '30vw'}"
+        [breakpoints]="{'960px': '75vw'}" class=" p-fluid">
+
+
+        <ng-template pTemplate="content">
+            <div class="field">
+                <label for="name">Names</label>
+                <input pInputText id="name" [(ngModel)]="name" required autofocus
+                    [ngClass]="{'ng-invalid ng-dirty' : submitted && !name}">
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && name">Name is required.</small>
+            </div>
+            <div class="field">
+                <label for="email">Email</label>
+                <input pInputText id="email" [(ngModel)]="email" required autofocus
+                    [ngClass]="{'ng-invalid ng-dirty' : submitted && !email}">
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && email">Email is required.</small>
+            </div>
+            <div class="field">
+                <label for="phone">Telephone</label>
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">+254</span>
+                    <input type="text" pInputText id="phone" [(ngModel)]="phone" required autofocus
+                        [ngClass]="{'ng-invalid ng-dirty' : submitted && !phone}">
+                </div>
+                <small class="ng-dirty ng-invalid" *ngIf="submitted && phone">Phone is required.</small>
+            </div>
+
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <div class="flex align-items-center justify-content-between mb-2 gap-5">
+                <div *ngIf="showSpinner" class="spinner-overlay">
+                    <div class="spinner"></div>
+                    <div class="spinner-text">Processing...</div>
+                </div>
+            </div>
+
+            <button pButton icon="pi pi-times" (click)="createUserDialog=false" label="Cancel" class="p-button-outlined"
+                style="color: red;"></button>
+            <button pButton icon="pi pi-eraser" (click)="onReset()" label="Reset" class="p-button-outlined"></button>
+            <button pButton icon="pi pi-check" (click)="onCreateUser()" [disabled]="disableButton" label="Ok"
                 class="p-button-outlined"></button>
         </ng-template>
     </p-dialog>

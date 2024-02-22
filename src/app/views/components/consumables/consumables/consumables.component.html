@@ -17,7 +17,7 @@
             </p-toolbar>
 
             <p-table #dt [value]="materials" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                [globalFilterFields]="['name','metric','unitPrice']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+                [globalFilterFields]="['name','metric','unitPrice','reorderPoint','reorderQuantity','remainingQuantity']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
                 [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                 [(selection)]="selectedMaterial" selectionMode="multiple" [rowHover]="true" dataKey="id">
@@ -37,6 +37,9 @@
                         <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
                         <th pSortableColumn="metric">Metric <p-sortIcon field="metric"></p-sortIcon></th>
                         <th pSortableColumn="unitPrice">Unit Price <p-sortIcon field="unitPrice"></p-sortIcon></th>
+                        <th pSortableColumn="reorderPoint">Reorder Point <p-sortIcon field="reorderPoint"></p-sortIcon></th>
+                        <th pSortableColumn="reorderQuantity">Reorder Quantity <p-sortIcon field="reorderQuantity"></p-sortIcon></th>
+                        <th pSortableColumn="remainingQuantity">Remaining Quantity <p-sortIcon field="remainingQuantity"></p-sortIcon></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-material let-rowIndex="rowIndex">
@@ -44,17 +47,29 @@
                         <td>
                             {{rowIndex + 1 }}
                         </td>
-                        <td style="width:25%; min-width:10rem;">
+                        <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Name</span>
                             {{material.name}}
                         </td>
-                        <td style="width:25%; min-width:10rem;">
+                        <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Metric</span>
                             {{material.metric}}
                         </td>
-                        <td style="width:25%; min-width:10rem;">
+                        <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Unit Price</span>
-                            {{material.unitPrice}}
+                           KSh. {{material.unitPrice}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Reorder Point</span>
+                            {{material.reorderPoint}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Reorder Quantity</span>
+                            {{material.reorderQuantity}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Remaining Quantity</span>
+                            {{material.remainingQuantity}}
                         </td>
                         <td>
                             <div class="flex">
@@ -77,7 +92,6 @@
                     <input pInputText id="name" [(ngModel)]="material.name" required autofocus
                         [ngClass]="{'ng-invalid ng-dirty' : submitted && !material.name}">
                 </div>
-
                 <div class="field">
                     <label for="name">Metric</label>
                     <input pInputText id="metric" [(ngModel)]="material.metric" required autofocus
@@ -88,10 +102,24 @@
                     <label for="unitPrice">Unit Price</label>
                     <div class="p-inputgroup">
                         <span class="p-inputgroup-addon">KSh.</span>
-                        <input type="text" pInputText id="unitPrice" [(ngModel)]="material.unitPrice"required autofocus
+                        <input type="text" pInputText id="unitPrice" [(ngModel)]="material.unitPrice" required autofocus
                             [ngClass]="{'ng-invalid ng-dirty' : submitted && !material.unitPrice}">
                     </div>
                 </div>
+
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="reorderPoint">Reorder Point</label>
+                        <input pInputText id="metric" [(ngModel)]="material.reorderPoint" required autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !material.reorderPoint}">
+                    </div>
+                    <div class="field col">
+                        <label for="reorderQuantity">Reorder Quantity</label>
+                        <input pInputText id="metric" [(ngModel)]="material.reorderQuantity" required autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !material.reorderQuantity}">
+                    </div>
+                </div>
+
 
             </ng-template>
 
