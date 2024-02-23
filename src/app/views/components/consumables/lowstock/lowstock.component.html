@@ -1,0 +1,118 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-table #dt [value]="materials" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['name','metric','unitPrice','reorderPoint','reorderQuantity','remainingQuantity']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedMaterial" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Materials Low on Stock  <span style="color: red;"><i class="pi pi-exclamation-circle"></i></span></h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search Material..." class="w-full sm:w-auto" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>#</th>
+                        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="metric">Metric <p-sortIcon field="metric"></p-sortIcon></th>
+                        <th pSortableColumn="unitPrice">Unit Price <p-sortIcon field="unitPrice"></p-sortIcon></th>
+                        <th pSortableColumn="reorderPoint">Reorder Point <p-sortIcon field="reorderPoint"></p-sortIcon></th>
+                        <th pSortableColumn="reorderQuantity">Reorder Quantity <p-sortIcon field="reorderQuantity"></p-sortIcon></th>
+                        <th pSortableColumn="remainingQuantity">Remaining Quantity <p-sortIcon field="remainingQuantity"></p-sortIcon></th>
+                        <th>Request</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-material let-rowIndex="rowIndex">
+                    <tr>
+                        <td>
+                            {{rowIndex + 1 }}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Name</span>
+                            {{material.name}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Metric</span>
+                            {{material.metric}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Unit Price</span>
+                           KSh. {{material.unitPrice}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Reorder Point</span>
+                            {{material.reorderPoint}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Reorder Quantity</span>
+                            {{material.reorderQuantity}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Remaining Quantity</span>
+                            {{material.remainingQuantity}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-truck"
+                                    class="p-button-rounded p-button-info mr-2"
+                                    (click)="stockMaterial(material)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="materialStockDialog" [style]="{width: '450px'}" header="Request Supplier for Stock" [modal]="true"
+            class="p-fluid">
+            <ng-template pTemplate="content">
+
+                
+                    <div class="field col">
+                        <label for="supplier">Supplier</label>
+                        <p-dropdown [options]="suppliers" [(ngModel)]="material.supplier" inputId="supplier"
+                            optionLabel="name" placeholder="Select">
+                        </p-dropdown>
+                    </div> 
+                
+                <div class="field">
+                    <label for="description">Description</label>
+                    <textarea id="description" pInputTextarea [(ngModel)]="material.description" required rows="3" cols="20"></textarea>
+                </div>
+                <div class="formgrid grid">
+                    <!-- <div class="field col">
+                        <label for="quantity">Quantity</label>
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">Kg</span>
+                            <input type="text" pInputText id="quantity" [(ngModel)]="material.quantity" (ngModelChange)="calculatePrice()" required autofocus
+                                [ngClass]="{'ng-invalid ng-dirty' : submitted && !material.quantity}">
+                        </div>
+                    </div> -->
+                    <div class="field col">
+                        <label for="totalPrice">Total Price</label>
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">KSh</span>
+                            <input disabled type="text" pInputText id="totalPrice" [(ngModel)]="totalPrice">
+                        </div>
+                    </div>
+                </div>
+
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                    (click)="hideDialog()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                    (click)="saveMaterialStock()"></button>
+            </ng-template>
+        </p-dialog>
+
+    </div>
+</div>

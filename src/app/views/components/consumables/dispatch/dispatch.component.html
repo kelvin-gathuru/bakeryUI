@@ -5,84 +5,79 @@
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button pButton pRipple label="Dispatch Items" icon="pi pi-plus" class="p-button-success mr-2"
-                           ></button>
+                        <button pButton pRipple label="New Material Dispatch" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="openNew()"></button>
                     </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <div class="my-2">
-                        <button pButton pRipple label="Return Items" icon="pi pi-plus" class="p-button-success mr-2"
-                           ></button>
-                    </div>
                     <button pButton pRipple label="Export to Excel" icon="pi pi-upload" class="p-button-help"
                         (click)="dt.exportCSV()"></button>
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="consumables" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                [globalFilterFields]="['name','code','active']" [paginator]="true"
-                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+            <p-table #dt [value]="materialDispatches" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['material.name','quantity','supplier.name','purchaseDate','description','material.totalPrice']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+                [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [(selection)]="selectedRegions" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                [(selection)]="selectedMaterialDispatch" selectionMode="multiple" [rowHover]="true" dataKey="id">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">Dispatch Items</h5>
+                        <h5 class="m-0">Material Dispatch</h5>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
-                                class="w-full sm:w-auto" />
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search Material..." class="w-full sm:w-auto" />
                         </span>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
                         <th>#</th>
-                        <th pSortableColumn="code"> Item <p-sortIcon field="code"></p-sortIcon></th>
-                        <th pSortableColumn="name">Consumable <p-sortIcon field="name"></p-sortIcon></th>
-                        <th pSortableColumn="active">Issurer Name<p-sortIcon field="active"></p-sortIcon></th>
-                        <th pSortableColumn="code">ID/Tel <p-sortIcon field="code"></p-sortIcon></th>
-                        <th pSortableColumn="name">Agent <p-sortIcon field="name"></p-sortIcon></th>
-                        <th pSortableColumn="active">Date <p-sortIcon field="active"></p-sortIcon></th>
-                        <th pSortableColumn="code">QNTY <p-sortIcon field="code"></p-sortIcon></th>
+                        <th pSortableColumn="material.name">Material <p-sortIcon field="material.name"></p-sortIcon></th>
+                        <th pSortableColumn="quantity">Quantity <p-sortIcon field="quantity"></p-sortIcon></th>
+                        <th pSortableColumn="material.totalPrice">TotalPrice <p-sortIcon field="material.totalPrice"></p-sortIcon></th>
+                        <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+                        <th pSortableColumn="shift">Shift <p-sortIcon field="shift"></p-sortIcon></th>
+                        <th pSortableColumn="purchaseDate">Purchase Date <p-sortIcon field="material.remainingQuantity"></p-sortIcon></th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-consumable let-rowIndex="rowIndex">
+                <ng-template pTemplate="body" let-materialDispatch let-rowIndex="rowIndex">
                     <tr>
                         <td>
                             {{rowIndex + 1 }}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Item</span>
-                            {{consumable.item}}
+                            <span class="p-column-title">Material</span>
+                            {{materialDispatch.material.name}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Consumable</span>
-                            {{consumable.consumable}}
+                            <span class="p-column-title">Quantity</span>
+                            {{materialDispatch.quantity}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Issurer Name</span>
-                            {{consumable.issurerNmae}}
+                            <span class="p-column-title">Total Price</span>
+                           KSh. {{materialDispatch.totalPrice}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">ID/Tel</span>
-                            {{consumable.tel}}
+                            <span class="p-column-title">Description</span>
+                            {{materialDispatch.description}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Agent</span>
-                            {{consumable.agent}}
+                            <span class="p-column-title">Shift</span>
+                           {{materialDispatch.shift}}
                         </td>
+                        
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Date</span>
-                            {{consumable.date}}
+                            <span class="p-column-title">Dispatch Date</span>
+                            {{materialDispatch.dispatchDate}}
                         </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">QNTY</span>
-                            {{consumable.qnty}}
-                        </td>
+                        
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editRegion(region)"></button>
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="editMaterialDispatch(materialDispatch)"></button>
                             </div>
                         </td>
                     </tr>
@@ -90,35 +85,53 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="regionsDialog" [style]="{width: '450px'}" header="Region/Area Registration" [modal]="true"
+        <p-dialog [(visible)]="materialDispatchDialog" [style]="{width: '450px'}" header="Dispatch Material" [modal]="true"
             class="p-fluid">
             <ng-template pTemplate="content">
 
-                <div class="field">
-                    <label for="name">Names</label>
-                    <input pInputText id="name" [(ngModel)]="region.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !region.name}">
-                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
-				</div>
-                
                 <div class="formgrid grid">
                     <div class="field col">
-                        <label for="code">Region Code</label>
-                        <input pInputText id="code" [(ngModel)]="region.code" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !region.code}">
-                        <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
-                    </div>
-                    <div class="field col">
-                        <label for="active">Status</label>
-                        <p-dropdown [options]="statuses" [(ngModel)]="region.active" inputId="active" optionValue="label"  placeholder="Select">
+                        <label for="material">Material</label>
+                        <p-dropdown [options]="materials" [(ngModel)]="materialDispatch.material" (ngModelChange)="calculatePrice()" inputId="material"
+                            optionLabel="name" placeholder="Select">
                         </p-dropdown>
                     </div>
+                    <div class="field col">
+                        <label for="shift">Shift</label>
+                        <p-dropdown [options]="shifts" [(ngModel)]="materialDispatch.shift" inputId="supplier"
+                        optionValue="label" placeholder="Select">
+                        </p-dropdown>
+                    </div> 
                 </div>
+                <div class="field">
+                    <label for="description">Description</label>
+                    <textarea id="description" pInputTextarea [(ngModel)]="materialDispatch.description" required rows="3" cols="20"></textarea>
+                </div>
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="quantity">Quantity</label>
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">{{metric}}</span>
+                            <input type="text" pInputText id="quantity" [(ngModel)]="materialDispatch.quantity" (ngModelChange)="calculatePrice()" required autofocus
+                                [ngClass]="{'ng-invalid ng-dirty' : submitted && !materialDispatch.quantity}">
+                        </div>
+                    </div>
+                    <div class="field col">
+                        <label for="totalPrice">Total Price</label>
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">KSh</span>
+                            <input disabled type="text" pInputText id="totalPrice" [(ngModel)]="totalPrice">
+                        </div>
+                    </div>
+                </div>
+
             </ng-template>
 
             <ng-template pTemplate="footer">
                 <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
                     (click)="hideDialog()"></button>
                 <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
-                    (click)="saveProduct()"></button>
+                    (click)="saveMaterialDispatch()"></button>
             </ng-template>
         </p-dialog>
 

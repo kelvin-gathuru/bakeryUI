@@ -171,5 +171,54 @@ export class ApiService {
     });
     return this.http.post<any[]>(endpoint, payload, {headers});
   }
-
+  getMaterialStocks(): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/materialStock/get`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.get<any[]>(endpoint, {headers});
+  }
+  creatematerialStock(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/materialStock/create`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.post<any[]>(endpoint, payload, {headers});
+  }
+  updatematerialStock(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/materialStock/update`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.post<any[]>(endpoint, payload, {headers});
+  }
+  getMaterialsLowOnStock(): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/material/getLowOnStock`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.get<any[]>(endpoint, {headers});
+  }
+  getMaterialDispatch(): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/materialDispatch/get`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.get<any[]>(endpoint, {headers});
+  }
+  createMaterialDispatch(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/materialDispatch/create`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.post<any[]>(endpoint, payload, {headers});
+  }
+  updateMaterialDispatch(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/materialDispatch/update`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.post<any[]>(endpoint, payload, {headers});
+  }
+  
 }

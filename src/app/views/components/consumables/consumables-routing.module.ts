@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
     imports: [RouterModule.forChild([
         { path: 'consumables', loadChildren: () => import('./consumables/consumables.module').then(m => m.ConsumablesModule) },
         { path: 'dispatch', loadChildren: () => import('./dispatch/dispatch.module').then(m => m.DispatchModule) },
+        { path: 'lowstock', loadChildren: () => import('./lowstock/lowstock.module').then(m => m.LowstockModule) },
         { path: 'requisition', loadChildren: () => import('./requisition/requisition.module').then(m => m.RequisitionModule) },
         { path: 'stocking', loadChildren: () => import('./stocking/stocking.module').then(m => m.StockingModule) },
         { path: 'bills', loadChildren: () => import('./bills/bills.module').then(m => m.BillsModule) },
