@@ -5,17 +5,16 @@ import { ApiService } from 'src/app/views/api/api.service';
 
 @Component({
     templateUrl: './consumables.component.html',
-    providers: [MessageService]
+    providers: [MessageService],
 })
 export class ConsumablesComponent implements OnInit {
-
     materialDialog: boolean = false;
 
     material: any = {};
 
     materials: any;
 
-    selectedMaterial: any[]
+    selectedMaterial: any[];
 
     submitted: boolean = false;
 
@@ -23,10 +22,12 @@ export class ConsumablesComponent implements OnInit {
 
     rowsPerPageOptions = [5, 10, 20];
 
-    constructor(private messageService: MessageService, private apiService: ApiService) { }
+    constructor(
+        private messageService: MessageService,
+        private apiService: ApiService
+    ) {}
 
     ngOnInit() {
-
         this.loadMaterials();
 
         this.cols = [
@@ -36,7 +37,6 @@ export class ConsumablesComponent implements OnInit {
             { field: 'reorderQuantity', header: 'Reorder Quantity' },
             { field: 'reorderPoint', header: 'reorder Point' },
         ];
-
     }
 
     openNew() {
@@ -88,14 +88,14 @@ export class ConsumablesComponent implements OnInit {
     saveMaterial() {
         this.submitted = true;
 
-        if (this.material.name?.trim() && this.material.metric?.trim() ) {
+        if (this.material.name?.trim() && this.material.metric?.trim()) {
             const payload = {
                 name: this.material.name.toUpperCase(),
                 metric: this.material.metric,
                 unitPrice: this.material.unitPrice,
                 reorderQuantity: this.material.reorderQuantity,
                 reorderPoint: this.material.reorderPoint,
-                remainingQuantity: 0
+                remainingQuantity: 0,
             };
             if (this.material.materialID) {
                 const updatePayload = this.material;
@@ -108,6 +108,8 @@ export class ConsumablesComponent implements OnInit {
                                 detail: result.message,
                             });
                             this.loadMaterials();
+                            this.materialDialog = false;
+                            this.material = {};
                         }
                     },
                     (error) => {
@@ -129,6 +131,8 @@ export class ConsumablesComponent implements OnInit {
                                 detail: result.message,
                             });
                             this.loadMaterials();
+                            this.materialDialog = false;
+                            this.material = {};
                         }
                     },
                     (error) => {
@@ -142,9 +146,5 @@ export class ConsumablesComponent implements OnInit {
                 );
             }
         }
-        this.materialDialog = false;
-        this.material = {};
     }
-
-    
 }

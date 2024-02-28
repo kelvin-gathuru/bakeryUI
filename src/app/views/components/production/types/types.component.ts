@@ -86,14 +86,14 @@ export class TypesComponent implements OnInit {
     saveProduct() {
         this.submitted = true;
 
-        if (
-            this.product.name?.trim() &&
-            this.product.metric?.trim() 
-        ) {
+        if (this.product.name?.trim() && this.product.metric?.trim()) {
             const payload = {
                 name: this.product.name.toUpperCase(),
                 metric: this.product.metric,
                 unitPrice: this.product.unitPrice,
+                reorderPoint: this.product.reorderPoint,
+                reorderQuantity: this.product.reorderQuantity,
+                remainingQuantity: 0,
             };
             if (this.product.productID) {
                 const updatePayload = this.product;
@@ -106,6 +106,8 @@ export class TypesComponent implements OnInit {
                                 detail: result.message,
                             });
                             this.loadProducts();
+                            this.productDialog = false;
+                            this.product = {};
                         }
                     },
                     (error) => {
@@ -127,6 +129,8 @@ export class TypesComponent implements OnInit {
                                 detail: result.message,
                             });
                             this.loadProducts();
+                            this.productDialog = false;
+                            this.product = {};
                         }
                     },
                     (error) => {
@@ -140,7 +144,5 @@ export class TypesComponent implements OnInit {
                 );
             }
         }
-        this.productDialog = false;
-        this.product = {};
     }
 }

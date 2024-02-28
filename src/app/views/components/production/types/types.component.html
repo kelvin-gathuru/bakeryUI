@@ -37,6 +37,9 @@
                         <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
                         <th pSortableColumn="metric">Metric <p-sortIcon field="metric"></p-sortIcon></th>
                         <th pSortableColumn="unitPrice">Unit Price <p-sortIcon field="unitPrice"></p-sortIcon></th>
+                        <th pSortableColumn="reorderPoint">Reorder Point <p-sortIcon field="reorderPoint"></p-sortIcon></th>
+                        <th pSortableColumn="reorderQuantity">Reorder Quantity <p-sortIcon field="reorderQuantity"></p-sortIcon></th>
+                        <th pSortableColumn="remainingQuantity">Remaining Quantity <p-sortIcon field="remainingQuantity"></p-sortIcon></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
@@ -44,17 +47,29 @@
                         <td>
                             {{rowIndex + 1 }}
                         </td>
-                        <td style="width:25%; min-width:10rem;">
+                        <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Name</span>
                             {{product.name}}
                         </td>
-                        <td style="width:25%; min-width:10rem;">
+                        <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Metric</span>
                             {{product.metric}}
                         </td>
-                        <td style="width:25%; min-width:10rem;">
+                        <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Unit Price</span>
                             KSh. {{product.unitPrice}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Reorder Point</span>
+                            {{product.reorderPoint}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Reorder Quantity</span>
+                            {{product.reorderQuantity}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Remaining Quantity</span>
+                            {{product.remainingQuantity}}
                         </td>
                         <td>
                             <div class="flex">
@@ -68,7 +83,7 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="product Creation" [modal]="true"
+        <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Product Creation" [modal]="true"
             class="p-fluid">
             <ng-template pTemplate="content">
 
@@ -90,6 +105,18 @@
                         <span class="p-inputgroup-addon">KSh.</span>
                         <input type="text" pInputText id="unitPrice" [(ngModel)]="product.unitPrice" required autofocus
                             [ngClass]="{'ng-invalid ng-dirty' : submitted && !product.unitPrice}">
+                    </div>
+                </div>
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="reorderPoint">Reorder Point</label>
+                        <input pInputText id="metric" [(ngModel)]="product.reorderPoint" required autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !product.reorderPoint}">
+                    </div>
+                    <div class="field col">
+                        <label for="reorderQuantity">Reorder Quantity</label>
+                        <input pInputText id="metric" [(ngModel)]="product.reorderQuantity" required autofocus
+                            [ngClass]="{'ng-invalid ng-dirty' : submitted && !product.reorderQuantity}">
                     </div>
                 </div>
 

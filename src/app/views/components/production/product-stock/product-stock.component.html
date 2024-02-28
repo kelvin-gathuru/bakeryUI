@@ -5,8 +5,8 @@
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button pButton pRipple label="Stock" icon="pi pi-plus" class="p-button-success mr-2"
-                            ></button>
+                        <button pButton pRipple label="New product Stock" icon="pi pi-plus"
+                            class="p-button-success mr-2" (click)="openNew()"></button>
                     </div>
                 </ng-template>
 
@@ -16,79 +16,78 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="products" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                [globalFilterFields]="['name','phone_number','entity_code','active','region','product_type','entity_type']" [paginator]="true"
-                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+            <p-table #dt [value]="productStocks" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['product.name','quantity','spoiledAtProduction','spoiledAtPackaging','stockDate','description','product.totalPrice']"
+                [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [(selection)]="selectedClients" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                [(selection)]="selectedProductStock" selectionMode="multiple" [rowHover]="true" dataKey="id">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">Product Stocking</h5>
+                        <h5 class="m-0">Products Stock</h5>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
-                                class="w-full sm:w-auto" />
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search product..." class="w-full sm:w-auto" />
                         </span>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
                         <th>#</th>
-                        <th pSortableColumn="entity_code">Product Type <p-sortIcon field="entity_code"></p-sortIcon></th>
-                        <th pSortableColumn="name">ProductCode <p-sortIcon field="name"></p-sortIcon></th>
-                        <th pSortableColumn="phone_number">Product <p-sortIcon field="phone_number"></p-sortIcon></th>
-                        <th pSortableColumn="active">Added <p-sortIcon field="active"></p-sortIcon></th>
-                        <th pSortableColumn="region">Spoiled @Production <p-sortIcon field="region"></p-sortIcon> </th>
-                        <th pSortableColumn="product_type">Spoiled @Packing <p-sortIcon field="product_type"></p-sortIcon> </th>
-                        <th pSortableColumn="entity_type">Previous <p-sortIcon field="entity_type"></p-sortIcon> </th>
-                        <th pSortableColumn="entity_type">New Stock <p-sortIcon field="entity_type"></p-sortIcon> </th>
-                        <th pSortableColumn="entity_type">Stock Date <p-sortIcon field="entity_type"></p-sortIcon> </th>
+                        <th pSortableColumn="product.name">Product <p-sortIcon field="product.name"></p-sortIcon></th>
+                        <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+                        <th pSortableColumn="spoiledAtProduction">Spoiled@Production <p-sortIcon
+                                field="spoiledAtProduction"></p-sortIcon></th>
+                        <th pSortableColumn="spoiledAtPackaging">Spoiled@Packaging <p-sortIcon
+                                field="spoiledAtPackaging"></p-sortIcon></th>
+                        <th pSortableColumn="quantity">Sellable Quantity <p-sortIcon field="quantity"></p-sortIcon></th>
+                        <th pSortableColumn="product.totalPrice">Total Sellable Price <p-sortIcon
+                                field="product.totalPrice"></p-sortIcon></th>
+                        <th pSortableColumn="stockDate">Stock Date <p-sortIcon
+                                field="product.remainingQuantity"></p-sortIcon></th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+                <ng-template pTemplate="body" let-productStock let-rowIndex="rowIndex">
                     <tr>
                         <td>
                             {{rowIndex + 1 }}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Product Type</span>
-                            {{product.productType}}
+                            <span class="p-column-title">product</span>
+                            {{productStock.product.name}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Product Code</span>
-                            {{product.productCode}}
+                            <span class="p-column-title">Description</span>
+                            {{productStock.description}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Product</span>
-                            {{product.product}}
+                            <span class="p-column-title">Spoiled@Production</span>
+                            {{productStock.spoiledAtProduction}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Added</span>
-                            {{product.added}}
+                            <span class="p-column-title">Spoiled@Packaging</span>
+                            {{productStock.spoiledAtPackaging}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Spoiled @Production</span>
-                            {{product.spoiledInProduction}}
+                            <span class="p-column-title">Sellable Quantity</span>
+                            {{productStock.quantity}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Spoiled @Packing</span>
-                            {{product.spoiledInPacking}}
+                            <span class="p-column-title">Total Sellable Price</span>
+                            KSh. {{productStock.totalPrice}}
                         </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Prev</span>
-                            {{product.prev}}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">New Stock</span>
-                            {{product.newStock}}
-                        </td>
+
+
                         <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Stock Date</span>
-                            {{product.stockDate}}
+                            {{productStock.stockDate}}
                         </td>
+
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editproduct(product)"></button>
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="editProductStock(productStock)"></button>
                             </div>
                         </td>
                     </tr>
@@ -96,58 +95,70 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="clientsDialog" [style]="{width: '450px'}" header="product/Agent Registration" [modal]="true"
+        <p-dialog [(visible)]="productStockDialog" [style]="{width: '450px'}" header="Stock product" [modal]="true"
             class="p-fluid">
             <ng-template pTemplate="content">
 
-                <div class="formgrid grid">
-                    <div class="field col">
-                        <label for="entity_type">Registration Type</label>
-                        <p-dropdown [(ngModel)]="product.entity_type" inputId="entity_type" [options]="regType" placeholder="Select">
-                        </p-dropdown>
-                    </div>
-                    <div class="field col">
-                        <label for="product_type">Sales Type</label>
-                        <p-dropdown [(ngModel)]="product.product_type" inputId="product_type" [options]="salesType" placeholder="Select">
-                        </p-dropdown>
-                    </div>
-                </div>
+
                 <div class="field">
-                    <label for="region">Region</label>
-                    <p-dropdown [options]="regions.items" [(ngModel)]="product.region" inputId="region"  optionLabel="name" placeholder="Select">
+                    <label for="product">Product</label>
+                    <p-dropdown [options]="products" [(ngModel)]="productStock.product"
+                        (ngModelChange)="calculatePrice()" inputId="product" optionLabel="name" placeholder="Select">
                     </p-dropdown>
                 </div>
+
+
                 <div class="field">
-                    <label for="active">Status</label>
-                    <p-dropdown [options]="statuses" [(ngModel)]="product.active" inputId="active" optionValue="label"  placeholder="Select">
-                    </p-dropdown>
+                    <label for="description">Description</label>
+                    <textarea id="description" pInputTextarea [(ngModel)]="productStock.description" required rows="3"
+                        cols="20"></textarea>
                 </div>
                 <div class="formgrid grid">
                     <div class="field col">
-                        <label for="productId">product/Agent ID</label>
-                        <input type="text" pInputText id="productId" [(ngModel)]="product.entity_code" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !product.entity_code}">
-                    </div>
-                    <div class="field col">
-                        <label for="tel">Telephone</label>
+                        <label for="spoiledAtProduction">Spoiled@Production</label>
                         <div class="p-inputgroup">
-                            <span class="p-inputgroup-addon">+254</span>
-                            <input type="text" pInputText id="tel" [(ngModel)]="product.phone_number" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !product.phone_number}">
+                            <span class="p-inputgroup-addon">{{metric}}</span>
+                            <input type="text" pInputText id="quantity" [(ngModel)]="productStock.spoiledAtProduction"
+                                required autofocus
+                                [ngClass]="{'ng-invalid ng-dirty' : submitted && !productStock.spoiledAtProduction}">
+                        </div>
+                    </div>
+                    <div class="field col">
+                        <label for="spoiledAtPackaging">Spoiled@Packaging</label>
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">{{metric}}</span>
+                            <input type="text" pInputText id="quantity" [(ngModel)]="productStock.spoiledAtPackaging"
+                                required autofocus
+                                [ngClass]="{'ng-invalid ng-dirty' : submitted && !productStock.spoiledAtPackaging}">
                         </div>
                     </div>
                 </div>
-                <div class="field">
-                    <label for="name">Names</label>
-                    <input pInputText id="name" [(ngModel)]="product.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !product.name}">
-                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !product.name">Name is required.</small>
-				</div>
-                
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <label for="quantity">Sellable Quantity</label>
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">{{metric}}</span>
+                            <input type="text" pInputText id="quantity" [(ngModel)]="productStock.quantity"
+                                (ngModelChange)="calculatePrice()" required autofocus
+                                [ngClass]="{'ng-invalid ng-dirty' : submitted && !productStock.quantity}">
+                        </div>
+                    </div>
+                    <div class="field col">
+                        <label for="totalPrice">Total Price</label>
+                        <div class="p-inputgroup">
+                            <span class="p-inputgroup-addon">KSh</span>
+                            <input disabled type="text" pInputText id="totalPrice" [(ngModel)]="totalPrice">
+                        </div>
+                    </div>
+                </div>
+
             </ng-template>
 
             <ng-template pTemplate="footer">
                 <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
                     (click)="hideDialog()"></button>
                 <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
-                    (click)="saveProduct()"></button>
+                    (click)="saveProductStock()"></button>
             </ng-template>
         </p-dialog>
 

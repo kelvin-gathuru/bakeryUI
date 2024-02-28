@@ -5,17 +5,16 @@ import { ApiService } from 'src/app/views/api/api.service';
 
 @Component({
     templateUrl: './dispatch.component.html',
-    providers: [MessageService]
+    providers: [MessageService],
 })
 export class DispatchComponent implements OnInit {
-
     materialDispatchDialog: boolean = false;
 
     metric: string = '';
 
     materialDispatch: any = {};
 
-    selectedMaterialDispatch: any[]
+    selectedMaterialDispatch: any[];
 
     submitted: boolean = false;
 
@@ -25,20 +24,22 @@ export class DispatchComponent implements OnInit {
 
     materialDispatches: any[];
 
-    materials: any ;
+    materials: any;
 
-    suppliers: any[] ;
+    suppliers: any[];
 
     initialQuantity: any;
 
     totalPrice: any;
 
-    shifts: { label: string; value: string; }[];
+    shifts: { label: string; value: string }[];
 
-    constructor(private messageService: MessageService, private apiService: ApiService) { }
+    constructor(
+        private messageService: MessageService,
+        private apiService: ApiService
+    ) {}
 
     ngOnInit() {
-
         this.loadMaterials();
 
         this.loadMaterialDispatch();
@@ -49,16 +50,13 @@ export class DispatchComponent implements OnInit {
             { field: 'material.totalPrice', header: 'Total Price' },
             { field: 'shift', header: 'Shift' },
             { field: 'dispatchDate', header: 'Dispatch Date' },
-            { field: 'description', header: 'Description' }
+            { field: 'description', header: 'Description' },
         ];
-
 
         this.shifts = [
             { label: 'DAY', value: 'DAY' },
-            { label: 'NIGHT', value: 'NIGHT' }
+            { label: 'NIGHT', value: 'NIGHT' },
         ];
-
-        
     }
 
     openNew() {
@@ -76,10 +74,11 @@ export class DispatchComponent implements OnInit {
         this.materialDispatchDialog = true;
     }
 
-    
-
     onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
+        );
     }
 
     loadMaterials() {
@@ -139,19 +138,24 @@ export class DispatchComponent implements OnInit {
                 initialQuantity: this.materialDispatch.quantity,
                 material: this.materialDispatch.material,
                 shift: this.materialDispatch.shift,
-                description: this.materialDispatch.description
+                description: this.materialDispatch.description,
             };
             if (this.materialDispatch.materialDispatchID) {
-                const previousQuantity = this.initialQuantity.find(obj => obj.materialDispatchID == this.materialDispatch.materialDispatchID);
+                const previousQuantity = this.initialQuantity.find(
+                    (obj) =>
+                        obj.materialDispatchID ==
+                        this.materialDispatch.materialDispatchID
+                );
                 const updatePayload = {
-                    materialDispatchID:this.materialDispatch.materialDispatchID, 
+                    materialDispatchID:
+                        this.materialDispatch.materialDispatchID,
                     initialQuantity: previousQuantity.quantity,
                     updatedQuantity: this.materialDispatch.quantity,
                     material: this.materialDispatch.material,
                     shift: this.materialDispatch.shift,
                     description: this.materialDispatch.description,
                     purchaseDate: this.materialDispatch.purchaseDate,
-                    user: this.materialDispatch.user
+                    user: this.materialDispatch.user,
                 };
                 this.apiService.updateMaterialDispatch(updatePayload).subscribe(
                     (result: any) => {
@@ -162,6 +166,8 @@ export class DispatchComponent implements OnInit {
                                 detail: result.message,
                             });
                             this.loadMaterialDispatch();
+                            this.materialDispatchDialog = false;
+                            this.materialDispatch = {};
                         }
                     },
                     (error) => {
@@ -183,6 +189,8 @@ export class DispatchComponent implements OnInit {
                                 detail: result.message,
                             });
                             this.loadMaterialDispatch();
+                            this.materialDispatchDialog = false;
+                            this.materialDispatch = {};
                         }
                     },
                     (error) => {
@@ -196,12 +204,11 @@ export class DispatchComponent implements OnInit {
                 );
             }
         }
-        this.materialDispatchDialog = false;
-        this.materialDispatch = {};
     }
-    calculatePrice(){
-        this.totalPrice = this.materialDispatch.material.unitPrice * this.materialDispatch.quantity;
+    calculatePrice() {
+        this.totalPrice =
+            this.materialDispatch.material.unitPrice *
+            this.materialDispatch.quantity;
         this.metric = this.materialDispatch.material.metric;
     }
-
 }

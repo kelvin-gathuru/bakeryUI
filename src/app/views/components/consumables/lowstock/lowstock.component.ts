@@ -5,17 +5,16 @@ import { ApiService } from 'src/app/views/api/api.service';
 
 @Component({
     templateUrl: './lowstock.component.html',
-    providers: [MessageService]
+    providers: [MessageService],
 })
 export class LowstockComponent implements OnInit {
-
     materialStockDialog: boolean = false;
 
     material: any = {};
 
     materials: any;
 
-    selectedMaterial: any[]
+    selectedMaterial: any[];
 
     submitted: boolean = false;
 
@@ -25,10 +24,12 @@ export class LowstockComponent implements OnInit {
     suppliers: any;
     totalPrice: number;
 
-    constructor(private messageService: MessageService, private apiService: ApiService) { }
+    constructor(
+        private messageService: MessageService,
+        private apiService: ApiService
+    ) {}
 
     ngOnInit() {
-
         this.loadMaterials();
 
         this.loadSuppliers();
@@ -40,7 +41,6 @@ export class LowstockComponent implements OnInit {
             { field: 'reorderQuantity', header: 'Reorder Quantity' },
             { field: 'reorderPoint', header: 'reorder Point' },
         ];
-
     }
 
     openNew() {
@@ -54,7 +54,6 @@ export class LowstockComponent implements OnInit {
     }
 
     stockMaterial(material: any) {
-        
         this.material = { ...material };
         this.calculatePrice();
         this.materialStockDialog = true;
@@ -117,41 +116,39 @@ export class LowstockComponent implements OnInit {
         this.submitted = true;
 
         if (this.material.description?.trim()) {
-            
             const payload = {
                 quantity: this.material.reorderQuantity,
                 material: this.material,
                 supplier: this.material.supplier,
-                description: this.material.description
+                description: this.material.description,
             };
-                this.apiService.creatematerialStock(payload).subscribe(
-                    (result: any) => {
-                        if (result.success === true) {
-                            this.messageService.add({
-                                severity: 'success',
-                                summary: 'Success',
-                                detail: result.message,
-                            });
-                            this.loadMaterials();
-                        }
-                    },
-                    (error) => {
-                        console.error(error);
+            this.apiService.creatematerialStock(payload).subscribe(
+                (result: any) => {
+                    if (result.success === true) {
                         this.messageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail: error.error.message,
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: result.message,
                         });
+                        this.loadMaterials();
+                        this.materialStockDialog = false;
+                        this.materials = {};
                     }
-                );
-            }
-        
-        this.materialStockDialog = false;
-        this.materials = {};
+                },
+                (error) => {
+                    console.error(error);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    });
+                }
+            );
+        }
     }
 
-    calculatePrice(){
-        this.totalPrice = this.material.unitPrice * this.material.reorderQuantity;
+    calculatePrice() {
+        this.totalPrice =
+            this.material.unitPrice * this.material.reorderQuantity;
     }
-    
 }

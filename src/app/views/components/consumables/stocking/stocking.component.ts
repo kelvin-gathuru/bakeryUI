@@ -5,15 +5,14 @@ import { ApiService } from 'src/app/views/api/api.service';
 
 @Component({
     templateUrl: './stocking.component.html',
-    providers: [MessageService]
+    providers: [MessageService],
 })
 export class StockingComponent implements OnInit {
-
     materialStockDialog: boolean = false;
 
     materialStock: any = {};
 
-    selectedMaterialStock: any[]
+    selectedMaterialStock: any[];
 
     submitted: boolean = false;
 
@@ -23,20 +22,22 @@ export class StockingComponent implements OnInit {
 
     materialStocks: any[];
 
-    materials: any ;
+    materials: any;
 
-    suppliers: any[] ;
+    suppliers: any[];
 
     initialQuantity: any;
 
     totalPrice: any;
 
-    metric: string ='';
+    metric: string = '';
 
-    constructor(private messageService: MessageService, private apiService: ApiService) { }
+    constructor(
+        private messageService: MessageService,
+        private apiService: ApiService
+    ) {}
 
     ngOnInit() {
-
         this.loadMaterials();
 
         this.loadSuppliers();
@@ -46,13 +47,10 @@ export class StockingComponent implements OnInit {
         this.cols = [
             { field: 'material.name', header: 'Material' },
             { field: 'quantity', header: 'Quantity' },
-            { field: 'material.totalPrice', header: 'Total Price' },
             { field: 'supplier.name', header: 'Supplier' },
             { field: 'purchaseDate', header: 'Purchase Date' },
-            { field: 'description', header: 'Description' }
+            { field: 'description', header: 'Description' },
         ];
-
-       
     }
 
     openNew() {
@@ -70,10 +68,11 @@ export class StockingComponent implements OnInit {
         this.materialStockDialog = true;
     }
 
-    
-
     onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
+        );
     }
 
     loadMaterials() {
@@ -157,19 +156,23 @@ export class StockingComponent implements OnInit {
                 quantity: this.materialStock.quantity,
                 material: this.materialStock.material,
                 supplier: this.materialStock.supplier,
-                description: this.materialStock.description
+                description: this.materialStock.description,
             };
             if (this.materialStock.materialStockID) {
-                const previousQuantity = this.initialQuantity.find(obj => obj.materialStockID == this.materialStock.materialStockID);
+                const previousQuantity = this.initialQuantity.find(
+                    (obj) =>
+                        obj.materialStockID ==
+                        this.materialStock.materialStockID
+                );
                 const updatePayload = {
-                    materialStockID:this.materialStock.materialStockID, 
+                    materialStockID: this.materialStock.materialStockID,
                     initialQuantity: previousQuantity.quantity,
                     updatedQuantity: this.materialStock.quantity,
                     material: this.materialStock.material,
                     supplier: this.materialStock.supplier,
                     description: this.materialStock.description,
                     purchaseDate: this.materialStock.purchaseDate,
-                    user: this.materialStock.user
+                    user: this.materialStock.user,
                 };
                 this.apiService.updatematerialStock(updatePayload).subscribe(
                     (result: any) => {
@@ -180,6 +183,8 @@ export class StockingComponent implements OnInit {
                                 detail: result.message,
                             });
                             this.loadMaterialStocks();
+                            this.materialStockDialog = false;
+                            this.materialStock = {};
                         }
                     },
                     (error) => {
@@ -201,6 +206,8 @@ export class StockingComponent implements OnInit {
                                 detail: result.message,
                             });
                             this.loadMaterialStocks();
+                            this.materialStockDialog = false;
+                            this.materialStock = {};
                         }
                     },
                     (error) => {
@@ -214,11 +221,10 @@ export class StockingComponent implements OnInit {
                 );
             }
         }
-        this.materialStockDialog = false;
-        this.materialStock = {};
     }
-    calculatePrice(){
-        this.totalPrice = this.materialStock.material.unitPrice * this.materialStock.quantity;
+    calculatePrice() {
+        this.totalPrice =
+            this.materialStock.material.unitPrice * this.materialStock.quantity;
         this.metric = this.materialStock.material.metric;
     }
 }

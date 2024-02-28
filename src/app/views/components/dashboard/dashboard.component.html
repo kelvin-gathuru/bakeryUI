@@ -50,15 +50,16 @@
             <div class="card mb-0">
                 <div class="flex justify-content-between mb-3">
                     <div>
-                        <span class="block text-500 font-medium mb-3">PRODUCTS</span>
-                        <div class="text-900 font-medium text-xl">{{analytics.products}}</div>
+                        <span class="block text-500 font-medium mb-3">LOW STOCK PRODUCTS</span>
+                        <div class="text-900 font-medium text-xl">{{analytics.productsBelowReorderPoint}}</div>
                     </div>
-                    <div class="flex align-items-center justify-content-center bg-purple-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
-                        <i class="pi pi-comment text-purple-500 text-xl"></i>
+                    <div class="flex align-items-center justify-content-center bg-red-100 border-round" [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
+                        <i class="pi pi-exclamation-circle text-red-500 text-xl"></i>
                     </div>
                 </div>
-                <span class="text-green-500 font-medium">{{analytics.latestProducts}} new </span>
-                <span class="text-500">Created today</span>
+                <span class="text-red-500 font-medium" *ngIf="analytics.productsBelowReorderPoint>0"> Products need re-stocking</span>
+                <span class="text-green-500 font-medium" *ngIf="analytics.productsBelowReorderPoint===0">No need to worry</span>
+                <span class="text-red-500" *ngIf="analytics.productsBelowReorderPoint>0"> !</span>
             </div>
         </div>
 
