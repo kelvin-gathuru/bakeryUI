@@ -5,8 +5,8 @@
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button pButton pRipple label="New product Dispatch" icon="pi pi-plus" class="p-button-success mr-2"
-                            (click)="openNew()"></button>
+                        <button pButton pRipple label="New product Dispatch" icon="pi pi-plus"
+                            class="p-button-success mr-2" (click)="openNew()"></button>
                     </div>
                 </ng-template>
 
@@ -16,146 +16,196 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="productDispatches" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                [globalFilterFields]="['product.name','quantity','supplier.name','purchaseDate','description','product.totalPrice']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [(selection)]="selectedproductDispatch" selectionMode="multiple" [rowHover]="true" dataKey="id">
-                <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">product Dispatch</h5>
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
-                                placeholder="Search product..." class="w-full sm:w-auto" />
-                        </span>
-                    </div>
-                </ng-template>
+            <p>Product dispatches</p>
+            <p-table [value]="dispatchedProducts" [autoLayout]="true">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>#</th>
-                        <th pSortableColumn="product.name">product <p-sortIcon field="product.name"></p-sortIcon></th>
-                        <th>Quantity <p-sortIcon field="quantity"></p-sortIcon></th>
-                        <th pSortableColumn="product.totalPrice">TotalPrice <p-sortIcon field="product.totalPrice"></p-sortIcon></th>
-                        <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
-                        <th pSortableColumn="shift">Shift <p-sortIcon field="shift"></p-sortIcon></th>
-                        <th pSortableColumn="purchaseDate">Dispatch Date <p-sortIcon field="product.remainingQuantity"></p-sortIcon></th>
+                        <th style="width:10%">Code</th>
+                        <th style="width:10%">Sales Agent</th>
+                        <th style="width:10%">Vehicle</th>
+                        <th style="width:10%">Fuel</th>
+                        <th style="width:10%">Crates Out</th>
+                        <th style="width:50%">Dispatched Products</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-productDispatch let-rowIndex="rowIndex">
+                <ng-template pTemplate="body" let-productDispatch>
+                    <tr>
+                        <td>{{productDispatch.productDispatchCode}}</td>
+                        <td>{{productDispatch.client.name}}</td>
+                        <td>{{productDispatch.vehicle}}</td>
+                        <td>{{productDispatch.fuelIssued}}</td>
+                        <td>{{productDispatch.cratesOut}}</td>
+                        <td>
+                            <p-table [value]="productDispatch.dispatchedProducts">
+                                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width:20%">Name</th>
+                        <th style="width:20%">Metric</th>
+                        <th style="width:20%">Remaining Quantity</th>
+                        <th style="width:20%">Quantity</th>
+                        <th style="width:20%">Price</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-dispatchedProduct>
                     <tr>
                         <td>
-                            {{rowIndex + 1 }}
+                            {{dispatchedProduct.name}}
                         </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">product</span>
-                            {{productDispatch.product.name}}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Quantity</span>
-                            {{productDispatch.quantity}}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Total Price</span>
-                           KSh. {{productDispatch.totalPrice}}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Description</span>
-                            {{productDispatch.description}}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Shift</span>
-                           {{productDispatch.shift}}
-                        </td>
-                        
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Dispatch Date</span>
-                            {{productDispatch.dispatchDate}}
-                        </td>
-                        
                         <td>
-                            <div class="flex">
-                                <button pButton pRipple icon="pi pi-pencil"
-                                    class="p-button-rounded p-button-success mr-2"
-                                    (click)="editproductDispatch(productDispatch)"></button>
-                            </div>
+                            {{dispatchedProduct.metric}}
                         </td>
+                        <td>
+                            {{dispatchedProduct.remainingQuantity}}
+                        </td>
+                        <td>
+                            {{dispatchedProduct.quantity}}
+                        </td>
+                        <td>
+                            {{dispatchedProduct.totalPrice}}
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr class="p-rowgroup-footer">
+                        <td colspan="4" style="text-align: right">Total Price</td>
+                        <td>{{productDispatch.totalDispatchPrice}}</td>
                     </tr>
                 </ng-template>
             </p-table>
+            </td>
+            </tr>
+            </ng-template>
+            </p-table>
+
+            <!-- <p-table [value]="dispatchedProducts" sortField="dispatchedProducts" sortMode="single"
+                dataKey="dispatchedProducts" rowGroupMode="subheader" groupRowsBy="dispatchedProducts"
+                [tableStyle]="{'min-width': '70rem'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width:20%">Name</th>
+                        <th style="width:20%">Metric</th>
+                        <th style="width:20%">Remaining Quantity</th>
+                        <th style="width:20%">Quantity</th>
+                        <th style="width:20%">Price</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="groupheader" let-dispatchedProduct let-rowIndex="rowIndex" let-expanded="expanded">
+                    <tr>
+                        <td colspan="5">
+                            <button type="button" pButton pRipple [pRowToggler]="dispatchedProduct"
+                                class="p-button-text p-button-rounded p-button-plain mr-2"
+                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                            <span class="font-bold ml-2">{{dispatchedProduct.productDispatchCode}}</span>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="groupfooter" let-dispatchedProduct>
+                    <tr class="p-rowgroup-footer">
+                        <td colspan="4" style="text-align: right">Total Price:</td>
+                        <td>{{dispatchedProduct.totalDispatchPrice}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-dispatchedProduct>
+                    <tr>
+                        <td>
+                            {{dispatchedProduct.dispatchedProducts.name}}
+                        </td>
+                        <td>
+                            {{dispatchedProduct.dispatchedProducts.metric}}
+                        </td>
+                        <td>
+                            {{dispatchedProduct.dispatchedProducts.remainingQuantity}}
+                        </td>
+                        <td>
+                            {{dispatchedProduct.dispatchedProducts.quantity}}
+                        </td>
+                        <td>
+                            {{dispatchedProduct.dispatchedProducts.totalPrice}}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table> -->
         </div>
 
-        <p-dialog [(visible)]="productDispatchDialog" header="Dispatch product" [modal]="true"
-            class="p-fluid">
+        <p-dialog [(visible)]="productDispatchDialog" header="Dispatch product" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
 
                 <p-table #dt [value]="products" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                 [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [(selection)]="selectedproductDispatch" selectionMode="multiple" [rowHover]="true" dataKey="id">
-                <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <span class="block mt-2 md:mt-0">
-                            <p-dropdown [options]="shifts" [(ngModel)]="productDispatch.shift" inputId="supplier"
-                        optionValue="label" placeholder="Select Sales Agent">
-                        </p-dropdown>
-                        </span>
-                        <span class="block mt-2 md:mt-0">
-                            <input pInputText type="text"
-                                placeholder="Vehicle" class="w-full sm:w-auto" />
-                        </span>
-                        <span class="block mt-2 md:mt-0">
-                            <input pInputText type="text"
-                                placeholder="Fuel Issued" class="w-full sm:w-auto" />
-                        </span>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th>#</th>
-                        <th>product</th>
-                        <th>Stock</th>
-                        <th>Quantity</th>
-                        <th>Remaining Stock</th>
-                        <th>Total Price</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
-                    <tr>
-                        <td>
-                            {{rowIndex + 1 }}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">product</span>
-                            {{product.name}}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Stock</span>
-                            {{product.remainingQuantity}}
-                        </td>
-                        <td pEditableColumn>
-                            <p-cellEditor>
-                                <ng-template pTemplate="input">
-                                    <input pInputText type="text" [(ngModel)]="product.code">
-                                </ng-template>
-                                <ng-template pTemplate="output">
-                                    {{product.code}}
-                                </ng-template>
-                            </p-cellEditor>
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Remaining Stock</span>
-                            {{productDispatch.description}}
-                        </td>
-                        <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Total Price</span>
-                           KSh. {{productDispatch.totalPrice}}
-                        </td>
-                       
-                    </tr>
-                </ng-template>
-            </p-table>
+                    [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [(selection)]="selectedDispatchedProducts" selectionMode="multiple" [rowHover]="true">
+                    <ng-template pTemplate="caption">
+                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                            <span class="block mt-2 md:mt-0">
+                                <p-dropdown [options]="clients" [(ngModel)]="productDispatch.client" inputId="clients"
+                                    optionLabel="name" placeholder="Select Sales Agent">
+                                </p-dropdown>
+                            </span>
+                            <span class="block mt-2 md:mt-0">
+                                <input pInputText type="text" placeholder="Crates Out" [(ngModel)]="cratesOut"
+                                    class="w-full sm:w-auto" />
+                            </span>
+                            <span class="block mt-2 md:mt-0">
+                                <input pInputText type="text" placeholder="Vehicle" [(ngModel)]="vehicle"
+                                    class="w-full sm:w-auto" />
+                            </span>
+                            <span class="block mt-2 md:mt-0">
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon">Litres</span>
+                                    <input type="text" [(ngModel)]="fuel" pInputText id="fuel"
+                                        placeholder="Fuel Issued">
+                                </div>
+                            </span>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 3rem">
+                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                            </th>
+                            <th>Product</th>
+                            <th>Stock</th>
+                            <th>Quantity</th>
+                            <th>Remaining Stock</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+                        <tr>
+                            <td>
+                                <p-tableCheckbox [value]="product"></p-tableCheckbox>
+                            </td>
+                            <td style="width:15%; min-width:10rem;">
+                                <span class="p-column-title">Product</span>
+                                {{product.name}}
+                            </td>
+                            <td style="width:15%; min-width:10rem;">
+                                <span class="p-column-title">Stock</span>
+                                {{product.remainingQuantity}}
+                            </td>
+                            <td pEditableColumn>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="product.quantity"
+                                            (ngModelChange)="calculatePrice(product)">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{product.quantity}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td style="width:15%; min-width:10rem;">
+                                <span class="p-column-title">Remaining Stock</span>
+                                {{product.remainingStock}}
+                            </td>
+                            <td style="width:15%; min-width:10rem;">
+                                <span class="p-column-title">Total Price</span>
+                                KSh. {{product.totalPrice}}
+                            </td>
+
+                        </tr>
+                    </ng-template>
+                </p-table>
 
             </ng-template>
 
@@ -164,6 +214,15 @@
                     (click)="hideDialog()"></button>
                 <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
                     (click)="saveproductDispatch()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="showCode" header=" DISPATCH CODE" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <span style="font-size: 3rem; font-weight: bolder;"> {{code}}</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="OK" (click)="showCode = false"></button>
             </ng-template>
         </p-dialog>
 

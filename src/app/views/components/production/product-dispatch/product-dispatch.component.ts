@@ -5,11 +5,14 @@ import { ApiService } from 'src/app/views/api/api.service';
 
 @Component({
     templateUrl: './product-dispatch.component.html',
-    providers: [MessageService]
+    providers: [MessageService],
 })
 export class ProductDispatchComponent implements OnInit {
-
     productDispatchDialog: boolean = false;
+
+    code: any;
+
+    showCode: boolean = false;
 
     metric: string = '';
 
@@ -34,6 +37,14 @@ export class ProductDispatchComponent implements OnInit {
     totalPrice: any;
 
     shifts: { label: string; value: string }[];
+    selectedDispatchedProducts: any;
+    product: any;
+    remainingstock: any;
+    clients: any;
+    vehicle: any;
+    fuel: any;
+    cratesOut: any;
+    dispatchedProducts: any;
 
     constructor(
         private messageService: MessageService,
@@ -43,10 +54,12 @@ export class ProductDispatchComponent implements OnInit {
     ngOnInit() {
         this.loadproducts();
 
-        this.loadproductDispatch();
+        this.loadClients();
+
+        this.loadDispatchedProducts();
 
         this.cols = [
-            { field: 'product.name', header: 'product' },
+            // { field: 'product.name', header: 'product' },
             { field: 'quantity', header: 'Quantity' },
             { field: 'product.totalPrice', header: 'Total Price' },
             { field: 'shift', header: 'Shift' },
@@ -61,7 +74,7 @@ export class ProductDispatchComponent implements OnInit {
     }
 
     openNew() {
-        this.productDispatch = {};
+        // this.productDispatch = {};
         this.submitted = false;
         this.productDispatchDialog = true;
     }
@@ -82,8 +95,8 @@ export class ProductDispatchComponent implements OnInit {
         );
     }
 
-    loadproducts() {
-        this.apiService.getProducts().subscribe(
+    loadDispatchedProducts() {
+        this.apiService.getProductDispatch().subscribe(
             (data: any) => {
                 if (data.success == false) {
                     this.messageService.add({
@@ -93,7 +106,7 @@ export class ProductDispatchComponent implements OnInit {
                         life: 3000,
                     });
                 }
-                this.products = data.data;
+                this.dispatchedProducts = data.data;
             },
             (error) => {
                 this.messageService.add({
@@ -106,8 +119,8 @@ export class ProductDispatchComponent implements OnInit {
         );
     }
 
-    loadproductDispatch() {
-        this.apiService.getProductDispatch().subscribe(
+    loadproducts() {
+        this.apiService.getProducts().subscribe(
             (data: any) => {
                 if (data.success == false) {
                     this.messageService.add({
@@ -117,8 +130,36 @@ export class ProductDispatchComponent implements OnInit {
                         life: 3000,
                     });
                 }
-                this.productDispatches = data.data;
-                this.initialQuantity = data.data;
+                this.products = data.data.map((product: any) => {
+                    return {
+                        ...product,
+                        quantity: 0,
+                    };
+                });
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                    life: 3000,
+                });
+            }
+        );
+    }
+
+    loadClients() {
+        this.apiService.getClients().subscribe(
+            (data: any) => {
+                if (data.success == false) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: data.error.message,
+                        life: 3000,
+                    });
+                }
+                this.clients = data.data;
             },
             (error) => {
                 this.messageService.add({
@@ -134,43 +175,49 @@ export class ProductDispatchComponent implements OnInit {
     saveproductDispatch() {
         this.submitted = true;
 
-        if (this.productDispatch.description?.trim()) {
+        if (this.fuel?.trim()) {
             const payload = {
-                initialQuantity: this.productDispatch.quantity,
-                product: this.productDispatch.product,
-                shift: this.productDispatch.shift,
-                description: this.productDispatch.description,
+                dispatchedProducts: this.selectedDispatchedProducts,
+                client: this.productDispatch.client,
+                cratesOut: this.cratesOut,
+                vehicle: this.vehicle,
+                fuelIssued: this.fuel,
             };
-            
-                this.apiService.createProductdispatch(payload).subscribe(
-                    (result: any) => {
-                        if (result.success === true) {
-                            this.messageService.add({
-                                severity: 'success',
-                                summary: 'Success',
-                                detail: result.message,
-                            });
-                            this.loadproductDispatch();
-                            this.productDispatchDialog = false;
-                            this.productDispatch = {};
-                        }
-                    },
-                    (error) => {
-                        console.error(error);
+
+            this.apiService.createProductdispatch(payload).subscribe(
+                (result: any) => {
+                    if (result.success === true) {
                         this.messageService.add({
-                            severity: 'error',
-                            summary: 'Error',
-                            detail: error.error.message,
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: result.message,
                         });
+                        this.code = result.data;
+                        this.showCode = true;
+                        this.loadDispatchedProducts();
+                        this.loadproducts();
+                        this.productDispatchDialog = false;
+                        this.productDispatch = {};
                     }
-                );
-            
+                },
+                (error) => {
+                    console.error(error);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    });
+                }
+            );
         }
     }
-    calculatePrice() {
-        this.totalPrice =
-            this.productDispatch.product.unitPrice *
-            this.productDispatch.quantity;
-        this.metric = this.productDispatch.product.metric;
+    calculatePrice(product: any) {
+        product.totalPrice = product.unitPrice * product.quantity;
+        product.remainingStock = product.remainingQuantity - product.quantity;
+        if(product.remainingStock<0){
+            product.quantity = product.remainingQuantity;
+            product.remainingStock = 0;
+            product.totalPrice = product.unitPrice * product.quantity;
+        }
     }
 }

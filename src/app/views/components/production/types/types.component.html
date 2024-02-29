@@ -16,7 +16,7 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="products" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+            <p-table #dt [value]="products" [columns]="cols" responsiveLayout="scroll" [rows]="10" 
                 [globalFilterFields]="['name','metric','unitPrice']" [paginator]="true"
                 [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
