@@ -16,27 +16,37 @@
                 </ng-template>
             </p-toolbar>
 
-            <p>Product dispatches</p>
-            <p-table [value]="dispatchedProducts" [autoLayout]="true">
+            <p-table #dt [value]="dispatchedProducts" [autoLayout]="true" styleClass="p-datatable-sm" [rows]="10"
+            [globalFilterFields]="['productDispatchCode','vehicle','fuelIssued','client.name']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+            [showCurrentPageReport]="true" [rowHover]="true" dataKey="code"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Product Dispatch</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search ..." class="w-full sm:w-auto" />
+                        </span>
+                    </div>
+                </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="width:10%">Code</th>
-                        <th style="width:10%">Sales Agent</th>
-                        <th style="width:10%">Vehicle</th>
-                        <th style="width:10%">Fuel</th>
-                        <th style="width:10%">Crates Out</th>
-                        <th style="width:50%">Dispatched Products</th>
+                        <th style="width:10%" pSortableColumn="productDispatchCode">Code<p-sortIcon field="productDispatchCode"></p-sortIcon></th>
+                        <th style="width:10%" pSortableColumn="vehicle">Vehicle<p-sortIcon field="vehicle"></p-sortIcon></th>
+                        <th style="width:10%" pSortableColumn="fuelIssued">Fuel<p-sortIcon field="fuelIssued"></p-sortIcon></th>
+                        <th style="width:10%" pSortableColumn="client.name">Sales Agent<p-sortIcon field="client.name"></p-sortIcon></th>
+                        <th style="width:60%">Dispatched Products</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-productDispatch>
                     <tr>
                         <td>{{productDispatch.productDispatchCode}}</td>
-                        <td>{{productDispatch.client.name}}</td>
                         <td>{{productDispatch.vehicle}}</td>
                         <td>{{productDispatch.fuelIssued}}</td>
-                        <td>{{productDispatch.cratesOut}}</td>
+                        <td style="font-weight: bold;">{{productDispatch.client.name}}</td>
                         <td>
-                            <p-table [value]="productDispatch.dispatchedProducts">
+                            <p-table [value]="productDispatch.dispatchedProducts" styleClass="p-datatable-sm">
                                 <ng-template pTemplate="header">
                     <tr>
                         <th style="width:20%">Name</th>
@@ -67,8 +77,12 @@
                 </ng-template>
                 <ng-template pTemplate="footer">
                     <tr class="p-rowgroup-footer">
-                        <td colspan="4" style="text-align: right">Total Price</td>
+                        <td colspan="4" style="text-align: right">Total Price:</td>
                         <td>{{productDispatch.totalDispatchPrice}}</td>
+                    </tr>
+                    <tr class="p-rowgroup-footer">
+                        <td colspan="4" style="text-align: right">Crates Out:</td>
+                        <td>{{productDispatch.cratesOut}}</td>
                     </tr>
                 </ng-template>
             </p-table>

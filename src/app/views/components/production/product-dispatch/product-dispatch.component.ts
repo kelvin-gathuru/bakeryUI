@@ -60,7 +60,7 @@ export class ProductDispatchComponent implements OnInit {
 
         this.cols = [
             // { field: 'product.name', header: 'product' },
-            { field: 'quantity', header: 'Quantity' },
+            { field: 'code', header: 'Code' },
             { field: 'product.totalPrice', header: 'Total Price' },
             { field: 'shift', header: 'Shift' },
             { field: 'dispatchDate', header: 'Dispatch Date' },
