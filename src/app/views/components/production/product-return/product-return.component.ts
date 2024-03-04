@@ -4,13 +4,14 @@ import { Table } from 'primeng/table';
 import { ApiService } from 'src/app/views/api/api.service';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { co } from '@fullcalendar/core/internal-common';
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-    templateUrl: './product-dispatch.component.html',
+    templateUrl: './product-return.component.html',
     providers: [MessageService],
 })
-export class ProductDispatchComponent implements OnInit {
+export class ProductReturnComponent implements OnInit {
     productDispatchDialog: boolean = false;
 
     code: any;
@@ -22,6 +23,8 @@ export class ProductDispatchComponent implements OnInit {
     productDispatch: any = {};
 
     selectedproductDispatch: any[];
+
+    selectedReturnedProduct: any;
 
     submitted: boolean = false;
 
@@ -39,7 +42,7 @@ export class ProductDispatchComponent implements OnInit {
 
     totalPrice: any;
 
-    shifts: { label: string; value: string }[];
+    paymentModes: { label: string; value: string }[];
     selectedDispatchedProducts: any;
     product: any;
     remainingstock: any;
@@ -49,6 +52,7 @@ export class ProductDispatchComponent implements OnInit {
     cratesOut: any;
     dispatchedProducts: any;
     agentName: any;
+    total: number = 0;
 
     constructor(
         private messageService: MessageService,
@@ -71,9 +75,10 @@ export class ProductDispatchComponent implements OnInit {
             { field: 'description', header: 'Description' },
         ];
 
-        this.shifts = [
-            { label: 'DAY', value: 'DAY' },
-            { label: 'NIGHT', value: 'NIGHT' },
+        this.paymentModes = [
+            { label: 'CASH', value: 'CASH' },
+            { label: 'MPESA', value: 'MPESA' },
+            { label: 'BANK', value: 'BANK' },
         ];
     }
 
@@ -176,6 +181,14 @@ export class ProductDispatchComponent implements OnInit {
         );
     }
 
+    dispatchedProductChange(prod: any){
+        this.total = 0;
+        for (let prod of this.selectedReturnedProduct.dispatchedProducts) {
+            console.log(prod)
+            this.total = this.total + prod.salesPrice;
+        }
+    }
+
     saveproductDispatch() {
         this.submitted = true;
         this.agentName = this.productDispatch.client.name;
@@ -216,26 +229,26 @@ export class ProductDispatchComponent implements OnInit {
         }
     }
     calculatePrice(product: any) {
-        product.totalPrice = product.unitPrice * product.quantity;
-        product.remainingStock = product.remainingQuantity - product.quantity;
-        if(product.remainingStock<0){
-            product.quantity = product.remainingQuantity;
-            product.remainingStock = 0;
-            product.totalPrice = product.unitPrice * product.quantity;
+        let returned = (product.returnedQuantity + product.returnedSpoiled);
+        if(returned>product.quantity){
+            returned = product.quantity;
+            product.salesPrice = 0;
         }
+        product.soldQuantity = product.quantity - returned;
+        product.salesPrice = product.unitPrice * product.soldQuantity;
+        this.calculateSalesTotal()
     }
-    generatePDF(){
-        const now = new Date();
-        let docDefinition = {
-            header: { text: 'Name: '+ this.agentName, fontSize: 5 },
-            footer: { text: 'Date: '+ now, fontSize: 5 },
-            pageSize: 'A8',
-            pageOrientation: 'landscape',
-            content: [
-                { text: this.code, fontSize: 20 },
-              ]
-        };
-        pdfMake.createPdf(docDefinition).download();
-        this.showCode = false;
+    
+    calculateSalesTotal() {
+        this.total = 0;
+
+            for (let prod of this.selectedReturnedProduct.dispatchedProducts) {
+                if(prod.salesPrice==null){
+                    prod.salesPrice = 0;
+                }
+                this.total += prod.salesPrice;
+            }
+        
+
     }
 }

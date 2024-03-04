@@ -99,8 +99,13 @@ export class AppTopBarComponent {
                     },
                     {
                         label: 'Product Dispatch',
-                        icon: 'pi pi-fw pi-arrow-right',
+                        icon: 'pi pi-fw pi-truck',
                         routerLink: ['/dashboard/production/product-dispatch'],
+                    },
+                    {
+                        label: 'Dispatch Return',
+                        icon: 'pi pi-fw pi-arrow-left',
+                        routerLink: ['/dashboard/production/product-return'],
                     },
                     {
                         label: 'Dispatch Sales Report',
