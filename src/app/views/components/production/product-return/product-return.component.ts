@@ -10,6 +10,26 @@ import { co } from '@fullcalendar/core/internal-common';
 @Component({
     templateUrl: './product-return.component.html',
     providers: [MessageService],
+    styles: [`
+        .overdue {
+            font-weight: 700;
+            color: #FF5252;
+            text-decoration: line-through;
+        }
+        .almost {
+            font-weight: 700;
+            color: #FFA726;
+        }
+        .notover {
+            font-weight: 700;
+            color: #66BB6A;
+        }
+
+        :host ::ng-deep .row-accessories {
+            background-color: rgba(0,0,0,.15) !important;
+        }
+    `
+    ]
 })
 export class ProductReturnComponent implements OnInit {
     productDispatchDialog: boolean = false;
@@ -53,6 +73,13 @@ export class ProductReturnComponent implements OnInit {
     dispatchedProducts: any;
     agentName: any;
     total: number = 0;
+    cratesIn: any;
+    paymentMode: any;
+    balance: any;
+    amount: any;
+    dispatchedReturnProducts: any;
+    startDate: string = "";
+    endDate: string = "";
 
     constructor(
         private messageService: MessageService,
@@ -60,9 +87,8 @@ export class ProductReturnComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.loadproducts();
 
-        this.loadClients();
+        this.loadDispatchedProductsReturn();
 
         this.loadDispatchedProducts();
 
@@ -127,9 +153,8 @@ export class ProductReturnComponent implements OnInit {
             }
         );
     }
-
-    loadproducts() {
-        this.apiService.getProducts().subscribe(
+    loadDispatchedProductsReturn() {
+        this.apiService.getProductDispatchReturn(this.startDate,this.endDate).subscribe(
             (data: any) => {
                 if (data.success == false) {
                     this.messageService.add({
@@ -139,12 +164,7 @@ export class ProductReturnComponent implements OnInit {
                         life: 3000,
                     });
                 }
-                this.products = data.data.map((product: any) => {
-                    return {
-                        ...product,
-                        quantity: 0,
-                    };
-                });
+                this.dispatchedReturnProducts = data.data;
             },
             (error) => {
                 this.messageService.add({
@@ -157,51 +177,39 @@ export class ProductReturnComponent implements OnInit {
         );
     }
 
-    loadClients() {
-        this.apiService.getClients().subscribe(
-            (data: any) => {
-                if (data.success == false) {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: data.error.message,
-                        life: 3000,
-                    });
-                }
-                this.clients = data.data;
-            },
-            (error) => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error.error.message,
-                    life: 3000,
-                });
-            }
-        );
-    }
+    onFromDate(value: Date){
+        this.startDate = value.toISOString().slice(0,-1);
+        this.loadDispatchedProductsReturn();
+      }
+      onToDate(value: Date){
+        this.endDate = value.toISOString().slice(0,-1);
+        this.loadDispatchedProductsReturn();
+      }
 
     dispatchedProductChange(prod: any){
+        this.selectedDispatchedProducts = this.selectedReturnedProduct.dispatchedProducts;
+        console.log(this.selectedDispatchedProducts);
         this.total = 0;
+        this.balance = 0;
+        this.amount = 0;
         for (let prod of this.selectedReturnedProduct.dispatchedProducts) {
-            console.log(prod)
             this.total = this.total + prod.salesPrice;
         }
     }
 
-    saveproductDispatch() {
+    saveProductDispatchReturn() {
         this.submitted = true;
-        this.agentName = this.productDispatch.client.name;
-        if (this.fuel?.trim()) {
+        if (this.amount?.trim()) {
             const payload = {
                 dispatchedProducts: this.selectedDispatchedProducts,
-                client: this.productDispatch.client,
-                cratesOut: this.cratesOut,
-                vehicle: this.vehicle,
-                fuelIssued: this.fuel,
+                productDispatchCode: this.selectedReturnedProduct.productDispatchCode,
+                cratesIn: this.cratesIn,
+                paymentMode: this.paymentMode.value,
+                balance: this.balance,
+                amountPaid: this.amount,
+                totalSalesPrice: this.total,
             };
-
-            this.apiService.createProductdispatch(payload).subscribe(
+            this.apiService.createProductdispatchReturn(payload).subscribe(
                 (result: any) => {
                     if (result.success === true) {
                         this.messageService.add({
@@ -211,8 +219,7 @@ export class ProductReturnComponent implements OnInit {
                         });
                         this.code = result.data;
                         this.showCode = true;
-                        this.loadDispatchedProducts();
-                        this.loadproducts();
+                        this.loadDispatchedProductsReturn();
                         this.productDispatchDialog = false;
                         this.productDispatch = {};
                     }
@@ -230,13 +237,30 @@ export class ProductReturnComponent implements OnInit {
     }
     calculatePrice(product: any) {
         let returned = (product.returnedQuantity + product.returnedSpoiled);
-        if(returned>product.quantity){
-            returned = product.quantity;
+        if(product.returnedQuantity>product.quantity){
+            product.returnedQuantity = product.quantity;
+            product.returnedSpoiled = 0;
             product.salesPrice = 0;
+        }
+        if(product.returnedSpoiled > product.quantity){
+            product.returnedSpoiled = product.quantity;
+            product.returnedQuantity = 0;
+            product.salesPrice = 0;
+        }
+        if(returned>product.quantity){
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: "Reset! Enter valid quantities!",
+            });
+            product.returnedQuantity = 0;
+            product.returnedSpoiled = 0;
+            returned= 0;
         }
         product.soldQuantity = product.quantity - returned;
         product.salesPrice = product.unitPrice * product.soldQuantity;
         this.calculateSalesTotal()
+        this.calculateBalance();
     }
     
     calculateSalesTotal() {
@@ -248,7 +272,11 @@ export class ProductReturnComponent implements OnInit {
                 }
                 this.total += prod.salesPrice;
             }
+            this.calculateBalance();
         
 
+    }
+    calculateBalance(){
+        this.balance = this.amount - this.total;
     }
 }

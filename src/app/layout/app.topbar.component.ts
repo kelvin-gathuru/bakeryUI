@@ -61,11 +61,11 @@ export class AppTopBarComponent {
                 ],
             },
             {
-                label: 'Materials',
+                label: 'Ingredients',
                 icon: 'pi pi-fw pi-list',
                 items: [
                     {
-                        label: 'Consumables',
+                        label: 'Materials',
                         icon: 'pi pi-fw pi-palette',
                         routerLink: ['/dashboard/consumables/consumables'],
                     },
@@ -84,7 +84,7 @@ export class AppTopBarComponent {
                 ],
             },
             {
-                label: 'Products',
+                label: 'Production',
                 icon: 'pi pi-fw pi-book',
                 items: [
                     {

@@ -5,156 +5,194 @@ import { ApiService } from 'src/app/views/api/api.service';
 
 @Component({
     templateUrl: './dispatch-report.component.html',
-    providers: [MessageService]
+    providers: [MessageService],
+    styles: [`
+        .overdue {
+            font-weight: 700;
+            color: #FF5252;
+            text-decoration: line-through;
+        }
+        .almost {
+            font-weight: 700;
+            color: #FFA726;
+        }
+        .notover {
+            font-weight: 700;
+            color: #66BB6A;
+        }
+
+        :host ::ng-deep .row-accessories {
+            background-color: rgba(0,0,0,.15) !important;
+        }
+    `
+    ]
 })
 export class DispatchReportComponent implements OnInit {
 
-    clientsDialog: boolean = false;
+    productDispatchDialog: boolean = false;
 
-    client: any = {};
+    code: any;
 
-    selectedClients: any[]
+    showCode: boolean = false;
+
+    metric: string = '';
+
+    productDispatch: any = {};
+
+    selectedproductDispatch: any[];
+
+    selectedReturnedProduct: any;
 
     submitted: boolean = false;
 
     cols: any[] = [];
 
-    statuses: any[] = [];
-
     rowsPerPageOptions = [5, 10, 20];
 
-    products: any[];
+    productDispatches: any[];
 
-    regions: any[] ;
+    products: any;
 
-    regType: { label: string; value: string; }[];
-    salesType: { label: string; value: string; }[];
+    suppliers: any[];
 
-    constructor(private messageService: MessageService, private apiService: ApiService) { }
+    initialQuantity: any;
+
+    totalPrice: any;
+
+    paymentModes: { label: string; value: string }[];
+    selectedDispatchedProducts: any;
+    product: any;
+    remainingstock: any;
+    clients: any;
+    vehicle: any;
+    fuel: any;
+    cratesOut: any;
+    dispatchedProducts: any;
+    agentName: any;
+    total: number = 0;
+    cratesIn: any;
+    paymentMode: any;
+    balance: any;
+    amount: any;
+    dispatchedReturnProducts: any;
+    startDate: string = "";
+    endDate: string = "";
+
+    constructor(
+        private messageService: MessageService,
+        private apiService: ApiService
+    ) {}
 
     ngOnInit() {
 
-        // this.loadClients();
+        this.loadDispatchedProductsReturn();
 
-        this.loadRegions();
+        this.loadDispatchedProducts();
 
         this.cols = [
-            { field: 'name', header: 'Name' },
-            { field: 'phone_number', header: 'Tel' },
-            { field: 'entity_code', header: 'Client/Agent ID' },
-            { field: 'active', header: 'Status' },
-            { field: 'region', header: 'Region' },
-            { field: 'client_type', header: 'Client Type' },
-            { field: 'entity_type', header: 'Entity Type' }
+            // { field: 'product.name', header: 'product' },
+            { field: 'code', header: 'Code' },
+            { field: 'product.totalPrice', header: 'Total Price' },
+            { field: 'shift', header: 'Shift' },
+            { field: 'dispatchDate', header: 'Dispatch Date' },
+            { field: 'description', header: 'Description' },
         ];
 
-        this.statuses = [
-            { label: 'ACTIVE', value: 'active' },
-            { label: 'INACTIVE', value: 'inactive' }
-        ];
-
-        this.regType = [
-            { label: 'CLIENT', value: 'client' },
-            { label: 'SALES AGENT', value: 'salesAgent' },
-            { label: 'OTHERS', value: 'others' }
-        ];
-
-        this.salesType = [
-            { label: 'BULK', value: 'bulk' },
-            { label: 'RETAIL', value: 'retail' },
-            { label: 'OTHERS', value: 'others' }
+        this.paymentModes = [
+            { label: 'CASH', value: 'CASH' },
+            { label: 'MPESA', value: 'MPESA' },
+            { label: 'BANK', value: 'BANK' },
         ];
     }
 
     openNew() {
-        this.client = {};
+        // this.productDispatch = {};
         this.submitted = false;
-        this.clientsDialog = true;
+        this.productDispatchDialog = true;
     }
 
     hideDialog() {
-        this.clientsDialog = false;
+        this.productDispatchDialog = false;
     }
 
-    editClient(client: any) {
-        this.client = { ...client };
-        this.clientsDialog = true;
-    }
-
-    // saveProduct() {
-    //     this.submitted = true;
-
-    //     if (this.product.name?.trim()) {
-    //         if (this.product.id) {
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus.value ? this.product.inventoryStatus.value : this.product.inventoryStatus;
-    //             this.products[this.findIndexById(this.product.id)] = this.product;
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-    //         } else {
-    //             this.product.id = this.createId();
-    //             this.product.code = this.createId();
-    //             this.product.image = 'product-placeholder.svg';
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus ? this.product.inventoryStatus.value : 'INSTOCK';
-    //             this.products.push(this.product);
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-    //         }
-
-    //         this.products = [...this.products];
-    //         this.clientsDialog = false;
-    //         this.product = {};
-    //     }
-    // }
-
-    // findIndexById(id: string): number {
-    //     let index = -1;
-    //     for (let i = 0; i < this.products.length; i++) {
-    //         if (this.products[i].id === id) {
-    //             index = i;
-    //             break;
-    //         }
-    //     }
-
-    //     return index;
-    // }
-
-    createId(): string {
-        let id = '';
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
+    editproductDispatch(productDispatch: any) {
+        this.productDispatch = { ...productDispatch };
+        this.productDispatchDialog = true;
     }
 
     onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+        table.filterGlobal(
+            (event.target as HTMLInputElement).value,
+            'contains'
+        );
     }
 
-    // loadClients() {
-    //     this.apiService.getClients().subscribe(
-    //       (data: any) => {
-    //         if(data.success==false){
-    //           this.messageService.add({ severity: 'error', summary: 'Error', detail: data.message, life: 3000 });
-    //         }
-    //         this.clients = data;
-    //       },
-    //       (error) => {
-    //         console.error('Error fetching clients data:', error);
-    //       }
-    //     );
-    //   }
-      loadRegions() {
-        this.apiService.getRegions().subscribe(
-          (data: any) => {
-            if(data.success==false){
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: data.message, life: 3000 });
+    loadDispatchedProducts() {
+        this.apiService.getProductDispatch().subscribe(
+            (data: any) => {
+                if (data.success == false) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: data.error.message,
+                        life: 3000,
+                    });
+                }
+                this.dispatchedProducts = data.data;
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                    life: 3000,
+                });
             }
-            this.regions = data;
-          },
-          (error) => {
-            console.error('Error fetching regions data:', error);
-          }
         );
+    }
+    loadDispatchedProductsReturn() {
+        this.apiService.getProductDispatchReturn(this.startDate, this.endDate).subscribe(
+            (data: any) => {
+                if (data.success == false) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: data.error.message,
+                        life: 3000,
+                    });
+                }
+                this.dispatchedReturnProducts = data.data;
+                this.calculateSalesTotal();
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                    life: 3000,
+                });
+            }
+        );
+    }
+
+    calculateSalesTotal() {
+        this.total = 0;
+
+            for (let prod of this.dispatchedReturnProducts) {
+                if(prod.amountPaid==null){
+                    prod.amountPaid = 0;
+                }
+                this.total += prod.amountPaid;
+            }
+
+    }
+      onFromDate(value: Date){
+        this.startDate = value.toISOString().slice(0,-1);
+        this.loadDispatchedProductsReturn();
       }
+      onToDate(value: Date){
+        this.endDate = value.toISOString().slice(0,-1);
+        this.loadDispatchedProductsReturn();
+      }
+      
 }

@@ -14,6 +14,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     chartData: any;
 
+    today = new Date().getDay();
+    days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+
+
     materials: any;
 
     analytics: any;
@@ -22,6 +26,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     subscription!: Subscription;
     bestPricedProducts: any;
+    salesAnalytics: any;
+    arrangedData: any[];
 
     constructor(private messageService: MessageService,
         private apiService: ApiService,
@@ -33,14 +39,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
     
 
     ngOnInit() {
-        this.initChart();
 
         this.loadAnalytics();
 
-        this.items = [
-            { label: 'Add New', icon: 'pi pi-fw pi-plus' },
-            { label: 'Remove', icon: 'pi pi-fw pi-minus' }
-        ];
+        this.loadSalesAnalytics();
+
+        this.initChart();
+
+        // this.items = [
+        //     { label: 'Add New', icon: 'pi pi-fw pi-plus' },
+        //     { label: 'Remove', icon: 'pi pi-fw pi-minus' }
+        // ];
     }
 
     initChart() {
@@ -50,11 +59,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
         this.chartData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: this.days.slice(this.today).concat(this.days.slice(0, this.today)),
             datasets: [
                 {
                     label: 'Sales',
-                    data: [65, 59, 80, 81, 56, 55, 40],
+                    data: this.arrangedData,
                     fill: false,
                     backgroundColor: documentStyle.getPropertyValue('--green-700'),
                     borderColor: documentStyle.getPropertyValue('--green-700'),
@@ -113,6 +122,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 this.analytics = data.data;
                 this.materials = data.data.recentMaterials;
                 this.bestPricedProducts = data.data.bestPricedProducts;
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                    life: 3000,
+                });
+            }
+        );
+    }
+    loadSalesAnalytics() {
+        this.apiService.getSalesAnalytics().subscribe(
+            (data: any) => {
+                if (data.success == false) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: data.error.message,
+                        life: 3000,
+                    });
+                }
+                this.salesAnalytics = data.data;
+                this.arrangedData = this.days.map(day => data.data[day] || 0).slice(this.today).concat(this.days.slice(0, this.today).map(day => data.data[day] || 0));
+                this.initChart();
             },
             (error) => {
                 this.messageService.add({

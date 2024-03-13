@@ -5,168 +5,419 @@
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button pButton pRipple label="New Dispatch Return" icon="pi pi-plus"
-                            class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button
+                            pButton
+                            pRipple
+                            label="New Dispatch Return"
+                            icon="pi pi-plus"
+                            class="p-button-success mr-2"
+                            (click)="openNew()"
+                        ></button>
                     </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <button pButton pRipple label="Export to Excel" icon="pi pi-upload" class="p-button-help"
-                        (click)="dt.exportCSV()"></button>
+                    <button
+                        pButton
+                        pRipple
+                        label="Export to Excel"
+                        icon="pi pi-upload"
+                        class="p-button-help"
+                        (click)="dt.exportCSV()"
+                    ></button>
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="dispatchedProducts" [autoLayout]="true" styleClass="p-datatable-sm" [rows]="10"
-                [globalFilterFields]="['productDispatchCode','vehicle','fuelIssued','client.name']" [paginator]="true"
-                [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" [rowHover]="true" dataKey="code"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            <p-table
+                #dt
+                [value]="dispatchedReturnProducts"
+                [autoLayout]="true"
+                styleClass="p-datatable-sm"
+                [rows]="10"
+                [globalFilterFields]="[
+                    'productDispatchCode',
+                    'vehicle',
+                    'fuelIssued',
+                    'client.name',
+                    'paymentMode'
+                ]"
+                [paginator]="true"
+                [rowsPerPageOptions]="[10, 20, 30]"
+                [showCurrentPageReport]="true"
+                [rowHover]="true"
+                dataKey="code"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            >
                 <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                    <div
+                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                    >
                         <h5 class="m-0">Dispatch Return</h5>
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                        <span class="block mt-2 md:mt-0 p-input-icon-right">
+                            <span style="margin-right: 5px;">
+                                <p-calendar (ngModelChange)="onFromDate($event)" [showIcon]="true" inputId="icon" [(ngModel)]="selectedFrom" placeholder="Start Date" [style]="{ 'width': '200px'  }"></p-calendar>
+                            </span>
+							<span style="margin-right: 5px;">
+                                <p-calendar (ngModelChange)="onToDate($event)" [(ngModel)]="selectedTo" [showIcon]="true" inputId="icon" placeholder="End Date" [style]="{ 'width': '200px'  }"></p-calendar>
+                            </span>
                             <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search ..."
-                                class="w-full sm:w-auto" />
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search ..."
+                                class="w-full sm:w-auto"
+                            />
                         </span>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="width:10%" pSortableColumn="productDispatchCode">Code<p-sortIcon
-                                field="productDispatchCode"></p-sortIcon></th>
-                        <th style="width:10%" pSortableColumn="vehicle">Vehicle<p-sortIcon field="vehicle"></p-sortIcon>
+                        <th>#</th>
+                        <th
+                            style="width: 8%"
+                            pSortableColumn="productDispatchCode"
+                        >
+                            Code<p-sortIcon
+                                field="productDispatchCode"
+                            ></p-sortIcon>
                         </th>
-                        <th style="width:10%" pSortableColumn="fuelIssued">Fuel<p-sortIcon
-                                field="fuelIssued"></p-sortIcon></th>
-                        <th style="width:10%" pSortableColumn="client.name">Sales Agent<p-sortIcon
-                                field="client.name"></p-sortIcon></th>
-                        <th style="width:60%">Dispatched Products</th>
+                        <th style="width: 8%" pSortableColumn="vehicle">
+                            Vehicle<p-sortIcon field="vehicle"></p-sortIcon>
+                        </th>
+                        <th style="width: 7%" pSortableColumn="fuelIssued">
+                            Fuel<p-sortIcon field="fuelIssued"></p-sortIcon>
+                        </th>
+                        <th style="width: 7%" pSortableColumn="fuelIssued">
+                            Mode<p-sortIcon field="paymentMode"></p-sortIcon>
+                        </th>
+                        <th style="width: 10%" pSortableColumn="client.name">
+                            Sales Agent<p-sortIcon
+                                field="client.name"
+                            ></p-sortIcon>
+                        </th>
+                        <th style="width: 60%">Dispatched Products</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-productDispatch>
+                <ng-template
+                    pTemplate="body"
+                    let-productDispatch
+                    let-rowIndex="rowIndex"
+                >
                     <tr>
-                        <td>{{productDispatch.productDispatchCode}}</td>
-                        <td>{{productDispatch.vehicle}}</td>
-                        <td>{{productDispatch.fuelIssued}}</td>
-                        <td style="font-weight: bold;">{{productDispatch.client.name}}</td>
                         <td>
-                            <p-table [value]="productDispatch.dispatchedProducts" styleClass="p-datatable-sm">
+                            {{ rowIndex + 1 }}
+                        </td>
+                        <td>{{ productDispatch.productDispatchCode }}</td>
+                        <td>{{ productDispatch.vehicle }}</td>
+                        <td>{{ productDispatch.fuelIssued }}</td>
+                        <td>{{ productDispatch.paymentMode }}</td>
+                        <td style="font-weight: bold">
+                            {{ productDispatch.client.name }}
+                        </td>
+                        <td>
+                            <p-table
+                                [value]="productDispatch.dispatchedProducts"
+                                styleClass="p-datatable-sm"
+                            >
                                 <ng-template pTemplate="header">
-                    <tr>
-                        <th style="width:20%">Name</th>
-                        <th style="width:20%">Metric</th>
-                        <th style="width:20%">Remaining Quantity</th>
-                        <th style="width:20%">Quantity</th>
-                        <th style="width:20%">Price</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-dispatchedProduct>
-                    <tr>
-                        <td>
-                            {{dispatchedProduct.name}}
-                        </td>
-                        <td>
-                            {{dispatchedProduct.metric}}
-                        </td>
-                        <td>
-                            {{dispatchedProduct.remainingQuantity}}
-                        </td>
-                        <td>
-                            {{dispatchedProduct.quantity}}
-                        </td>
-                        <td>
-                            {{dispatchedProduct.totalPrice}}
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="footer">
-                    <tr class="p-rowgroup-footer">
-                        <td colspan="4" style="text-align: right">Total Price:</td>
-                        <td>{{productDispatch.totalDispatchPrice}}</td>
-                    </tr>
-                    <tr class="p-rowgroup-footer">
-                        <td colspan="4" style="text-align: right">Crates Out:</td>
-                        <td>{{productDispatch.cratesOut}}</td>
-                    </tr>
-                </ng-template>
-            </p-table>
-            </td>
-            </tr>
-            </ng-template>
-            </p-table>
+                                    <tr>
+                                        <th style="width: 20%">Name</th>
+                                        <th style="width: 15%">Metric</th>
+                                        <th style="width: 15%">Dispatched</th>
+                                        <th style="width: 15%">Returned</th>
+                                        <th style="width: 18%">
+                                            Returned Spoiled
+                                        </th>
+                                        <th style="width: 17%">Sales Price</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template
+                                    pTemplate="body"
+                                    let-dispatchedProduct
+                                >
+                                    <tr>
+                                        <td>
+                                            {{ dispatchedProduct.name }}
+                                        </td>
+                                        <td>
+                                            {{ dispatchedProduct.metric }}
+                                        </td>
+                                        <td>
+                                            {{ dispatchedProduct.quantity }}
+                                        </td>
+                                        <td>
+                                            {{
+                                                dispatchedProduct.returnedQuantity
+                                            }}
+                                        </td>
+                                        <td>
+                                            {{
+                                                dispatchedProduct.returnedSpoiled
+                                            }}
+                                        </td>
+                                        <td>
+                                            KSh.
+                                            {{ dispatchedProduct.salesPrice }}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="footer">
+                                    <tr class="p-rowgroup-footer">
+                                        <td
+                                            colspan="5"
+                                            style="text-align: right"
+                                        >
+                                            Total Sales Price:
+                                        </td>
+                                        <td>
+                                            KSh.
+                                            {{
+                                                productDispatch.totalSalesPrice
+                                            }}
+                                        </td>
+                                    </tr>
+                                    <tr class="p-rowgroup-footer">
+                                        <td style="text-align: right">
+                                            Dispatch cost:
+                                        </td>
+                                        <td style="color: rgb(51, 0, 255)">
+                                            KSh.
+                                            {{
+                                                productDispatch.totalDispatchPrice
+                                            }}
+                                        </td>
 
+                                        <td style="text-align: right">
+                                            Amount Paid:
+                                        </td>
+                                        <td style="color: rgb(99, 221, 99)">
+                                            KSh.
+                                            {{ productDispatch.amountPaid }}
+                                        </td>
+
+                                        <td style="text-align: right">
+                                            Balance:
+                                        </td>
+                                        <td style="color: red">
+                                            KSh. {{ productDispatch.balance }}
+                                        </td>
+                                    </tr>
+                                    <tr class="p-rowgroup-footer">
+                                        <td style="text-align: right">
+                                            Crates Out:
+                                        </td>
+                                        <td style="color: rgb(51, 0, 255)">
+                                            {{ productDispatch.cratesOut }}
+                                        </td>
+
+                                        <td style="text-align: right">
+                                            Crates In:
+                                        </td>
+                                        <td style="color: rgb(99, 221, 99)">
+                                            {{ productDispatch.cratesIn }}
+                                        </td>
+
+                                        <td style="text-align: right">
+                                            Unreturned Crates:
+                                        </td>
+                                        <td style="color: red">
+                                            {{
+                                                productDispatch.cratesOut -
+                                                    productDispatch.cratesIn
+                                            }}
+                                        </td>
+                                    </tr>
+                                    <tr class="p-rowgroup-footer">
+                                        <td style="text-align: right">
+                                            Dispatch Date:
+                                        </td>
+                                        <td>
+                                            {{ productDispatch.dispatchDate | date:'yyyy/MM/dd'}}
+                                        </td>
+
+                                        <td style="text-align: right">
+                                            Return Date:
+                                        </td>
+                                        <td>
+                                            <span
+                                                [ngClass]="{
+                                                    overdue:
+                                                        productDispatch.daysTaken >
+                                                        1,
+                                                    notover:
+                                                        productDispatch.daysTaken <
+                                                        1,
+                                                    almost:
+                                                        productDispatch.daysTaken ==
+                                                        1
+                                                }"
+                                            >
+                                                {{
+                                                    productDispatch.returnedDate | date:'yyyy/MM/dd'
+                                                }}</span
+                                            >
+                                        </td>
+
+                                        <td style="text-align: right">
+                                            Days taken:
+                                        </td>
+                                        <td>
+                                            <span
+                                                [ngClass]="{
+                                                    overdue:
+                                                        productDispatch.daysTaken >
+                                                        1,
+                                                    notover:
+                                                        productDispatch.daysTaken <
+                                                        1,
+                                                    almost:
+                                                        productDispatch.daysTaken ==
+                                                        1
+                                                }"
+                                            >
+                                                {{
+                                                    productDispatch.daysTaken
+                                                }}</span
+                                            >
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
 
-        <p-dialog [(visible)]="productDispatchDialog" header="Dispatch Return" [modal]="true" class="p-fluid" [style]="{height:'50vw'}">
+        <p-dialog
+            [(visible)]="productDispatchDialog"
+            header="Dispatch Return"
+            [modal]="true"
+            class="p-fluid"
+            [style]="{ height: '50vw' }"
+        >
             <ng-template pTemplate="content">
                 <span class="block mt-2 md:mt-0">
-                    <p-dropdown [options]="dispatchedProducts" [(ngModel)]="selectedReturnedProduct" filter="true"
-                        filterValue="productDispatchCode" filterMatchMode="startsWith" filterPlaceholder="Search"
-                        (ngModelChange)="dispatchedProductChange($event)" optionLabel="productDispatchCode"
-                        placeholder="Enter Dispatch Code">
+                    <p-dropdown
+                        [options]="dispatchedProducts"
+                        [(ngModel)]="selectedReturnedProduct"
+                        filter="true"
+                        filterValue="productDispatchCode"
+                        filterMatchMode="startsWith"
+                        filterPlaceholder="Search"
+                        (ngModelChange)="dispatchedProductChange($event)"
+                        optionLabel="productDispatchCode"
+                        placeholder="Enter Dispatch Code"
+                    >
                     </p-dropdown>
                 </span>
-                <p-table #dt [value]="selectedReturnedProduct.dispatchedProducts" [columns]="cols"
-                    responsiveLayout="scroll" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+                <p-table
+                    #dt
+                    [value]="selectedReturnedProduct.dispatchedProducts"
+                    [columns]="cols"
+                    responsiveLayout="scroll"
+                    [rows]="10"
+                    [paginator]="true"
+                    [rowsPerPageOptions]="[10, 20, 30]"
                     [showCurrentPageReport]="true"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                    [(selection)]="selectedDispatchedProducts" selectionMode="multiple" [rowHover]="true">
+                    [(selection)]="selectedDispatchedProducts"
+                    selectionMode="multiple"
+                    [rowHover]="true"
+                >
                     <ng-template pTemplate="caption">
-                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center mb-4">
+                        <div
+                            class="flex flex-column md:flex-row md:justify-content-between md:align-items-center mb-4"
+                        >
                             <span class="block mt-2 md:mt-0">
-
-                                Sales Agent: <span style="color: blue">{{selectedReturnedProduct.client.name}}</span>
+                                Sales Agent:
+                                <span style="color: blue">{{
+                                    selectedReturnedProduct.client.name
+                                }}</span>
                             </span>
                             <span class="block mt-2 md:mt-0">
-
-                                Crates Out: <span style="color: blue">{{selectedReturnedProduct.cratesOut}}</span>
+                                Crates Out:
+                                <span style="color: blue">{{
+                                    selectedReturnedProduct.cratesOut
+                                }}</span>
                             </span>
                             <span class="block mt-2 md:mt-0">
-
-                                Vehicle: <span style="color: blue">{{selectedReturnedProduct.vehicle}}</span>
+                                Vehicle:
+                                <span style="color: blue">{{
+                                    selectedReturnedProduct.vehicle
+                                }}</span>
                             </span>
                             <span class="block mt-2 md:mt-0">
-
-                                Fuel Issued: <span
-                                    style="color: blue">{{selectedReturnedProduct.fuelIssued}}Litres</span>
+                                Fuel Issued:
+                                <span style="color: blue"
+                                    >{{
+                                        selectedReturnedProduct.fuelIssued
+                                    }}Litres</span
+                                >
                             </span>
                             <span class="block mt-2 md:mt-0">
-
-                                Expected Sales: <span style="color: blue">KSh.
-                                    {{selectedReturnedProduct.totalDispatchPrice}}</span>
+                                Expected Sales:
+                                <span style="color: blue"
+                                    >KSh.
+                                    {{
+                                        selectedReturnedProduct.totalDispatchPrice
+                                    }}</span
+                                >
                             </span>
                         </div>
-                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <div
+                            class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                        >
                             <span class="block mt-2 md:mt-0">
-                                <p-dropdown [options]="paymentModes" [(ngModel)]="productDispatch.paymentMode"
-                                    inputId="paymentMode" optionLabel="label" placeholder="Select Payment Mode">
+                                <p-dropdown
+                                    [options]="paymentModes"
+                                    [(ngModel)]="paymentMode"
+                                    inputId="paymentMode"
+                                    optionLabel="label"
+                                    placeholder="Select Payment Mode"
+                                >
                                 </p-dropdown>
                             </span>
                             <span class="block mt-2 md:mt-0">
-                                <input pInputText type="text" placeholder="Crates In"
-                                    [(ngModel)]="selectedReturnedProduct.cratesIn" class="w-full sm:w-auto" />
+                                <input
+                                    pInputText
+                                    type="text"
+                                    placeholder="Crates In"
+                                    [(ngModel)]="cratesIn"
+                                    class="w-full sm:w-auto"
+                                />
                             </span>
                             <span class="block mt-2 md:mt-0">
                                 <div class="p-inputgroup">
                                     <span class="p-inputgroup-addon">Ksh.</span>
-                                    <input type="text" [(ngModel)]="selectedReturnedProduct.amount"
-                                        placeholder="Amount">
+                                    <input
+                                        type="text"
+                                        [(ngModel)]="amount"
+                                        (ngModelChange)="calculateBalance()"
+                                        placeholder="Amount"
+                                    />
                                 </div>
                             </span>
                             <span class="block mt-2 md:mt-0">
                                 <div class="p-inputgroup">
                                     <span class="p-inputgroup-addon">Ksh</span>
-                                    <input type="text" [(ngModel)]="selectedReturnedProduct.balance"
-                                        placeholder="Balance">
+                                    <input
+                                        type="text"
+                                        [(ngModel)]="balance"
+                                        placeholder="Balance"
+                                        disabled="true"
+                                    />
                                 </div>
                             </span>
                         </div>
                     </ng-template>
                     <ng-template pTemplate="header">
                         <tr>
-                            <th style="width: 3rem">
+                            <!-- <th style="width: 3rem">
                                 <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                            </th>
+                            </th> -->
+                            <th>#</th>
                             <th>Product</th>
                             <th>Quantity</th>
                             <th>Returned Well</th>
@@ -175,69 +426,105 @@
                             <th>Sales Price</th>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+                    <ng-template
+                        pTemplate="body"
+                        let-product
+                        let-rowIndex="rowIndex"
+                    >
                         <tr>
                             <td>
+                                {{ rowIndex + 1 }}
+                            </td>
+                            <!-- <td>
                                 <p-tableCheckbox [value]="product"></p-tableCheckbox>
-                            </td>
-                            <td style="width:15%; min-width:10rem;">
+                            </td> -->
+                            <td style="width: 15%; min-width: 10rem">
                                 <span class="p-column-title">Product</span>
-                                {{product.name}}
+                                {{ product.name }}
                             </td>
-                            <td style="width:15%; min-width:10rem;">
+                            <td style="width: 15%; min-width: 10rem">
                                 <span class="p-column-title">Quantity</span>
-                                {{product.quantity}}
+                                {{ product.quantity }}
                             </td>
                             <td pEditableColumn>
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <input pInputText type="number" [(ngModel)]="product.returnedQuantity"
-                                            (ngModelChange)="calculatePrice(product)">
+                                        <input
+                                            pInputText
+                                            type="number"
+                                            [(ngModel)]="
+                                                product.returnedQuantity
+                                            "
+                                            (ngModelChange)="
+                                                calculatePrice(product)
+                                            "
+                                        />
                                     </ng-template>
                                     <ng-template pTemplate="output">
-                                        {{product.returnedQuantity}}
+                                        {{ product.returnedQuantity }}
                                     </ng-template>
                                 </p-cellEditor>
                             </td>
                             <td pEditableColumn>
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <input pInputText type="number" [(ngModel)]="product.returnedSpoiled"
-                                            (ngModelChange)="calculatePrice(product)">
+                                        <input
+                                            pInputText
+                                            type="number"
+                                            [(ngModel)]="
+                                                product.returnedSpoiled
+                                            "
+                                            (ngModelChange)="
+                                                calculatePrice(product)
+                                            "
+                                        />
                                     </ng-template>
                                     <ng-template pTemplate="output">
-                                        {{product.returnedSpoiled}}
+                                        {{ product.returnedSpoiled }}
                                     </ng-template>
                                 </p-cellEditor>
                             </td>
-                            <td style="width:15%; min-width:10rem;">
-                                <span class="p-column-title">Sold Quantity</span>
-                                {{product.soldQuantity}}
+                            <td style="width: 15%; min-width: 10rem">
+                                <span class="p-column-title"
+                                    >Sold Quantity</span
+                                >
+                                {{ product.soldQuantity }}
                             </td>
-                            <td style="width:15%; min-width:10rem;">
+                            <td style="width: 15%; min-width: 10rem">
                                 <span class="p-column-title">Sales Price</span>
-                                KSh. {{product.salesPrice}}
+                                KSh. {{ product.salesPrice }}
                             </td>
-
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="footer">
                         <tr class="p-rowgroup-footer">
-                            <td colspan="6" style="text-align: right">Total Sales Price</td>
-                            <td>KSh. {{total}}</td>
+                            <td colspan="6" style="text-align: right">
+                                Total Sales Price
+                            </td>
+                            <td>KSh. {{ total }}</td>
                         </tr>
                     </ng-template>
                 </p-table>
-
             </ng-template>
 
             <ng-template pTemplate="footer">
-                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
-                    (click)="hideDialog()"></button>
-                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
-                    (click)="saveproductDispatch()"></button>
+                <button
+                    pButton
+                    pRipple
+                    label="Cancel"
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    (click)="hideDialog()"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    label="Save"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    (click)="saveProductDispatchReturn()"
+                ></button>
             </ng-template>
         </p-dialog>
-
     </div>
 </div>

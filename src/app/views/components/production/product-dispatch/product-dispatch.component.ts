@@ -9,6 +9,26 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 @Component({
     templateUrl: './product-dispatch.component.html',
     providers: [MessageService],
+    styles: [`
+        .overdue {
+            font-weight: 700;
+            color: #FF5252;
+            text-decoration: line-through;
+        }
+        .almost {
+            font-weight: 700;
+            color: #FFA726;
+        }
+        .notover {
+            font-weight: 700;
+            color: #66BB6A;
+        }
+
+        :host ::ng-deep .row-accessories {
+            background-color: rgba(0,0,0,.15) !important;
+        }
+    `
+    ]
 })
 export class ProductDispatchComponent implements OnInit {
     productDispatchDialog: boolean = false;

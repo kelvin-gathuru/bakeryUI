@@ -69,7 +69,9 @@
                         </td>
                         <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Remaining Quantity</span>
-                            {{product.remainingQuantity}}
+                            <div [ngClass]="{'outofstock': product.remainingQuantity < product.reorderPoint, 'instock': product.remainingQuantity> product.reorderPoint, 'lowstock': product.remainingQuantity == product.reorderPoint}">
+                                {{product.remainingQuantity}}
+                            </div>
                         </td>
                         <td>
                             <div class="flex">

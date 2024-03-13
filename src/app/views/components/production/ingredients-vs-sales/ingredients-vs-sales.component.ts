@@ -9,15 +9,13 @@ import { ApiService } from 'src/app/views/api/api.service';
 })
 export class IngredientsVsSalesComponent implements OnInit {
 
-    regionsDialog: boolean = false;
-
-    selectedRegions: any[]
-
     submitted: boolean = false;
 
-    cols: any[] = [];
+    selectedMaterials: any;
 
-    statuses: any[] = [];
+    selectedProducts: any;
+
+    cols: any[] = [];
 
     rowsPerPageOptions = [5, 10, 20];
 
@@ -26,102 +24,80 @@ export class IngredientsVsSalesComponent implements OnInit {
     products: any;
 
     region: any = {};
+    dispatchedProducts: any;
+    materials: any;
+    regionsDialog: boolean;
+    totalExpenditure: number;
+    totalExpectedSales: number;
+    endDate: string = "";
+    startDate: string = "";
+    totalAmount: any;
 
     constructor(private messageService: MessageService, private apiService: ApiService) { }
 
     ngOnInit() {
 
-        // this.loadRegions();
 
-        this.cols = [
-            { field: 'name', header: 'Name' },
-            { field: 'code', header: 'Area Code' },
-            { field: 'active', header: 'Status' },
-        ];
-
-        this.statuses = [
-            { label: 'ACTIVE', value: 'active' },
-            { label: 'INACTIVE', value: 'inactive' }
-        ];
+        this.loadIngredientVsProduct();
 
         
     }
 
-    openNew() {
-        this.region = {};
-        this.submitted = false;
-        this.regionsDialog = true;
+    loadIngredientVsProduct() {
+        this.apiService.getIngredientVsProduct(this.startDate,this.endDate).subscribe(
+            (data: any) => {
+                if (data.success == false) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: data.error.message,
+                        life: 3000,
+                    });
+                }
+                this.materials = data.data.materials;
+                this.products = data.data.products.flatMap((innerArray: any[]) => innerArray);;
+                this.totalAmount = this.products[this.products.length-1].totalSalesForRetrieval
+                this.calculateExpenditure();
+                this.calculateSales();
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                    life: 3000,
+                });
+            }
+        );
     }
+    onFromDate(value: Date){
+        this.startDate = value.toISOString().slice(0,-1);
+        this.loadIngredientVsProduct();
+      }
+      onToDate(value: Date){
+        this.endDate = value.toISOString().slice(0,-1);
+        this.loadIngredientVsProduct();
+      }
+    calculateExpenditure() {
+        this.totalExpenditure = 0;
 
-    hideDialog() {
-        this.regionsDialog = false;
+            for (let prod of this.materials) {
+                if(prod.totalPrice==null){
+                    prod.totalPrice = 0;
+                }
+                this.totalExpenditure += prod.totalPrice;
+            }
+        
     }
+    calculateSales() {
+        this.totalExpectedSales = 0;
 
-    editRegion(region: any) {
-        this.region = { ...region };
-        this.regionsDialog = true;
+            for (let prod of this.products) {
+                if(prod.salesPrice==null){
+                    prod.salesPrice = 0;
+                }
+                this.totalExpectedSales += prod.salesPrice;
+            }
+        
     }
-
-    // saveProduct() {
-    //     this.submitted = true;
-
-    //     if (this.product.name?.trim()) {
-    //         if (this.product.id) {
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus.value ? this.product.inventoryStatus.value : this.product.inventoryStatus;
-    //             this.products[this.findIndexById(this.product.id)] = this.product;
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-    //         } else {
-    //             this.product.id = this.createId();
-    //             this.product.code = this.createId();
-    //             this.product.image = 'product-placeholder.svg';
-    //             // @ts-ignore
-    //             this.product.inventoryStatus = this.product.inventoryStatus ? this.product.inventoryStatus.value : 'INSTOCK';
-    //             this.products.push(this.product);
-    //             this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-    //         }
-
-    //         this.products = [...this.products];
-    //         this.RegionsDialog = false;
-    //         this.product = {};
-    //     }
-    // }
-
-    // findIndexById(id: string): number {
-    //     let index = -1;
-    //     for (let i = 0; i < this.products.length; i++) {
-    //         if (this.products[i].id === id) {
-    //             index = i;
-    //             break;
-    //         }
-    //     }
-
-    //     return index;
-    // }
-
-    createId(): string {
-        let id = '';
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
-    }
-
-    onGlobalFilter(table: Table, event: Event) {
-        table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-    }
-      // loadRegions() {
-      //   this.apiService.getRegions().subscribe(
-      //     (data: any) => {
-      //       if(data.success==false){
-      //         this.messageService.add({ severity: 'error', summary: 'Error', detail: data.message, life: 3000 });
-      //       }
-      //       this.regions = data;
-      //     },
-      //     (error) => {
-      //       console.error('Error fetching regions data:', error);
-      //     }
-      //   );
-      // }
 }

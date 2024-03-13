@@ -129,6 +129,13 @@ export class ApiService {
     });
     return this.http.get<any[]>(endpoint, {headers});
   }
+  getSalesAnalytics(): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/salesAnalytics/get`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.get<any[]>(endpoint, {headers});
+  }
   getMaterials(): Observable<any[]> {
     const endpoint = `${this.baseUrl}sales/material/get`;
     const headers = new HttpHeaders({
@@ -254,5 +261,28 @@ export class ApiService {
       'Authorization': `Bearer ${this.token}`
     });
     return this.http.post<any[]>(endpoint, payload, {headers});
+  }
+  getProductDispatchReturn( startDate: string, endDate: string): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/productDispatchReturn/get`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    const params = { startDate: startDate, endDate: endDate };
+    return this.http.get<any[]>(endpoint, {headers, params});
+  }
+  createProductdispatchReturn(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/productDispatchReturn/create`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.post<any[]>(endpoint, payload, {headers});
+  }
+  getIngredientVsProduct( startDate: string, endDate: string): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/ingredientVsProduct/get`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    const params = { startDate: startDate, endDate: endDate };
+    return this.http.get<any[]>(endpoint, {headers, params});
   }
 }

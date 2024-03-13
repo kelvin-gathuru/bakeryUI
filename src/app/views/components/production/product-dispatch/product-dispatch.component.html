@@ -5,120 +5,290 @@
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button pButton pRipple label="New product Dispatch" icon="pi pi-plus"
-                            class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button
+                            pButton
+                            pRipple
+                            label="New product Dispatch"
+                            icon="pi pi-plus"
+                            class="p-button-success mr-2"
+                            (click)="openNew()"
+                        ></button>
                     </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <button pButton pRipple label="Export to Excel" icon="pi pi-upload" class="p-button-help"
-                        (click)="dt.exportCSV()"></button>
+                    <button
+                        pButton
+                        pRipple
+                        label="Export to Excel"
+                        icon="pi pi-upload"
+                        class="p-button-help"
+                        (click)="dt.exportCSV()"
+                    ></button>
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="dispatchedProducts" [autoLayout]="true" styleClass="p-datatable-sm" [rows]="10"
-            [globalFilterFields]="['productDispatchCode','vehicle','fuelIssued','client.name']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
-            [showCurrentPageReport]="true" [rowHover]="true" dataKey="code"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            <p-table
+                #dt
+                [value]="dispatchedProducts"
+                [autoLayout]="true"
+                styleClass="p-datatable-sm"
+                [rows]="10"
+                [globalFilterFields]="[
+                    'productDispatchCode',
+                    'vehicle',
+                    'fuelIssued',
+                    'client.name'
+                ]"
+                [paginator]="true"
+                [rowsPerPageOptions]="[10, 20, 30]"
+                [showCurrentPageReport]="true"
+                [rowHover]="true"
+                dataKey="code"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            >
                 <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                    <div
+                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                    >
                         <h5 class="m-0">Product Dispatch</h5>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)"
-                                placeholder="Search ..." class="w-full sm:w-auto" />
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search ..."
+                                class="w-full sm:w-auto"
+                            />
                         </span>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="width:10%" pSortableColumn="productDispatchCode">Code<p-sortIcon field="productDispatchCode"></p-sortIcon></th>
-                        <th style="width:10%" pSortableColumn="vehicle">Vehicle<p-sortIcon field="vehicle"></p-sortIcon></th>
-                        <th style="width:10%" pSortableColumn="fuelIssued">Fuel<p-sortIcon field="fuelIssued"></p-sortIcon></th>
-                        <th style="width:10%" pSortableColumn="client.name">Sales Agent<p-sortIcon field="client.name"></p-sortIcon></th>
-                        <th style="width:60%">Dispatched Products</th>
+                        <th>#</th>
+                        <th
+                            style="width: 10%"
+                            pSortableColumn="productDispatchCode"
+                        >
+                            Code<p-sortIcon
+                                field="productDispatchCode"
+                            ></p-sortIcon>
+                        </th>
+                        <th style="width: 10%" pSortableColumn="vehicle">
+                            Vehicle<p-sortIcon field="vehicle"></p-sortIcon>
+                        </th>
+                        <th style="width: 10%" pSortableColumn="fuelIssued">
+                            Fuel<p-sortIcon field="fuelIssued"></p-sortIcon>
+                        </th>
+                        <th style="width: 10%" pSortableColumn="client.name">
+                            Sales Agent<p-sortIcon
+                                field="client.name"
+                            ></p-sortIcon>
+                        </th>
+                        <th style="width: 60%">Dispatched Products</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-productDispatch>
+                <ng-template
+                    pTemplate="body"
+                    let-productDispatch
+                    let-rowIndex="rowIndex"
+                >
                     <tr>
-                        <td>{{productDispatch.productDispatchCode}}</td>
-                        <td>{{productDispatch.vehicle}}</td>
-                        <td>{{productDispatch.fuelIssued}}</td>
-                        <td style="font-weight: bold;">{{productDispatch.client.name}}</td>
                         <td>
-                            <p-table [value]="productDispatch.dispatchedProducts" styleClass="p-datatable-sm">
+                            {{ rowIndex + 1 }}
+                        </td>
+                        <td>{{ productDispatch.productDispatchCode }}</td>
+                        <td>{{ productDispatch.vehicle }}</td>
+                        <td>{{ productDispatch.fuelIssued }}</td>
+                        <td style="font-weight: bold">
+                            {{ productDispatch.client.name }}
+                        </td>
+                        <td>
+                            <p-table
+                                [value]="productDispatch.dispatchedProducts"
+                                styleClass="p-datatable-sm"
+                            >
                                 <ng-template pTemplate="header">
-                    <tr>
-                        <th style="width:20%">Name</th>
-                        <th style="width:20%">Metric</th>
-                        <th style="width:20%">Remaining Quantity</th>
-                        <th style="width:20%">Quantity</th>
-                        <th style="width:20%">Price</th>
+                                    <tr>
+                                        <th style="width: 20%">Name</th>
+                                        <th style="width: 20%">Metric</th>
+                                        <th style="width: 20%">
+                                            Remaining Quantity
+                                        </th>
+                                        <th style="width: 20%">Quantity</th>
+                                        <th style="width: 20%">Price</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template
+                                    pTemplate="body"
+                                    let-dispatchedProduct
+                                >
+                                    <tr>
+                                        <td>
+                                            {{ dispatchedProduct.name }}
+                                        </td>
+                                        <td>
+                                            {{ dispatchedProduct.metric }}
+                                        </td>
+                                        <td>
+                                            {{
+                                                dispatchedProduct.remainingQuantity
+                                            }}
+                                        </td>
+                                        <td>
+                                            {{ dispatchedProduct.quantity }}
+                                        </td>
+                                        <td>
+                                            KSh.
+                                            {{ dispatchedProduct.totalPrice }}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="footer">
+                                    <tr class="p-rowgroup-footer">
+                                        <td
+                                            colspan="4"
+                                            style="text-align: right"
+                                        >
+                                            Total Price:
+                                        </td>
+                                        <td>
+                                            KSh.
+                                            {{
+                                                productDispatch.totalDispatchPrice
+                                            }}
+                                        </td>
+                                    </tr>
+                                    <tr class="p-rowgroup-footer">
+                                        <td
+                                            colspan="4"
+                                            style="text-align: right"
+                                        >
+                                            Crates Out:
+                                        </td>
+                                        <td>{{ productDispatch.cratesOut }}</td>
+                                    </tr>
+                                    <tr class="p-rowgroup-footer">
+                                        <td style="text-align: right">
+                                            Dispatch Date:
+                                        </td>
+                                        <td>
+                                            <span
+                                                [ngClass]="{
+                                                    overdue:
+                                                        productDispatch.overdueDays >
+                                                        1,
+                                                    notover:
+                                                        productDispatch.overdueDays <
+                                                        1,
+                                                    almost:
+                                                        productDispatch.overdueDays ==
+                                                        1
+                                                }"
+                                            >
+                                                {{
+                                                    productDispatch.dispatchDate
+                                                }}</span
+                                            >
+                                        </td>
+                                        <td>:</td>
+                                        <td style="text-align: right">
+                                            Overdue Days:
+                                        </td>
+                                        <td>
+                                            <span
+                                                [ngClass]="{
+                                                    overdue:
+                                                        productDispatch.overdueDays >
+                                                        1,
+                                                    notover:
+                                                        productDispatch.overdueDays <
+                                                        1,
+                                                    almost:
+                                                        productDispatch.overdueDays ==
+                                                        1
+                                                }"
+                                            >
+                                                {{
+                                                    productDispatch.overdueDays
+                                                }}</span
+                                            >
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </td>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-dispatchedProduct>
-                    <tr>
-                        <td>
-                            {{dispatchedProduct.name}}
-                        </td>
-                        <td>
-                            {{dispatchedProduct.metric}}
-                        </td>
-                        <td>
-                            {{dispatchedProduct.remainingQuantity}}
-                        </td>
-                        <td>
-                            {{dispatchedProduct.quantity}}
-                        </td>
-                        <td>
-                            KSh. {{dispatchedProduct.totalPrice}}
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="footer">
-                    <tr class="p-rowgroup-footer">
-                        <td colspan="4" style="text-align: right">Total Price:</td>
-                        <td>KSh. {{productDispatch.totalDispatchPrice}}</td>
-                    </tr>
-                    <tr class="p-rowgroup-footer">
-                        <td colspan="4" style="text-align: right">Crates Out:</td>
-                        <td>{{productDispatch.cratesOut}}</td>
-                    </tr>
-                </ng-template>
-            </p-table>
-            </td>
-            </tr>
-            </ng-template>
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="productDispatchDialog" header="Dispatch product" [modal]="true" class="p-fluid">
+        <p-dialog
+            [(visible)]="productDispatchDialog"
+            header="Dispatch product"
+            [modal]="true"
+            class="p-fluid"
+        >
             <ng-template pTemplate="content">
-
-                <p-table #dt [value]="products" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                    [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                <p-table
+                    #dt
+                    [value]="products"
+                    [columns]="cols"
+                    responsiveLayout="scroll"
+                    [rows]="10"
+                    [paginator]="true"
+                    [rowsPerPageOptions]="[10, 20, 30]"
+                    [showCurrentPageReport]="true"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                    [(selection)]="selectedDispatchedProducts" selectionMode="multiple" [rowHover]="true">
+                    [(selection)]="selectedDispatchedProducts"
+                    selectionMode="multiple"
+                    [rowHover]="true"
+                >
                     <ng-template pTemplate="caption">
-                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <div
+                            class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                        >
                             <span class="block mt-2 md:mt-0">
-                                <p-dropdown [options]="clients" [(ngModel)]="productDispatch.client" inputId="clients"
-                                    optionLabel="name" placeholder="Select Sales Agent">
+                                <p-dropdown
+                                    [options]="clients"
+                                    [(ngModel)]="productDispatch.client"
+                                    inputId="clients"
+                                    optionLabel="name"
+                                    placeholder="Select Sales Agent"
+                                >
                                 </p-dropdown>
                             </span>
                             <span class="block mt-2 md:mt-0">
-                                <input pInputText type="text" placeholder="Crates Out" [(ngModel)]="cratesOut"
-                                    class="w-full sm:w-auto" />
+                                <input
+                                    pInputText
+                                    type="text"
+                                    placeholder="Crates Out"
+                                    [(ngModel)]="cratesOut"
+                                    class="w-full sm:w-auto"
+                                />
                             </span>
                             <span class="block mt-2 md:mt-0">
-                                <input pInputText type="text" placeholder="Vehicle" [(ngModel)]="vehicle"
-                                    class="w-full sm:w-auto" />
+                                <input
+                                    pInputText
+                                    type="text"
+                                    placeholder="Vehicle"
+                                    [(ngModel)]="vehicle"
+                                    class="w-full sm:w-auto"
+                                />
                             </span>
                             <span class="block mt-2 md:mt-0">
                                 <div class="p-inputgroup">
-                                    <span class="p-inputgroup-addon">Litres</span>
-                                    <input type="text" [(ngModel)]="fuel" pInputText id="fuel"
-                                        placeholder="Fuel Issued">
+                                    <span class="p-inputgroup-addon"
+                                        >Litres</span
+                                    >
+                                    <input
+                                        type="text"
+                                        [(ngModel)]="fuel"
+                                        pInputText
+                                        id="fuel"
+                                        placeholder="Fuel Issued"
+                                    />
                                 </div>
                             </span>
                         </div>
@@ -135,61 +305,98 @@
                             <th>Total Price</th>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+                    <ng-template
+                        pTemplate="body"
+                        let-product
+                        let-rowIndex="rowIndex"
+                    >
                         <tr>
                             <td>
-                                <p-tableCheckbox [value]="product"></p-tableCheckbox>
+                                <p-tableCheckbox
+                                    [value]="product"
+                                ></p-tableCheckbox>
                             </td>
-                            <td style="width:15%; min-width:10rem;">
+                            <td style="width: 15%; min-width: 10rem">
                                 <span class="p-column-title">Product</span>
-                                {{product.name}}
+                                {{ product.name }}
                             </td>
-                            <td style="width:15%; min-width:10rem;">
+                            <td style="width: 15%; min-width: 10rem">
                                 <span class="p-column-title">Stock</span>
-                                {{product.remainingQuantity}}
+                                {{ product.remainingQuantity }}
                             </td>
                             <td pEditableColumn>
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <input pInputText type="text" [(ngModel)]="product.quantity"
-                                            (ngModelChange)="calculatePrice(product)">
+                                        <input
+                                            pInputText
+                                            type="text"
+                                            [(ngModel)]="product.quantity"
+                                            (ngModelChange)="
+                                                calculatePrice(product)
+                                            "
+                                        />
                                     </ng-template>
                                     <ng-template pTemplate="output">
-                                        {{product.quantity}}
+                                        {{ product.quantity }}
                                     </ng-template>
                                 </p-cellEditor>
                             </td>
-                            <td style="width:15%; min-width:10rem;">
-                                <span class="p-column-title">Remaining Stock</span>
-                                {{product.remainingStock}}
+                            <td style="width: 15%; min-width: 10rem">
+                                <span class="p-column-title"
+                                    >Remaining Stock</span
+                                >
+                                {{ product.remainingStock }}
                             </td>
-                            <td style="width:15%; min-width:10rem;">
+                            <td style="width: 15%; min-width: 10rem">
                                 <span class="p-column-title">Total Price</span>
-                                KSh. {{product.totalPrice}}
+                                KSh. {{ product.totalPrice }}
                             </td>
-
                         </tr>
                     </ng-template>
                 </p-table>
-
             </ng-template>
 
             <ng-template pTemplate="footer">
-                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
-                    (click)="hideDialog()"></button>
-                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
-                    (click)="saveproductDispatch()"></button>
+                <button
+                    pButton
+                    pRipple
+                    label="Cancel"
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    (click)="hideDialog()"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    label="Save"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    (click)="saveproductDispatch()"
+                ></button>
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="showCode" header="Download Dispatch Code" [modal]="true" [style]="{width:'450px'}">
+        <p-dialog
+            [(visible)]="showCode"
+            header="Download Dispatch Code"
+            [modal]="true"
+            [style]="{ width: '450px' }"
+        >
             <div class="flex align-items-center justify-content-center">
-                <span style="font-size: 3rem; font-weight: bolder;"> {{code}}</span>
+                <span style="font-size: 3rem; font-weight: bolder">
+                    {{ code }}</span
+                >
             </div>
             <ng-template pTemplate="footer">
-                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="OK" (click)="generatePDF()"></button>
+                <button
+                    pButton
+                    pRipple
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    label="OK"
+                    (click)="generatePDF()"
+                ></button>
             </ng-template>
         </p-dialog>
-
     </div>
 </div>
