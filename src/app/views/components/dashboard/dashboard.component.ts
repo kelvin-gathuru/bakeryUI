@@ -45,11 +45,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.loadSalesAnalytics();
 
         this.initChart();
-
-        // this.items = [
-        //     { label: 'Add New', icon: 'pi pi-fw pi-plus' },
-        //     { label: 'Remove', icon: 'pi pi-fw pi-minus' }
-        // ];
     }
 
     initChart() {

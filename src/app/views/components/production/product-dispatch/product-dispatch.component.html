@@ -249,7 +249,7 @@
                         <div
                             class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
                         >
-                            <span class="block mt-2 md:mt-0">
+                            <span class="block mt-2 md:mt-0 mr-2 ">
                                 <p-dropdown
                                     [options]="clients"
                                     [(ngModel)]="productDispatch.client"
@@ -259,7 +259,11 @@
                                 >
                                 </p-dropdown>
                             </span>
-                            <span class="block mt-2 md:mt-0">
+                            <span class="block mt-2 md:mt-0 mr-2">
+                                <div class="p-inputgroup">
+                                <span class="p-inputgroup-addon"
+                                        >CRATES</span
+                                    >
                                 <input
                                     pInputText
                                     type="text"
@@ -267,8 +271,13 @@
                                     [(ngModel)]="cratesOut"
                                     class="w-full sm:w-auto"
                                 />
+                            </div>
                             </span>
-                            <span class="block mt-2 md:mt-0">
+                            <span class="block mt-2 md:mt-0 mr-2">
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon"
+                                        >NO</span
+                                    >
                                 <input
                                     pInputText
                                     type="text"
@@ -276,6 +285,7 @@
                                     [(ngModel)]="vehicle"
                                     class="w-full sm:w-auto"
                                 />
+                            </div>
                             </span>
                             <span class="block mt-2 md:mt-0">
                                 <div class="p-inputgroup">

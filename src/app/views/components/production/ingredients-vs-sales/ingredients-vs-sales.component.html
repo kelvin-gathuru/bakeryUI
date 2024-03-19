@@ -16,14 +16,6 @@
                     <span style="margin-right: 5px;">
                         <p-calendar (ngModelChange)="onToDate($event)" [(ngModel)]="selectedTo" [showIcon]="true" inputId="icon" placeholder="End Date" [style]="{ 'width': '200px'  }"></p-calendar>
                     </span>
-                    <!-- <i class="pi pi-search"></i>
-                    <input
-                        pInputText
-                        type="text"
-                        (input)="onGlobalFilter(dt, $event)"
-                        placeholder="Search ..."
-                        class="w-full sm:w-auto"
-                    /> -->
                 </span>
             </ng-template>
         </p-toolbar>
@@ -156,7 +148,7 @@
                         </td>
                         
                         <td>
-                            <span style="color: rgb(46, 208, 46);">
+                            <span style="color: rgb(92, 46, 208);">
                                 KSh.
                             {{
                                 totalExpectedSales

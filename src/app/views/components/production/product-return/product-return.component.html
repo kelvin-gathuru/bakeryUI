@@ -302,9 +302,9 @@
                     <p-dropdown
                         [options]="dispatchedProducts"
                         [(ngModel)]="selectedReturnedProduct"
-                        filter="true"
-                        filterValue="productDispatchCode"
-                        filterMatchMode="startsWith"
+                        [filter]="true"
+                        filterBy="productDispatchCode"
+                        filterMatchMode="contains"
                         filterPlaceholder="Search"
                         (ngModelChange)="dispatchedProductChange($event)"
                         optionLabel="productDispatchCode"
@@ -369,7 +369,7 @@
                         <div
                             class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
                         >
-                            <span class="block mt-2 md:mt-0">
+                            <span class="block mt-2 md:mt-0 mr-2">
                                 <p-dropdown
                                     [options]="paymentModes"
                                     [(ngModel)]="paymentMode"
@@ -379,7 +379,11 @@
                                 >
                                 </p-dropdown>
                             </span>
-                            <span class="block mt-2 md:mt-0">
+                            <span class="block mt-2 md:mt-0 mr-2">
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon"
+                                            >CRATES</span
+                                        >
                                 <input
                                     pInputText
                                     type="text"
@@ -387,8 +391,9 @@
                                     [(ngModel)]="cratesIn"
                                     class="w-full sm:w-auto"
                                 />
+                                </div>
                             </span>
-                            <span class="block mt-2 md:mt-0">
+                            <span class="block mt-2 md:mt-0 mr-2">
                                 <div class="p-inputgroup">
                                     <span class="p-inputgroup-addon">Ksh.</span>
                                     <input
