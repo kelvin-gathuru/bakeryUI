@@ -258,4 +258,18 @@ export class ProductDispatchComponent implements OnInit {
         pdfMake.createPdf(docDefinition).download();
         this.showCode = false;
     }
+
+    clientSelect(){
+        
+        if(this.productDispatch.client.status === 'INACTIVE' || this.productDispatch.client == null){
+            
+            this.productDispatch.client = null
+            console.log(this.productDispatch.client)
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: "Selected Sales Agent is INACTIVE",
+            });
+    }
+}
 }

@@ -8,7 +8,6 @@ import { ApiService } from 'src/app/views/api/api.service';
     providers: [MessageService],
 })
 export class ClientsComponent implements OnInit {
-  
     clientsDialog: boolean = false;
 
     client: any = {};
@@ -141,6 +140,7 @@ export class ClientsComponent implements OnInit {
         if (this.client.name?.trim() && this.client.phone?.trim()) {
             const payload = {
                 name: this.client.name,
+                email: this.client.email,
                 phone: this.client.phone,
                 salesType: this.client.salesType,
                 status: this.client.status,
@@ -158,6 +158,9 @@ export class ClientsComponent implements OnInit {
                                 detail: result.message,
                             });
                             this.loadClients();
+
+                            this.clientsDialog = false;
+                            this.client = {};
                         }
                     },
                     (error) => {
@@ -179,7 +182,9 @@ export class ClientsComponent implements OnInit {
                                 detail: result.message,
                             });
                             this.loadClients();
-                           
+
+                            this.clientsDialog = false;
+                            this.client = {};
                         }
                     },
                     (error) => {
@@ -193,38 +198,35 @@ export class ClientsComponent implements OnInit {
                 );
             }
         }
-        this.clientsDialog = false;
-        this.client = {};
     }
 
     deleteClient(client: any) {
-      this.deleteClientDialog = true;
-      this.client = { ...client };
-  }
+        this.deleteClientDialog = true;
+        this.client = { ...client };
+    }
 
     confirmDelete() {
-        
-      this.apiService.deleteClient(this.client).subscribe(
-          (result: any) => {
-              if (result.success === true) {
-                  this.messageService.add({
-                      severity: 'success',
-                      summary: 'Success',
-                      detail: result.message,
-                  });
-                  this.loadClients()
-              } 
-          },
-          (error) => {
-              console.error(error);
-              this.messageService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: error.error.message,
-              });
-          }
-      );
-      this.client = {};
-      this.deleteClientDialog = false;
-  }
+        this.apiService.deleteClient(this.client).subscribe(
+            (result: any) => {
+                if (result.success === true) {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: result.message,
+                    });
+                    this.loadClients();
+                }
+            },
+            (error) => {
+                console.error(error);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                });
+            }
+        );
+        this.client = {};
+        this.deleteClientDialog = false;
+    }
 }

@@ -14,7 +14,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     chartData: any;
 
-    today = new Date().getDay();
+    today = ((new Date().getDay())+1+7)%7;
     days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
 
 
@@ -39,6 +39,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     
 
     ngOnInit() {
+
+        console.log(this.today)
 
         this.loadAnalytics();
 

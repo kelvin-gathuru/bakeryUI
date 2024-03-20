@@ -253,6 +253,7 @@
                                 <p-dropdown
                                     [options]="clients"
                                     [(ngModel)]="productDispatch.client"
+                                    (ngModelChange)="clientSelect()"
                                     inputId="clients"
                                     optionLabel="name"
                                     placeholder="Select Sales Agent"

@@ -55,7 +55,7 @@ export class LoginComponent {
 
                             this.showSpinner = false;
                             this.disableButton = false;
-                        }, 5000);
+                        }, 0);
                     }
                 },
                 (error) => {
