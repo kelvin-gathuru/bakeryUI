@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://3modernsystems.co.ke/bakery/php/',
+  apiUrl: 'http://172.105.90.112:8080/bakery-manager-api-prod/api/',
 };

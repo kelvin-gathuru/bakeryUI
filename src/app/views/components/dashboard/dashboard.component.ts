@@ -40,8 +40,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
 
-        console.log(this.today)
-
         this.loadAnalytics();
 
         this.loadSalesAnalytics();
