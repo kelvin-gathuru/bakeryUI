@@ -39,11 +39,11 @@ export class AppTopBarComponent {
                 ],
             },
             {
-                label: 'Clients',
+                label: 'Agents/Suppliers',
                 icon: 'pi pi-fw pi-cog',
                 items: [
                     {
-                        label: 'Clients/Sales Agents',
+                        label: 'Sales Agents',
                         icon: 'pi pi-fw pi-id-card',
                         routerLink: ['/dashboard/settings/clients'],
                     },
@@ -153,48 +153,48 @@ export class AppTopBarComponent {
                     },
                 ],
             },
-            {
-                label: 'Sales Payroll',
-                icon: 'pi pi-fw pi-money-bill',
-                items: [
-                    {
-                        label: 'PayRoll Register',
-                        icon: 'pi pi-fw pi-file-edit',
-                        routerLink: ['/dashboard/payroll/register'],
-                    },
+            // {
+            //     label: 'Sales Payroll',
+            //     icon: 'pi pi-fw pi-money-bill',
+            //     items: [
+            //         {
+            //             label: 'PayRoll Register',
+            //             icon: 'pi pi-fw pi-file-edit',
+            //             routerLink: ['/dashboard/payroll/register'],
+            //         },
 
-                    {
-                        label: 'Payrolls',
-                        icon: 'pi pi-fw pi-pencil',
-                        routerLink: ['/dashboard/payroll/payrolls'],
-                    },
-                    {
-                        label: 'Payslips',
-                        icon: 'pi pi-fw pi-file',
-                        routerLink: ['/dashboard/payroll/payslips'],
-                    },
-                    {
-                        label: 'Deductions',
-                        icon: 'pi pi-fw pi-minus-circle',
-                        routerLink: ['/dashboard/payroll/deductions'],
-                    },
-                    {
-                        label: 'Employee Earnings',
-                        icon: 'pi pi-fw pi-plus-circle',
-                        routerLink: ['/dashboard/payroll/earnings'],
-                    },
-                    {
-                        label: 'Days Worked',
-                        icon: 'pi pi-fw pi-calendar',
-                        routerLink: ['/dashboard/payroll/days'],
-                    },
-                    {
-                        label: 'Arrears',
-                        icon: 'pi pi-fw pi-list',
-                        routerLink: ['/dashboard/payroll/arrears'],
-                    },
-                ],
-            },
+            //         {
+            //             label: 'Payrolls',
+            //             icon: 'pi pi-fw pi-pencil',
+            //             routerLink: ['/dashboard/payroll/payrolls'],
+            //         },
+            //         {
+            //             label: 'Payslips',
+            //             icon: 'pi pi-fw pi-file',
+            //             routerLink: ['/dashboard/payroll/payslips'],
+            //         },
+            //         {
+            //             label: 'Deductions',
+            //             icon: 'pi pi-fw pi-minus-circle',
+            //             routerLink: ['/dashboard/payroll/deductions'],
+            //         },
+            //         {
+            //             label: 'Employee Earnings',
+            //             icon: 'pi pi-fw pi-plus-circle',
+            //             routerLink: ['/dashboard/payroll/earnings'],
+            //         },
+            //         {
+            //             label: 'Days Worked',
+            //             icon: 'pi pi-fw pi-calendar',
+            //             routerLink: ['/dashboard/payroll/days'],
+            //         },
+            //         {
+            //             label: 'Arrears',
+            //             icon: 'pi pi-fw pi-list',
+            //             routerLink: ['/dashboard/payroll/arrears'],
+            //         },
+            //     ],
+            // },
         ];
     }
 }
