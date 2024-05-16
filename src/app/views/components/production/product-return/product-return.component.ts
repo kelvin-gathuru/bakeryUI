@@ -277,6 +277,6 @@ export class ProductReturnComponent implements OnInit {
 
     }
     calculateBalance(){
-        this.balance = this.amount - this.total;
+        this.balance = this.total - this.amount;
     }
 }

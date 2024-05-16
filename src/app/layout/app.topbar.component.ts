@@ -126,7 +126,7 @@ export class AppTopBarComponent {
                 icon: 'pi pi-fw pi-file-excel',
                 items: [
                     {
-                        label: 'Products Sales',
+                        label: 'Cumulative Agent Report',
                         icon: 'pi pi-fw pi-briefcase',
                         routerLink: ['/dashboard/reports/product-sales'],
                     },

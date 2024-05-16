@@ -19,13 +19,11 @@ export class ProductSalesComponent implements OnInit {
 
     cols: any[] = [];
 
-    statuses: any[] = [];
-
     rowsPerPageOptions = [5, 10, 20];
 
     producttSales: any[];
 
-    regions: any[] ;
+    clients: any[] ;
 
     regType: { label: string; value: string; }[];
     salesType: { label: string; value: string; }[];
@@ -34,34 +32,20 @@ export class ProductSalesComponent implements OnInit {
 
     ngOnInit() {
 
-        this.loadRegions();
+        this.loadClients();
 
         this.cols = [
             { field: 'name', header: 'Name' },
-            { field: 'phone_number', header: 'Tel' },
-            { field: 'entity_code', header: 'Client/Agent ID' },
-            { field: 'active', header: 'Status' },
-            { field: 'region', header: 'Region' },
-            { field: 'client_type', header: 'Client Type' },
-            { field: 'entity_type', header: 'Entity Type' }
+            { field: 'phone', header: 'Tel' },
+            { field: 'email', header: 'email' },
+            { field: 'cumulativeAmountToPay', header: 'cumulativeAmountToPay' },
+            { field: 'cumulativeAmountPaid', header: 'cumulativeAmountPaid' },
+            { field: 'cumulativeAmountBalance', header: 'cumulativeAmountBalance' },
+            { field: 'cumulativeCratesOut', header: 'cumulativeCratesOut' },
+            { field: 'cumulativeCratesIn', header: 'cumulativeCratesIn' },
+            { field: 'cumulativeCratesBalance', header: 'cumulativeCratesBalance' }
         ];
 
-        this.statuses = [
-            { label: 'ACTIVE', value: 'active' },
-            { label: 'INACTIVE', value: 'inactive' }
-        ];
-
-        this.regType = [
-            { label: 'CLIENT', value: 'client' },
-            { label: 'SALES AGENT', value: 'salesAgent' },
-            { label: 'OTHERS', value: 'others' }
-        ];
-
-        this.salesType = [
-            { label: 'BULK', value: 'bulk' },
-            { label: 'RETAIL', value: 'retail' },
-            { label: 'OTHERS', value: 'others' }
-        ];
     }
 
     openNew() {
@@ -129,17 +113,27 @@ export class ProductSalesComponent implements OnInit {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
     }
 
-      loadRegions() {
-        this.apiService.getRegions().subscribe(
-          (data: any) => {
-            if(data.success==false){
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: data.message, life: 3000 });
+    loadClients() {
+        this.apiService.getClients().subscribe(
+            (data: any) => {
+                if (data.success == false) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: data.error.error.message,
+                        life: 3000,
+                    });
+                }
+                this.clients = data.data;
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                    life: 3000,
+                });
             }
-            this.regions = data;
-          },
-          (error) => {
-            console.error('Error fetching regions data:', error);
-          }
         );
-      }
+    }
 }
