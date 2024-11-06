@@ -39,11 +39,11 @@ export class AppTopBarComponent {
                 ],
             },
             {
-                label: 'Agents/Suppliers',
+                label: 'Clients/Suppliers',
                 icon: 'pi pi-fw pi-cog',
                 items: [
                     {
-                        label: 'Sales Agents',
+                        label: 'Clients',
                         icon: 'pi pi-fw pi-id-card',
                         routerLink: ['/dashboard/settings/clients'],
                     },

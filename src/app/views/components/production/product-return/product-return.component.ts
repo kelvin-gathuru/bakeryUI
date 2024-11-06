@@ -80,6 +80,9 @@ export class ProductReturnComponent implements OnInit {
     dispatchedReturnProducts: any;
     startDate: string = "";
     endDate: string = "";
+    shouldShowTable(): boolean {
+        return true;
+    };
 
     constructor(
         private messageService: MessageService,

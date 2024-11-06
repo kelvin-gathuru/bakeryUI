@@ -63,7 +63,6 @@ export class ProductDispatchComponent implements OnInit {
     selectedDispatchedProducts: any;
     product: any;
     remainingstock: any;
-    clients: any;
     vehicle: any;
     fuel: any;
     cratesOut: any;
@@ -78,7 +77,7 @@ export class ProductDispatchComponent implements OnInit {
     ngOnInit() {
         this.loadproducts();
 
-        this.loadClients();
+        this.loadSuppliers();
 
         this.loadDispatchedProducts();
 
@@ -172,8 +171,8 @@ export class ProductDispatchComponent implements OnInit {
         );
     }
 
-    loadClients() {
-        this.apiService.getClients().subscribe(
+    loadSuppliers() {
+        this.apiService.getSuppliers().subscribe(
             (data: any) => {
                 if (data.success == false) {
                     this.messageService.add({
@@ -183,7 +182,7 @@ export class ProductDispatchComponent implements OnInit {
                         life: 3000,
                     });
                 }
-                this.clients = data.data;
+                this.suppliers = data.data;
             },
             (error) => {
                 this.messageService.add({
@@ -198,11 +197,11 @@ export class ProductDispatchComponent implements OnInit {
 
     saveproductDispatch() {
         this.submitted = true;
-        this.agentName = this.productDispatch.client.name;
+        this.agentName = this.productDispatch.supplier.name;
         if (this.fuel?.trim()) {
             const payload = {
                 dispatchedProducts: this.selectedDispatchedProducts,
-                client: this.productDispatch.client,
+                supplier: this.productDispatch.supplier,
                 cratesOut: this.cratesOut,
                 vehicle: this.vehicle,
                 fuelIssued: this.fuel,
@@ -259,12 +258,12 @@ export class ProductDispatchComponent implements OnInit {
         this.showCode = false;
     }
 
-    clientSelect(){
+    supplierSelect(){
         
-        if(this.productDispatch.client.status === 'INACTIVE' || this.productDispatch.client == null){
+        if(this.productDispatch.supplier == null){
             
-            this.productDispatch.client = null
-            console.log(this.productDispatch.client)
+            this.productDispatch.supplier = null
+            console.log(this.productDispatch.supplier)
             this.messageService.add({
                 severity: 'error',
                 summary: 'Error',

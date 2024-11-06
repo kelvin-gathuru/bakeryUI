@@ -46,7 +46,7 @@ export class ClientsComponent implements OnInit {
             { field: 'name', header: 'Name' },
             { field: 'phone', header: 'Phone' },
             { field: 'salesType', header: 'Sales Type' },
-            { field: 'registrationType', header: 'Registration Type' },
+            // { field: 'registrationType', header: 'Registration Type' },
             { field: 'region.name', header: 'Region' },
         ];
 
@@ -144,7 +144,7 @@ export class ClientsComponent implements OnInit {
                 phone: this.client.phone,
                 salesType: this.client.salesType,
                 status: this.client.status,
-                registrationType: this.client.registrationType,
+                // registrationType: this.client.registrationType,
                 regionID: this.client.region.regionID,
             };
             if (this.client.clientID) {

@@ -33,6 +33,7 @@ export class SuppliersComponent implements OnInit {
             { field: 'name', header: 'Name' },
             { field: 'phone', header: 'Phone' },
             { field: 'alternativeContact', header: 'Alternative contact' },
+            { field: 'physicalAddress', header: 'Physical Address' },
         ];
 
     }
@@ -83,11 +84,12 @@ export class SuppliersComponent implements OnInit {
     saveSupplier() {
         this.submitted = true;
 
-        if (this.supplier.name?.trim()&&this.supplier.phone?.trim()&&this.supplier.alternativeContact?.trim()) {
+        if (this.supplier.name?.trim()&&this.supplier.phone?.trim()&&this.supplier.alternativeContact?.trim()&&this.supplier.physicalAddress?.trim()) {
             const payload = {
                 name: this.supplier.name,
                 phone: this.supplier.phone,
                 alternativeContact: this.supplier.alternativeContact,
+                physicalAddress: this.supplier.physicalAddress,
             };
             if (this.supplier.supplierID) {
                 const updatePayload = this.supplier;

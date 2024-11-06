@@ -17,7 +17,7 @@
             </p-toolbar>
 
             <p-table #dt [value]="materialStocks" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                [globalFilterFields]="['material.name','quantity','supplier.name','purchaseDate','description','material.totalPrice']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+                [globalFilterFields]="['material.name','quantity','purchaseDate','description','material.totalPrice']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
                 [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                 [(selection)]="selectedMaterialStock" selectionMode="multiple" [rowHover]="true" dataKey="id">
@@ -38,7 +38,7 @@
                         <th pSortableColumn="quantity">Quantity <p-sortIcon field="quantity"></p-sortIcon></th>
                         <th pSortableColumn="material.totalPrice">Total Price <p-sortIcon field="material.totalPrice"></p-sortIcon></th>
                         <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
-                        <th pSortableColumn="supplier.name">Supplier <p-sortIcon field="supplier.name"></p-sortIcon></th>
+                        <!-- <th pSortableColumn="supplier.name">Supplier <p-sortIcon field="supplier.name"></p-sortIcon></th> -->
                         <th pSortableColumn="purchaseDate">Purchase Date <p-sortIcon field="material.remainingQuantity"></p-sortIcon></th>
                     </tr>
                 </ng-template>
@@ -63,10 +63,10 @@
                             <span class="p-column-title">Description</span>
                             {{materialStock.description}}
                         </td>
-                        <td style="width:15%; min-width:10rem;">
+                        <!-- <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Supplier</span>
                            {{materialStock.supplier.name}}
-                        </td>
+                        </td> -->
                         
                         <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Purchase Date</span>
@@ -96,12 +96,12 @@
                             optionLabel="name" placeholder="Select">
                         </p-dropdown>
                     </div>
-                    <div class="field col">
+                    <!-- <div class="field col">
                         <label for="supplier">Supplier</label>
                         <p-dropdown [options]="suppliers" [(ngModel)]="materialStock.supplier" inputId="supplier"
                             optionLabel="name" placeholder="Select">
                         </p-dropdown>
-                    </div> 
+                    </div>  -->
                 </div>
                 <div class="field">
                     <label for="description">Description</label>

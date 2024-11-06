@@ -5,7 +5,7 @@
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button pButton pRipple label="New Client/Agent" icon="pi pi-plus" class="p-button-success mr-2"
+                        <button pButton pRipple label="New Client" icon="pi pi-plus" class="p-button-success mr-2"
                             (click)="openNew()"></button>
                     </div>
                 </ng-template>
@@ -38,8 +38,8 @@
                         <th pSortableColumn="phone">Phone <p-sortIcon field="phone"></p-sortIcon></th>
                         <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
                         <th pSortableColumn="salesType">Sales Type <p-sortIcon field="salesType"></p-sortIcon></th>
-                        <th pSortableColumn="registrationType">Registration Type <p-sortIcon
-                                field="registrationType"></p-sortIcon> </th>
+                        <!-- <th pSortableColumn="registrationType">Registration Type <p-sortIcon
+                                field="registrationType"></p-sortIcon> </th> -->
                         <th pSortableColumn="status">Status<p-sortIcon field="status"></p-sortIcon> </th>
                         <th pSortableColumn="region.name">Region<p-sortIcon field="region.name"></p-sortIcon> </th>
                     </tr>
@@ -65,10 +65,10 @@
                             <span class="p-column-title">Sales Type</span>
                             {{client.salesType}}
                         </td>
-                        <td style="width:15%; min-width:10rem;">
+                        <!-- <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Registration Type</span>
                             {{client.registrationType}}
-                        </td>
+                        </td> -->
                         <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Status</span>
                             {{client.status}}
@@ -90,17 +90,17 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="clientsDialog" [style]="{width: '450px'}" header="Client/Agent Registration"
+        <p-dialog [(visible)]="clientsDialog" [style]="{width: '450px'}" header="Client Registration"
             [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
 
                 <div class="formgrid grid">
-                    <div class="field col">
+                    <!-- <div class="field col">
                         <label for="registrationType">Registration Type</label>
                         <p-dropdown [(ngModel)]="client.registrationType" inputId="registrationType" [options]="regType"
                             placeholder="Select">
                         </p-dropdown>
-                    </div>
+                    </div> -->
                     <div class="field col">
                         <label for="salesType">Sales Type</label>
                         <p-dropdown [(ngModel)]="client.salesType" inputId="salesType" [options]="salesType"

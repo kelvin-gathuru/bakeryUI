@@ -17,7 +17,7 @@
             </p-toolbar>
 
             <p-table #dt [value]="suppliers" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                [globalFilterFields]="['name','phone','alternativeContact']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+                [globalFilterFields]="['name','phone','alternativeContact','physicalAddress']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
                 [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                 [(selection)]="selectedSupplier" selectionMode="multiple" [rowHover]="true" dataKey="id">
@@ -37,6 +37,7 @@
                         <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
                         <th pSortableColumn="phone">Phone <p-sortIcon field="phone"></p-sortIcon></th>
                         <th pSortableColumn="alternativecontact">Alternative Contact/Email<p-sortIcon field="alternativecontact"></p-sortIcon></th>
+                        <th pSortableColumn="physicalAddress">Physical Address<p-sortIcon field="physicalAddress"></p-sortIcon></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-supplier let-rowIndex="rowIndex">
@@ -56,6 +57,10 @@
                             <span class="p-column-title">Alternative Contact/Email</span>
                             {{supplier.alternativeContact}}
                         </td>
+                        <td style="width:25%; min-width:10rem;">
+                            <span class="p-column-title">Physical Adress</span>
+                            {{supplier.physicalAddress}}
+                        </td>
                         <td>
                             <div class="flex">
                                 <button pButton pRipple icon="pi pi-pencil"
@@ -68,7 +73,7 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="supplierDialog" [style]="{width: '450px'}" header="Region Creation" [modal]="true"
+        <p-dialog [(visible)]="supplierDialog" [style]="{width: '450px'}" header="New Supplier" [modal]="true"
             class="p-fluid">
             <ng-template pTemplate="content">
 
@@ -91,6 +96,12 @@
                     <label for="alternativeContact">Alternative Contact/ Email</label>
                     <input pInputText id="name" [(ngModel)]="supplier.alternativeContact" required autofocus
                         [ngClass]="{'ng-invalid ng-dirty' : submitted && !supplier.alternativeContact}">
+                </div>
+
+                <div class="field">
+                    <label for="physicalAddress">Physical Address</label>
+                    <input pInputText id="name" [(ngModel)]="supplier.physicalAddress" required autofocus
+                        [ngClass]="{'ng-invalid ng-dirty' : submitted && !supplier.physicalAddress}">
                 </div>
 
             </ng-template>
