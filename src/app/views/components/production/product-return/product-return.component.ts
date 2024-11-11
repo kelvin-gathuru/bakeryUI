@@ -36,6 +36,8 @@ export class ProductReturnComponent implements OnInit {
 
     productDispatchDialog1: boolean = false;
 
+    productDispatchDialog2: boolean = false;
+
     code: any;
 
     showCode: boolean = false;
@@ -130,6 +132,10 @@ export class ProductReturnComponent implements OnInit {
 
     hideDialog() {
         this.productDispatchDialog = false;
+    }
+
+    hideDialog2() {
+        this.productDispatchDialog2 = false;
     }
 
     proceedToClients(){
@@ -267,8 +273,8 @@ export class ProductReturnComponent implements OnInit {
                     this.code = result.data;
                     this.showCode = true;
                     this.loadDispatchedProductsReturn();
-                    // this.productDispatchDialog = false;
-                    // this.productDispatch = {};
+                    this.productDispatchDialog1 = false;
+                    this.productDispatchDialog2 = true;
                 }
             },
             (error) => {
@@ -284,7 +290,7 @@ export class ProductReturnComponent implements OnInit {
 
     saveProductDispatchReturn() {
         this.submitted = true;
-        if (this.amount?.trim()) {
+        
             const payload = {
                 dispatchedProducts: this.selectedDispatchedProducts,
                 productDispatchCode: this.selectedReturnedProduct.productDispatchCode,
@@ -305,7 +311,7 @@ export class ProductReturnComponent implements OnInit {
                         this.code = result.data;
                         this.showCode = true;
                         this.loadDispatchedProductsReturn();
-                        this.productDispatchDialog = false;
+                        this.productDispatchDialog2 = false;
                         this.productDispatch = {};
                     }
                 },
@@ -318,7 +324,7 @@ export class ProductReturnComponent implements OnInit {
                     });
                 }
             );
-        }
+        
     }
     calculateDeliveryPrice(product: any){
         product.deliveredProductPrice = product.unitPrice * product.deliveredQuantity;

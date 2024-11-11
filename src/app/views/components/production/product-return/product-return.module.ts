@@ -18,6 +18,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { CalendarModule } from 'primeng/calendar';
 import {MultiSelectModule} from 'primeng/multiselect';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+
 
 @NgModule({
     imports: [
@@ -38,7 +40,8 @@ import {MultiSelectModule} from 'primeng/multiselect';
         InputNumberModule,
         DialogModule,
         CalendarModule,
-        MultiSelectModule
+        MultiSelectModule,
+        ConfirmDialogModule
     ],
     declarations: [ProductReturnComponent]
 })

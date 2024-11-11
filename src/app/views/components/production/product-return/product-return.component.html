@@ -391,7 +391,7 @@
                     pButton
                     pRipple
                     label="Next"
-                    icon="pi pi-check"
+                    icon="pi pi-caret-right"
                     class="p-button-text"
                     (click)="proceedToClients()"
                 ></button>
@@ -504,8 +504,8 @@
         
         </p-dialog>
 
-        <!-- <p-dialog
-            [(visible)]="productDispatchDialog"
+        <p-dialog
+            [(visible)]="productDispatchDialog2"
             header="Dispatch Return"
             [modal]="true"
             class="p-fluid"
@@ -713,10 +713,10 @@
                 <button
                     pButton
                     pRipple
-                    label="Cancel"
+                    label="Cancel Dispatch Return"
                     icon="pi pi-times"
                     class="p-button-text"
-                    (click)="hideDialog()"
+                    (click)="hideDialog2()"
                 ></button>
                 <button
                     pButton
@@ -727,6 +727,6 @@
                     (click)="saveProductDispatchReturn()"
                 ></button>
             </ng-template>
-        </p-dialog> -->
+        </p-dialog>
     </div>
 </div>
