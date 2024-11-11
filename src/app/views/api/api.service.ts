@@ -318,4 +318,12 @@ export class ApiService {
     const params = { startDate: startDate, endDate: endDate };
     return this.http.get<any[]>(endpoint, {headers, params});
   }
+  createClientDispatchReturn(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/productDispatchForClient/create`;
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<any[]>(endpoint, payload, {headers});
+  }
 }

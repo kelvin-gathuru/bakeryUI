@@ -34,6 +34,8 @@ import { co } from '@fullcalendar/core/internal-common';
 export class ProductReturnComponent implements OnInit {
     productDispatchDialog: boolean = false;
 
+    productDispatchDialog1: boolean = false;
+
     code: any;
 
     showCode: boolean = false;
@@ -67,6 +69,7 @@ export class ProductReturnComponent implements OnInit {
     product: any;
     remainingstock: any;
     clients: any;
+    client: any;
     vehicle: any;
     fuel: any;
     cratesOut: any;
@@ -80,9 +83,13 @@ export class ProductReturnComponent implements OnInit {
     dispatchedReturnProducts: any;
     startDate: string = "";
     endDate: string = "";
-    shouldShowTable(): boolean {
-        return true;
-    };
+    display: boolean = false;
+    selectedClients: any;
+
+    showDialog() {
+        this.display = true;
+    }
+
 
     constructor(
         private messageService: MessageService,
@@ -94,6 +101,10 @@ export class ProductReturnComponent implements OnInit {
         this.loadDispatchedProductsReturn();
 
         this.loadDispatchedProducts();
+
+        this.loadClients();
+
+        console.log(this.clients);
 
         this.cols = [
             // { field: 'product.name', header: 'product' },
@@ -121,6 +132,16 @@ export class ProductReturnComponent implements OnInit {
         this.productDispatchDialog = false;
     }
 
+    proceedToClients(){
+        this.selectedClients
+        this.productDispatchDialog =false;
+        this.productDispatchDialog1 = true;
+    }
+    backToDialog1(){
+        this.productDispatchDialog1 = false;
+        this.productDispatchDialog = true;
+    }
+
     editproductDispatch(productDispatch: any) {
         this.productDispatch = { ...productDispatch };
         this.productDispatchDialog = true;
@@ -145,6 +166,30 @@ export class ProductReturnComponent implements OnInit {
                     });
                 }
                 this.dispatchedProducts = data.data;
+            },
+            (error) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                    life: 3000,
+                });
+            }
+        );
+    }
+    loadClients() {
+        this.apiService.getClients().subscribe(
+            (data: any) => {
+                if (data.success == false) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: data.error.message,
+                        life: 3000,
+                    });
+                }
+                this.clients = data.data;
+                
             },
             (error) => {
                 this.messageService.add({
@@ -191,6 +236,14 @@ export class ProductReturnComponent implements OnInit {
 
     dispatchedProductChange(prod: any){
         this.selectedDispatchedProducts = this.selectedReturnedProduct.dispatchedProducts;
+        this.clients.forEach(client => {
+            client.dispatchedProducts = this.selectedDispatchedProducts.map(product => ({
+                ...product, // Copy each product
+                deliveredQuantity: 0, // Initialize additional fields
+                deliveredProductPrice: 0
+            }));
+        });
+        console.log(this.clients)
         console.log(this.selectedDispatchedProducts);
         this.total = 0;
         this.balance = 0;
@@ -198,6 +251,35 @@ export class ProductReturnComponent implements OnInit {
         for (let prod of this.selectedReturnedProduct.dispatchedProducts) {
             this.total = this.total + prod.salesPrice;
         }
+    }
+
+    saveDispatchToClients(){
+        console.log(this.selectedClients);
+        this.submitted = true;
+        this.apiService.createClientDispatchReturn(this.selectedClients).subscribe(
+            (result: any) => {
+                if (result.success === true) {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: result.message,
+                    });
+                    this.code = result.data;
+                    this.showCode = true;
+                    this.loadDispatchedProductsReturn();
+                    // this.productDispatchDialog = false;
+                    // this.productDispatch = {};
+                }
+            },
+            (error) => {
+                console.error(error);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.error.message,
+                });
+            }
+        );
     }
 
     saveProductDispatchReturn() {
@@ -237,6 +319,9 @@ export class ProductReturnComponent implements OnInit {
                 }
             );
         }
+    }
+    calculateDeliveryPrice(product: any){
+        product.deliveredProductPrice = product.unitPrice * product.deliveredQuantity;
     }
     calculatePrice(product: any) {
         let returned = (product.returnedQuantity + product.returnedSpoiled);
