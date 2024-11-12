@@ -2,226 +2,49 @@
     <div class="col-12">
         <div class="card px-6 py-6">
             <p-toast></p-toast>
-            <!-- <p-toolbar styleClass="mb-4">
-                <ng-template pTemplate="left">
-                    <div class="my-2">
-                        <button
-                            pButton
-                            pRipple
-                            label="New Dispatch Return"
-                            icon="pi pi-plus"
-                            class="p-button-success mr-2"
-                            (click)="openNew()"
-                        ></button>
-                    </div>
-                </ng-template>
-
-                <ng-template pTemplate="right">
-                    <button
-                        pButton
-                        pRipple
-                        label="Export to Excel"
-                        icon="pi pi-upload"
-                        class="p-button-help"
-                        (click)="dt.exportCSV()"
-                    ></button>
-                </ng-template>
-            </p-toolbar> -->
-
-            <p-table
-                #dt
-                [value]="dispatchedReturnProducts"
-                [autoLayout]="true"
-                styleClass="p-datatable-sm"
-                [rows]="10"
-                [globalFilterFields]="[
-                    'productDispatchCode',
-                    'vehicle',
-                    'fuelIssued',
-                    'client.name',
-                    'paymentMode'
-                ]"
-                [paginator]="true"
-                [rowsPerPageOptions]="[10, 20, 30]"
-                [showCurrentPageReport]="true"
-                [rowHover]="true"
-                dataKey="code"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-            >
-                <ng-template pTemplate="caption">
-                    <div
-                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
-                    >
-                        <h5 class="m-0">Dispatch Sales Report</h5>
-                            
-                        
-                        <span class="block mt-2 md:mt-0 p-input-icon-right">
-                            <span style="margin-right: 5px;">
-                                <p-calendar (ngModelChange)="onFromDate($event)" [showIcon]="true" inputId="icon" [(ngModel)]="selectedFrom" placeholder="Start Date" [style]="{ 'width': '200px'  }"></p-calendar>
-                            </span>
-							<span style="margin-right: 5px;">
-                                <p-calendar (ngModelChange)="onToDate($event)" [(ngModel)]="selectedTo" [showIcon]="true" inputId="icon" placeholder="End Date" [style]="{ 'width': '200px'  }"></p-calendar>
-                            </span>
-                            <i class="pi pi-search"></i>
-                            <input
-                                pInputText
-                                type="text"
-                                (input)="onGlobalFilter(dt, $event)"
-                                placeholder="Search ..."
-                                class="w-full sm:w-auto"
-                            />
-                        </span>
-                        
-                    </div>
-                </ng-template>
+            <p-table [value]="dispatchedProducts" rowGroupMode="subheader" groupRowsBy="productDispatchCode" [tableStyle]="{'min-width': '70rem'}">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>#</th>
-                        <th
-                            style="width: 5%"
-                            pSortableColumn="productDispatchCode"
-                        >
-                            Code<p-sortIcon
-                                field="productDispatchCode"
-                            ></p-sortIcon>
-                        </th>
-                        <th style="width: 7%" pSortableColumn="fuelIssued">
-                            Mode<p-sortIcon field="paymentMode"></p-sortIcon>
-                        </th>
-                        <th style="width: 7%" pSortableColumn="client.name">
-                            Agent<p-sortIcon
-                                field="client.name"
-                            ></p-sortIcon>
-                        </th>
-                        <th style="width: 7%" pSortableColumn="totalDispatchPrice">
-                            Dispatch Cost<p-sortIcon
-                                field="totalDispatchPrice"
-                            ></p-sortIcon>
-                        </th>
-                        <th style="width: 53%">Dispatched Products</th>
-                        <th style="width: 10%" pSortableColumn="balance">
-                            Balance<p-sortIcon
-                                field="balance"
-                            ></p-sortIcon>
-                        </th>
-                        <th style="width: 11%" pSortableColumn="amountPaid">
-                             Paid<p-sortIcon
-                                field="amountPaid"
-                            ></p-sortIcon>
-                        </th>
+                        <th style="width:20%">Client Name</th>
+                        <th style="width:20%">Product Name</th>
+                        <th style="width:20%">Delivered Quantity</th>
+                        <th style="width:20%">Unit Price</th>
+                        <th style="width:20%">Total Price</th>
                     </tr>
                 </ng-template>
-                <ng-template
-                    pTemplate="body"
-                    let-productDispatch
-                    let-rowIndex="rowIndex"
-                >
+            
+                <!-- Group header for each productDispatchCode -->
+                <ng-template pTemplate="groupheader" let-rowData>
                     <tr>
-                        <td>
-                            {{ rowIndex + 1 }}
-                        </td>
-                        <td>{{ productDispatch.productDispatchCode }}</td>
-                        <td>{{ productDispatch.paymentMode }}</td>
-                        <td style="font-weight: bold">
-                            {{ productDispatch.client.name }}
-                        </td>
-                        <td style="font-weight: bold">
-                            {{ productDispatch.totalDispatchPrice }}
-                        </td>
-                        <td>
-                            <p-table
-                                [value]="productDispatch.dispatchedProducts"
-                                styleClass="p-datatable-sm"
-                            >
-                                <ng-template pTemplate="header">
-                                    <tr>
-                                        <th style="width: 20%">Name</th>
-                                        <th style="width: 15%">Metric</th>
-                                        <th style="width: 15%">Dispatched</th>
-                                        <th style="width: 15%">Returned</th>
-                                        <th style="width: 18%">
-                                             Spoiled
-                                        </th>
-                                        <th style="width: 17%">Sales Price</th>
-                                    </tr>
-                                </ng-template>
-                                <ng-template
-                                    pTemplate="body"
-                                    let-dispatchedProduct
-                                >
-                                    <tr>
-                                        <td>
-                                            {{ dispatchedProduct.name }}
-                                        </td>
-                                        <td>
-                                            {{ dispatchedProduct.metric }}
-                                        </td>
-                                        <td>
-                                            {{ dispatchedProduct.quantity }}
-                                        </td>
-                                        <td>
-                                            {{
-                                                dispatchedProduct.returnedQuantity
-                                            }}
-                                        </td>
-                                        <td>
-                                            {{
-                                                dispatchedProduct.returnedSpoiled
-                                            }}
-                                        </td>
-                                        <td>
-                                            KSh.
-                                            {{ dispatchedProduct.salesPrice }}
-                                        </td>
-                                    </tr>
-                                </ng-template>
-                                <ng-template pTemplate="footer">
-                                    <tr class="p-rowgroup-footer">
-                                        <td
-                                            colspan="5"
-                                            style="text-align: right"
-                                        >
-                                            Total Expected Sales Price:
-                                        </td>
-                                        <td>
-                                            KSh.
-                                            {{
-                                                productDispatch.totalSalesPrice
-                                            }}
-                                        </td>
-                                    </tr>
-                                    
-                                    
-                                </ng-template>
-                            </p-table>
-                        </td>
-                        <td style="font-weight: bold; color: red;">
-                           KSh. {{ productDispatch.balance }}
-                        </td>
-                        <td style="font-weight: bold; color: rgb(50, 202, 50);">
-                            KSh. {{ productDispatch.amountPaid }}
+                        <td colspan="5">
+                            <span class="font-bold">{{ rowData.productDispatchCode }}</span>
                         </td>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="footer">
-                    <tr class="p-rowgroup-footer">
-                        <td
-                            colspan="7"
-                            style="text-align: right"
-                        >
-                            Total Revenue:
-                        </td>
-                        <td>
-                            <span style="color: rgb(48, 213, 48);">
-                                KSh.
-                            {{
-                                total
-                            }}
-                            </span>
-                        </td>
-                    </tr>
-                    
-                    
+            
+                <!-- Rows for each client and their products -->
+                <ng-template pTemplate="body" let-rowData>
+                    <ng-container *ngFor="let client of rowData.clients">
+                        <ng-container *ngFor="let product of client.products; let first = first">
+                            <tr>
+                                <!-- Display client name only once per client group -->
+                                <td *ngIf="first" [attr.rowspan]="client.products.length" style="vertical-align: top;">
+                                    Client {{ client.client.name }}
+                                </td>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.deliveredQuantity }}</td>
+                                <td>{{ product.unitPrice | currency:'KES':'symbol' }}</td>
+                                <td>{{ product.deliveredProductPrice | currency:'KES':'symbol' }}</td>
+                            </tr>
+                        </ng-container>
+                        <!-- Display total for each client -->
+                        <tr *ngIf="client.products.length > 0">
+                            <td colspan="4" style="text-align: right; font-weight: bold;">Total</td>
+                            <td style="color: rgb(9, 248, 45); font-weight: bolder;">
+                                {{ calculateClientTotal(client) | currency:'KES':'symbol' }}
+                            </td>
+                        </tr>
+                    </ng-container>
                 </ng-template>
             </p-table>
         </div>

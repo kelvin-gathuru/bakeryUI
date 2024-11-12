@@ -326,4 +326,36 @@ export class ApiService {
     });
     return this.http.post<any[]>(endpoint, payload, {headers});
   }
+  getProductDispatchForClient(): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/productDispatchForClient/get`;
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<any[]>(endpoint, {headers});
+  }
+  createClientPayment(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/clientPayment/create`;
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<any[]>(endpoint, payload, {headers});
+  }
+  createSupplierPayment(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/supplierPayment/create`;
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<any[]>(endpoint, payload, {headers});
+  }
+  returnSupplierCrates(payload: any): Observable<any[]> {
+    const endpoint = `${this.baseUrl}sales/supplierCrates/return`;
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.post<any[]>(endpoint, payload, {headers});
+  }
 }

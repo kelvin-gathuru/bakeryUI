@@ -108,7 +108,7 @@ export class AppTopBarComponent {
                         routerLink: ['/dashboard/production/product-return'],
                     },
                     {
-                        label: 'Dispatch Sales Report',
+                        label: 'Clients Dispatch Report',
                         icon: 'pi pi-fw pi-file-excel',
                         routerLink: ['/dashboard/production/dispatch-report'],
                     },
@@ -126,31 +126,31 @@ export class AppTopBarComponent {
                 icon: 'pi pi-fw pi-file-excel',
                 items: [
                     {
-                        label: 'Cumulative Agent Report',
+                        label: 'Cumulative Supplier Report',
                         icon: 'pi pi-fw pi-briefcase',
                         routerLink: ['/dashboard/reports/product-sales'],
                     },
 
                     {
-                        label: 'Products Sales Summary',
+                        label: 'Cumulative Client Report',
                         icon: 'pi pi-fw pi-list',
                         routerLink: ['/dashboard/reports/sales-summary'],
                     },
-                    {
-                        label: 'Payment',
-                        icon: 'pi pi-fw pi-briefcase',
-                        routerLink: ['/dashboard/reports/payment'],
-                    },
-                    {
-                        label: 'Fleet Management',
-                        icon: 'pi pi-fw pi-car',
-                        routerLink: ['/dashboard/reports/fleet'],
-                    },
-                    {
-                        label: 'Sales Statement',
-                        icon: 'pi pi-fw pi-list',
-                        routerLink: ['/dashboard/reports/sales-statement'],
-                    },
+                    // {
+                    //     label: 'Payment',
+                    //     icon: 'pi pi-fw pi-briefcase',
+                    //     routerLink: ['/dashboard/reports/payment'],
+                    // },
+                    // {
+                    //     label: 'Fleet Management',
+                    //     icon: 'pi pi-fw pi-car',
+                    //     routerLink: ['/dashboard/reports/fleet'],
+                    // },
+                    // {
+                    //     label: 'Sales Statement',
+                    //     icon: 'pi pi-fw pi-list',
+                    //     routerLink: ['/dashboard/reports/sales-statement'],
+                    // },
                 ],
             },
             // {

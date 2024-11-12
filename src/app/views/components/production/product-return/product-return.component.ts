@@ -86,7 +86,7 @@ export class ProductReturnComponent implements OnInit {
     startDate: string = "";
     endDate: string = "";
     display: boolean = false;
-    selectedClients: any;
+    selectedClients: any = [];
 
     showDialog() {
         this.display = true;

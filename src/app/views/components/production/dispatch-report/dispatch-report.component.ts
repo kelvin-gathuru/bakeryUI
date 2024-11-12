@@ -75,8 +75,7 @@ export class DispatchReportComponent implements OnInit {
     balance: any;
     amount: any;
     dispatchedReturnProducts: any;
-    startDate: string = "";
-    endDate: string = "";
+    groupedData = [];
 
     constructor(
         private messageService: MessageService,
@@ -85,9 +84,7 @@ export class DispatchReportComponent implements OnInit {
 
     ngOnInit() {
 
-        this.loadDispatchedProductsReturn();
-
-        this.loadDispatchedProducts();
+        this.LoadProductDispatchForClient();
 
         this.cols = [
             // { field: 'product.name', header: 'product' },
@@ -104,7 +101,10 @@ export class DispatchReportComponent implements OnInit {
             { label: 'BANK', value: 'BANK' },
         ];
     }
-
+    calculateClientTotal(client: any): number {
+        return client.products.reduce((total, product) => total + product.deliveredProductPrice, 0);
+    }
+    
     openNew() {
         // this.productDispatch = {};
         this.submitted = false;
@@ -127,8 +127,8 @@ export class DispatchReportComponent implements OnInit {
         );
     }
 
-    loadDispatchedProducts() {
-        this.apiService.getProductDispatch().subscribe(
+    LoadProductDispatchForClient() {
+        this.apiService.getProductDispatchForClient().subscribe(
             (data: any) => {
                 if (data.success == false) {
                     this.messageService.add({
@@ -139,30 +139,6 @@ export class DispatchReportComponent implements OnInit {
                     });
                 }
                 this.dispatchedProducts = data.data;
-            },
-            (error) => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error.error.message,
-                    life: 3000,
-                });
-            }
-        );
-    }
-    loadDispatchedProductsReturn() {
-        this.apiService.getProductDispatchReturn(this.startDate, this.endDate).subscribe(
-            (data: any) => {
-                if (data.success == false) {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: data.error.message,
-                        life: 3000,
-                    });
-                }
-                this.dispatchedReturnProducts = data.data;
-                this.calculateSalesTotal();
             },
             (error) => {
                 this.messageService.add({
@@ -186,13 +162,5 @@ export class DispatchReportComponent implements OnInit {
             }
 
     }
-      onFromDate(value: Date){
-        this.startDate = value.toISOString().slice(0,-1);
-        this.loadDispatchedProductsReturn();
-      }
-      onToDate(value: Date){
-        this.endDate = value.toISOString().slice(0,-1);
-        this.loadDispatchedProductsReturn();
-      }
       
 }

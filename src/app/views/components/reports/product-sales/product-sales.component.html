@@ -16,14 +16,14 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="clients" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+            <p-table #dt [value]="suppliers" [columns]="cols" responsiveLayout="scroll" [rows]="10"
                 [globalFilterFields]="['name','phone','email','cumulativeAmountToPay','cumulativeAmountPaid','cumulativeAmountBalance','cumulativeCratesOut','cumulativeCratesIn','cumulativeCratesBalance']" [paginator]="true"
                 [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                [(selection)]="selectedClients" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                [(selection)]="selectedSuppliers" selectionMode="multiple" [rowHover]="true" dataKey="id">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">Cumulative Agent Reports</h5>
+                        <h5 class="m-0">Cumulative Suppliers Reports</h5>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
                             <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
@@ -34,7 +34,7 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th>#</th>
-                        <th pSortableColumn="name">Sales Agent<p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="name">Supplier<p-sortIcon field="name"></p-sortIcon></th>
                         <th pSortableColumn="phone">Phone <p-sortIcon field="phone"></p-sortIcon></th>
                         <!-- <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th> -->
                         <th pSortableColumn="cumulativeAmountToPay"> Amount To Pay <p-sortIcon field="cumulativeAmountToPay"></p-sortIcon></th>
@@ -45,51 +45,47 @@
                         <th pSortableColumn="cumulativeCratesBalance">Crates Held <p-sortIcon field="cumulativeCratesBalance"></p-sortIcon> </th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-client let-rowIndex="rowIndex">
+                <ng-template pTemplate="body" let-supplier let-rowIndex="rowIndex">
                     <tr>
                         <td>
                             {{rowIndex + 1 }}
                         </td>
                         <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">Sales Agent</span>
-                            {{client.name}}
+                            <span class="p-column-title">Supplier</span>
+                            {{supplier.name}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Phone</span>
-                            {{client.phone}}
+                            {{supplier.phone}}
                         </td>
-                        <!-- <td style="width:15%; min-width:10rem;">
-                            <span class="p-column-title">email</span>
-                            {{client.email}}
-                        </td> -->
                         <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title"> Amount To Pay</span>
-                            KSh. {{client.cumulativeAmountToPay}}
+                            KSh. {{supplier.cumulativeAmountToPay}}
                         </td>
                         <td style="width:15%; min-width:10rem; color: rgb(62, 196, 62); font-weight: bold;">
                             <span class="p-column-title"> Amount Paid</span>
-                            KSh. {{client.cumulativeAmountPaid}}
+                            KSh. {{supplier.cumulativeAmountPaid}}
                         </td>
                         <td style="width:15%; min-width:10rem; color: red; font-weight: bold;">
                             <span class="p-column-title">Total Balance</span>
-                            KSh. {{client.cumulativeAmountBalance}}
+                            KSh. {{supplier.cumulativeAmountToPay-supplier.cumulativeAmountPaid}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title"> Crates Out</span>
-                            {{client.cumulativeCratesOut}}
+                            {{supplier.cumulativeCratesOut}}
                         </td>
                         <td style="width:15%; min-width:10rem; color: rgb(62, 196, 62); font-weight: bold;">
                             <span class="p-column-title"> Crates In</span>
-                            {{client.cumulativeCratesIn}}
+                            {{supplier.cumulativeCratesIn}}
                         </td>
                         <td style="width:15%; min-width:10rem; color: red; font-weight: bold;">
                             <span class="p-column-title">Crates Held</span>
-                            {{client.cumulativeCratesOut - client.cumulativeCratesIn}}
+                            {{supplier.cumulativeCratesOut - supplier.cumulativeCratesIn}}
                         </td>
                         <td>
                             <div class="flex">
-                                <button pButton pRipple icon="pi pi-money-bill" class="p-button-rounded p-button-help mr-2" (click)="editClient(client)"></button>
-                                <button pButton pRipple icon="pi pi-cart-plus" class="p-button-rounded p-button-success mr-2" (click)="editClient(client)"></button>
+                                <button pButton pRipple icon="pi pi-money-bill" class="p-button-rounded p-button-help mr-2" (click)="editSupplier(supplier)"></button>
+                                <button pButton pRipple icon="pi pi-cart-plus" class="p-button-rounded p-button-success mr-2" (click)="editCrates(supplier)"></button>
                             </div>
                         </td>
                     </tr>
@@ -97,49 +93,26 @@
             </p-table>
         </div>
 
-        <p-dialog [(visible)]="clientsDialog" [style]="{width: '450px'}" header="Client/Agent Registration" [modal]="true"
+        <p-dialog [(visible)]="suppliersDialog" [style]="{width: '450px'}" header="Debt Payment" [modal]="true"
             class="p-fluid">
             <ng-template pTemplate="content">
 
-                <div class="formgrid grid">
-                    <div class="field col">
-                        <label for="entity_type">Registration Type</label>
-                        <p-dropdown [(ngModel)]="client.entity_type" inputId="entity_type" [options]="regType" placeholder="Select">
-                        </p-dropdown>
-                    </div>
-                    <div class="field col">
-                        <label for="client_type">Sales Type</label>
-                        <p-dropdown [(ngModel)]="client.client_type" inputId="client_type" [options]="salesType" placeholder="Select">
-                        </p-dropdown>
-                    </div>
-                </div>
                 <div class="field">
-                    <label for="region">Region</label>
-                    <p-dropdown [options]="regions.items" [(ngModel)]="client.region" inputId="region"  optionLabel="name" placeholder="Select">
-                    </p-dropdown>
+                    <label for="paymentMode">Payment Mode</label>
+                    <p-dropdown
+                                    [options]="paymentModes"
+                                    [(ngModel)]="paymentMode"
+                                    inputId="paymentMode"
+                                    optionLabel="label"
+                                    placeholder="Select Payment Mode"
+                                >
+                                </p-dropdown>
                 </div>
+                
                 <div class="field">
-                    <label for="active">Status</label>
-                    <p-dropdown [options]="statuses" [(ngModel)]="client.active" inputId="active" optionValue="label"  placeholder="Select">
-                    </p-dropdown>
-                </div>
-                <div class="formgrid grid">
-                    <div class="field col">
-                        <label for="clientId">Client/Agent ID</label>
-                        <input type="text" pInputText id="clientId" [(ngModel)]="client.entity_code" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.entity_code}">
-                    </div>
-                    <div class="field col">
-                        <label for="tel">Telephone</label>
-                        <div class="p-inputgroup">
-                            <span class="p-inputgroup-addon">+254</span>
-                            <input type="text" pInputText id="tel" [(ngModel)]="client.phone_number" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.phone_number}">
-                        </div>
-                    </div>
-                </div>
-                <div class="field">
-                    <label for="name">Names</label>
-                    <input pInputText id="name" [(ngModel)]="client.name" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !client.name}">
-                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !client.name">Name is required.</small>
+                    <label for="amount">Amount</label>
+                    <input pInputText id="amount" [(ngModel)]="amount" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !amount}">
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !amount">Amount is required.</small>
 				</div>
                 
             </ng-template>
@@ -148,9 +121,29 @@
                 <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
                     (click)="hideDialog()"></button>
                 <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
-                    (click)="saveProduct()"></button>
+                    (click)="payDebt()"></button>
             </ng-template>
-        </p-dialog>
+        </p-dialog> 
+
+        <p-dialog [(visible)]="cratesDialog" [style]="{width: '450px'}" header="Return Crates" [modal]="true"
+            class="p-fluid">
+            <ng-template pTemplate="content">
+                
+                <div class="field">
+                    <label for="crates">Number of Crates</label>
+                    <input pInputText id="crates" [(ngModel)]="crates" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !crates}">
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !crates">crates is required.</small>
+				</div>
+                
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                    (click)="hideCratesDialog()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                    (click)="returnCrates()"></button>
+            </ng-template>
+        </p-dialog> 
 
     </div>
 </div>
