@@ -427,7 +427,7 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th style="width: 3rem">
-                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                            #
                         </th>
                         <th>Product</th>
                         <th>Stock Left With</th>
@@ -442,9 +442,7 @@
                 >
                     <tr>
                         <td>
-                            <p-tableCheckbox
-                                [value]="product"
-                            ></p-tableCheckbox>
+                            {{ rowIndex + 1 }}
                         </td>
                         <td style="width: 15%; min-width: 10rem">
                             <span class="p-column-title">Product</span>
