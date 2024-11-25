@@ -312,6 +312,7 @@
                             <th>Product</th>
                             <th>Stock</th>
                             <th>Quantity</th>
+                            <th>Price</th>
                             <th>Remaining Stock</th>
                             <th>Total Price</th>
                         </tr>
@@ -349,6 +350,23 @@
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         {{ product.quantity }}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td pEditableColumn>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input
+                                            pInputText
+                                            type="text"
+                                            [(ngModel)]="product.price"
+                                            (ngModelChange)="
+                                                calculatePrice(product)
+                                            "
+                                        />
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{ product.price }}
                                     </ng-template>
                                 </p-cellEditor>
                             </td>

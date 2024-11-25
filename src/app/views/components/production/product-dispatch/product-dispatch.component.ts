@@ -68,7 +68,6 @@ export class ProductDispatchComponent implements OnInit {
     cratesOut: any;
     dispatchedProducts: any;
     agentName: any;
-
     constructor(
         private messageService: MessageService,
         private apiService: ApiService
@@ -157,6 +156,7 @@ export class ProductDispatchComponent implements OnInit {
                     return {
                         ...product,
                         quantity: 0,
+                        price: 0
                     };
                 });
             },
@@ -235,12 +235,12 @@ export class ProductDispatchComponent implements OnInit {
         }
     }
     calculatePrice(product: any) {
-        product.totalPrice = product.unitPrice * product.quantity;
+        product.totalPrice = product.price * product.quantity;
         product.remainingStock = product.remainingQuantity - product.quantity;
         if(product.remainingStock<0){
             product.quantity = product.remainingQuantity;
             product.remainingStock = 0;
-            product.totalPrice = product.unitPrice * product.quantity;
+            product.totalPrice = product.price * product.quantity;
         }
     }
     generatePDF(){

@@ -273,6 +273,8 @@ export class ProductReturnComponent implements OnInit {
                     this.code = result.data;
                     this.showCode = true;
                     this.loadDispatchedProductsReturn();
+                    this.loadDispatchedProducts();
+                    this.loadClients();
                     this.productDispatchDialog1 = false;
                     this.productDispatchDialog2 = true;
                 }
@@ -327,7 +329,7 @@ export class ProductReturnComponent implements OnInit {
         
     }
     calculateDeliveryPrice(product: any){
-        product.deliveredProductPrice = product.unitPrice * product.deliveredQuantity;
+        product.deliveredProductPrice = product.price * product.deliveredQuantity;
     }
     calculatePrice(product: any) {
         let returned = (product.returnedQuantity + product.returnedSpoiled);
@@ -352,7 +354,7 @@ export class ProductReturnComponent implements OnInit {
             returned= 0;
         }
         product.soldQuantity = product.quantity - returned;
-        product.salesPrice = product.unitPrice * product.soldQuantity;
+        product.salesPrice = product.price * product.soldQuantity;
         this.calculateSalesTotal()
         this.calculateBalance();
     }

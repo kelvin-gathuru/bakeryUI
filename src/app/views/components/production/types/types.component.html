@@ -36,7 +36,7 @@
                         <th>#</th>
                         <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
                         <th pSortableColumn="metric">Metric <p-sortIcon field="metric"></p-sortIcon></th>
-                        <th pSortableColumn="unitPrice">Unit Price <p-sortIcon field="unitPrice"></p-sortIcon></th>
+                        <!-- <th pSortableColumn="unitPrice">Unit Price <p-sortIcon field="unitPrice"></p-sortIcon></th> -->
                         <th pSortableColumn="reorderPoint">Reorder Point <p-sortIcon field="reorderPoint"></p-sortIcon></th>
                         <th pSortableColumn="reorderQuantity">Reorder Quantity <p-sortIcon field="reorderQuantity"></p-sortIcon></th>
                         <th pSortableColumn="remainingQuantity">Remaining Quantity <p-sortIcon field="remainingQuantity"></p-sortIcon></th>
@@ -55,10 +55,10 @@
                             <span class="p-column-title">Metric</span>
                             {{product.metric}}
                         </td>
-                        <td style="width:15%; min-width:10rem;">
+                        <!-- <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Unit Price</span>
                             KSh. {{product.unitPrice}}
-                        </td>
+                        </td> -->
                         <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Reorder Point</span>
                             {{product.reorderPoint}}
@@ -100,7 +100,7 @@
                     <input pInputText id="metric" [(ngModel)]="product.metric" required autofocus
                         [ngClass]="{'ng-invalid ng-dirty' : submitted && !product.metric}">
                 </div>
-
+<!-- 
                 <div class="field">
                     <label for="unitPrice">Unit Price</label>
                     <div class="p-inputgroup">
@@ -108,7 +108,7 @@
                         <input type="text" pInputText id="unitPrice" [(ngModel)]="product.unitPrice" required autofocus
                             [ngClass]="{'ng-invalid ng-dirty' : submitted && !product.unitPrice}">
                     </div>
-                </div>
+                </div> -->
                 <div class="formgrid grid">
                     <div class="field col">
                         <label for="reorderPoint">Reorder Point</label>
