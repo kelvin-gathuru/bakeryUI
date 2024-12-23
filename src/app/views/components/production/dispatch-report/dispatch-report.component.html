@@ -33,8 +33,8 @@
                                 </td>
                                 <td>{{ product.name }}</td>
                                 <td>{{ product.deliveredQuantity }}</td>
-                                <td>{{ product.unitPrice | currency:'KES':'symbol' }}</td>
-                                <td>{{ product.deliveredProductPrice | currency:'KES':'symbol' }}</td>
+                                <td>{{ product.clientAmount | currency:'KES':'symbol' }}</td>
+                                <td>{{ product.clientDeliveredProductPrice | currency:'KES':'symbol' }}</td>
                             </tr>
                         </ng-container>
                         <!-- Display total for each client -->

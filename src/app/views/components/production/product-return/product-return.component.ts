@@ -246,7 +246,9 @@ export class ProductReturnComponent implements OnInit {
             client.dispatchedProducts = this.selectedDispatchedProducts.map(product => ({
                 ...product, // Copy each product
                 deliveredQuantity: 0, // Initialize additional fields
-                deliveredProductPrice: 0
+                deliveredProductPrice: 0,
+                clientDeliveredProductPrice: 0,
+                clientAmount: 0
             }));
         });
         console.log(this.clients)
@@ -330,6 +332,7 @@ export class ProductReturnComponent implements OnInit {
     }
     calculateDeliveryPrice(product: any){
         product.deliveredProductPrice = product.price * product.deliveredQuantity;
+        product.clientDeliveredProductPrice = product.clientAmount * product.deliveredQuantity;
     }
     calculatePrice(product: any) {
         let returned = (product.returnedQuantity + product.returnedSpoiled);

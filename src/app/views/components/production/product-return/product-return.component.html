@@ -433,6 +433,7 @@
                         <th>Stock Left With</th>
                         <th>Delivered Quantity</th>
                         <th>Price</th>
+                        <th>Total Price</th>
                     </tr>
                 </ng-template>
                 <ng-template
@@ -471,9 +472,28 @@
                                 </ng-template>
                             </p-cellEditor>
                         </td>
+                        <td pEditableColumn>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input
+                                        pInputText
+                                        type="number"
+                                        [(ngModel)]="
+                                            product.clientAmount
+                                        "
+                                        (ngModelChange)="
+                                            calculateDeliveryPrice(product)
+                                        "
+                                    />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ product.clientAmount }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
                         <td style="width: 15%; min-width: 10rem">
                             <span class="p-column-title">Delivery Price</span>
-                            KSh. {{ product.deliveredProductPrice }}
+                            KSh. {{ product.clientDeliveredProductPrice }}
                         </td>
                     </tr>
                 </ng-template>
