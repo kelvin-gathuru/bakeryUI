@@ -112,13 +112,13 @@ export class AppTopBarComponent {
                         icon: 'pi pi-fw pi-file-excel',
                         routerLink: ['/dashboard/production/dispatch-report'],
                     },
-                    {
-                        label: 'Ingredients Vs Sales',
-                        icon: 'pi pi-fw pi-money-bill',
-                        routerLink: [
-                            '/dashboard/production/ingredients-vs-sales',
-                        ],
-                    },
+                    // {
+                    //     label: 'Ingredients Vs Sales',
+                    //     icon: 'pi pi-fw pi-money-bill',
+                    //     routerLink: [
+                    //         '/dashboard/production/ingredients-vs-sales',
+                    //     ],
+                    // },
                 ],
             },
             {
