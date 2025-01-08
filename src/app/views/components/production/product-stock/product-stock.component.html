@@ -36,6 +36,7 @@
                         <th>#</th>
                         <th pSortableColumn="product.name">Product <p-sortIcon field="product.name"></p-sortIcon></th>
                         <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+                        <th pSortableColumn="unitPrice">Unit Price <p-sortIcon field="unitPrice"></p-sortIcon></th>
                         <th pSortableColumn="spoiledAtProduction">Spoiled@Production <p-sortIcon
                                 field="spoiledAtProduction"></p-sortIcon></th>
                         <th pSortableColumn="spoiledAtPackaging">Spoiled@Packaging <p-sortIcon
@@ -59,6 +60,10 @@
                         <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Description</span>
                             {{productStock.description}}
+                        </td>
+                        <td style="width:15%; min-width:10rem;">
+                            <span class="p-column-title">Unit Price</span>
+                            {{productStock.unitPrice}}
                         </td>
                         <td style="width:15%; min-width:10rem;">
                             <span class="p-column-title">Spoiled@Production</span>
@@ -144,14 +149,20 @@
                         </div>
                     </div>
                     <div class="field col">
-                        <label for="totalPrice">Total Price</label>
+                        <label for="unitPrice">Unit Price</label>
                         <div class="p-inputgroup">
                             <span class="p-inputgroup-addon">KSh</span>
-                            <input disabled type="text" pInputText id="totalPrice" [(ngModel)]="totalPrice">
+                            <input type="number" pInputText id="unitPrice" [(ngModel)]="productStock.unitPrice" (ngModelChange)="calculatePrice()">
                         </div>
                     </div>
                 </div>
-
+                <div class="field">
+                    <label for="totalPrice">Total Price</label>
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">KSh</span>
+                        <input disabled type="text" pInputText id="totalPrice" [(ngModel)]="totalPrice">
+                    </div>
+                </div>
             </ng-template>
 
             <ng-template pTemplate="footer">

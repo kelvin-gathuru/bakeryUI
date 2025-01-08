@@ -128,6 +128,7 @@ export class ProductStockComponent implements OnInit {
         if (this.productStock.description?.trim()) {
             const payload = {
                 quantity: this.productStock.quantity,
+                unitPrice: this.productStock.unitPrice,
                 product: this.productStock.product,
                 spoiledAtProduction: this.productStock.spoiledAtProduction,
                 spoiledAtPackaging: this.productStock.spoiledAtPackaging,
@@ -143,6 +144,7 @@ export class ProductStockComponent implements OnInit {
                     productStockID: this.productStock.productStockID,
                     initialQuantity: previousQuantity.quantity,
                     updatedQuantity: this.productStock.quantity,
+                    unitPrice: this.productStock.unitPrice,
                     product: this.productStock.product,
                     spoiledAtProduction: this.productStock.spoiledAtProduction,
                     spoiledAtPackaging: this.productStock.spoiledAtPackaging,
@@ -200,7 +202,7 @@ export class ProductStockComponent implements OnInit {
     }
     calculatePrice() {
         this.totalPrice =
-            this.productStock.product.unitPrice * this.productStock.quantity;
+            this.productStock.unitPrice * this.productStock.quantity;
         this.metric = this.productStock.product.metric;
     }
 }
