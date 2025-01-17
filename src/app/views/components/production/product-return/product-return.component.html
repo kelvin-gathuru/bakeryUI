@@ -172,7 +172,7 @@
                                         </td>
                                         <td>
                                             KSh.
-                                            {{ dispatchedProduct.salesPrice }}
+                                            {{ dispatchedProduct.totalPrice }}
                                         </td>
                                     </tr>
                                 </ng-template>
@@ -193,12 +193,12 @@
                                     </tr>
                                     <tr class="p-rowgroup-footer">
                                         <td style="text-align: right">
-                                            Dispatch cost:
+                                            Expenses:
                                         </td>
                                         <td style="color: rgb(51, 0, 255)">
                                             KSh.
                                             {{
-                                                productDispatch.totalDispatchPrice
+                                                productDispatch.expenses
                                             }}
                                         </td>
 
@@ -523,6 +523,40 @@
         </p-dialog>
 
         <p-dialog
+            [(visible)]="confirmDialog"
+            header="Confirm"
+            [modal]="true"
+            class="p-fluid"
+        >
+
+        <ng-template pTemplate="content">
+            <p>
+                Proceed to dispatch the products to the supplier!
+            </p>
+        </ng-template>
+        
+        <ng-template pTemplate="footer">
+            <button
+                pButton
+                pRipple
+                label="Cancel"
+                icon="pi pi-times"
+                class="p-button-text"
+                (click)="cancelDialog()"
+            ></button>
+            <button
+                pButton
+                pRipple
+                label="Proceed"
+                icon="pi pi-check"
+                class="p-button-text"
+                (click)="proceedToClientDispatch()"
+            ></button>
+        </ng-template>
+        
+        </p-dialog>
+
+        <p-dialog
             [(visible)]="productDispatchDialog2"
             header="Dispatch Return"
             [modal]="true"
@@ -613,9 +647,21 @@
                             </span>
                             <span class="block mt-2 md:mt-0 mr-2">
                                 <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon">Expenses: Ksh</span>
+                                    <input
+                                        type="number"
+                                        [(ngModel)]="expenses"
+                                        (ngModelChange)="calculateBalance()"
+                                        placeholder="Expenses"
+                                    />
+                                </div>
+                            </span>
+
+                            <span class="block mt-2 md:mt-0 mr-2">
+                                <div class="p-inputgroup">
                                     <span class="p-inputgroup-addon">Amount: Ksh</span>
                                     <input
-                                        type="text"
+                                        type="number"
                                         [(ngModel)]="amount"
                                         (ngModelChange)="calculateBalance()"
                                         placeholder="Amount"
@@ -627,9 +673,9 @@
                                 <div class="p-inputgroup">
                                     <span class="p-inputgroup-addon">Balance: Ksh</span>
                                     <input
-                                        type="text"
+                                        type="number"
                                         [(ngModel)]="balance"
-                                        placeholder="Balance"
+                                        
                                         disabled="true"
                                     />
                                 </div>
@@ -644,7 +690,7 @@
                             <th>Quantity</th>
                             <th>Returned Well</th>
                             <th>Returned Spoiled</th>
-                            <th>Sold Quantity</th>
+                            <!-- <th>Sold Quantity</th> -->
                             <th>Sales Price</th>
                         </tr>
                     </ng-template>
@@ -704,26 +750,26 @@
                                     </ng-template>
                                 </p-cellEditor>
                             </td>
-                            <td style="width: 15%; min-width: 10rem">
+                            <!-- <td style="width: 15%; min-width: 10rem">
                                 <span class="p-column-title"
                                     >Sold Quantity</span
                                 >
                                 {{ product.soldQuantity }}
-                            </td>
+                            </td> -->
                             <td style="width: 15%; min-width: 10rem">
                                 <span class="p-column-title">Sales Price</span>
                                 KSh. {{ product.salesPrice }}
                             </td>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="footer">
+                    <!-- <ng-template pTemplate="footer">
                         <tr class="p-rowgroup-footer">
                             <td colspan="6" style="text-align: right">
                                 Total Sales Price
                             </td>
                             <td>KSh. {{ total }}</td>
                         </tr>
-                    </ng-template>
+                    </ng-template> -->
                 </p-table>
             </ng-template>
 

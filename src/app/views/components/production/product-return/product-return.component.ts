@@ -10,26 +10,27 @@ import { co } from '@fullcalendar/core/internal-common';
 @Component({
     templateUrl: './product-return.component.html',
     providers: [MessageService],
-    styles: [`
-        .overdue {
-            font-weight: 700;
-            color: #FF5252;
-            text-decoration: line-through;
-        }
-        .almost {
-            font-weight: 700;
-            color: #FFA726;
-        }
-        .notover {
-            font-weight: 700;
-            color: #66BB6A;
-        }
+    styles: [
+        `
+            .overdue {
+                font-weight: 700;
+                color: #ff5252;
+                text-decoration: line-through;
+            }
+            .almost {
+                font-weight: 700;
+                color: #ffa726;
+            }
+            .notover {
+                font-weight: 700;
+                color: #66bb6a;
+            }
 
-        :host ::ng-deep .row-accessories {
-            background-color: rgba(0,0,0,.15) !important;
-        }
-    `
-    ]
+            :host ::ng-deep .row-accessories {
+                background-color: rgba(0, 0, 0, 0.15) !important;
+            }
+        `,
+    ],
 })
 export class ProductReturnComponent implements OnInit {
     productDispatchDialog: boolean = false;
@@ -37,6 +38,8 @@ export class ProductReturnComponent implements OnInit {
     productDispatchDialog1: boolean = false;
 
     productDispatchDialog2: boolean = false;
+
+    confirmDialog: boolean = false;
 
     code: any;
 
@@ -80,11 +83,12 @@ export class ProductReturnComponent implements OnInit {
     total: number = 0;
     cratesIn: any;
     paymentMode: any;
-    balance: any;
-    amount: any;
+    balance: number = 0;
+    amount: number = 0;
+    expenses: number = 0;
     dispatchedReturnProducts: any;
-    startDate: string = "";
-    endDate: string = "";
+    startDate: string = '';
+    endDate: string = '';
     display: boolean = false;
     selectedClients: any = [];
 
@@ -92,21 +96,18 @@ export class ProductReturnComponent implements OnInit {
         this.display = true;
     }
 
-
     constructor(
         private messageService: MessageService,
         private apiService: ApiService
     ) {}
 
     ngOnInit() {
-
+    
         this.loadDispatchedProductsReturn();
 
         this.loadDispatchedProducts();
 
         this.loadClients();
-
-        console.log(this.clients);
 
         this.cols = [
             // { field: 'product.name', header: 'product' },
@@ -138,12 +139,12 @@ export class ProductReturnComponent implements OnInit {
         this.productDispatchDialog2 = false;
     }
 
-    proceedToClients(){
-        this.selectedClients
-        this.productDispatchDialog =false;
+    proceedToClients() {
+        this.selectedClients;
+        this.productDispatchDialog = false;
         this.productDispatchDialog1 = true;
     }
-    backToDialog1(){
+    backToDialog1() {
         this.productDispatchDialog1 = false;
         this.productDispatchDialog = true;
     }
@@ -195,7 +196,6 @@ export class ProductReturnComponent implements OnInit {
                     });
                 }
                 this.clients = data.data;
-                
             },
             (error) => {
                 this.messageService.add({
@@ -208,51 +208,54 @@ export class ProductReturnComponent implements OnInit {
         );
     }
     loadDispatchedProductsReturn() {
-        this.apiService.getProductDispatchReturn(this.startDate,this.endDate).subscribe(
-            (data: any) => {
-                if (data.success == false) {
+        this.apiService
+            .getProductDispatchReturn(this.startDate, this.endDate)
+            .subscribe(
+                (data: any) => {
+                    if (data.success == false) {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error',
+                            detail: data.error.message,
+                            life: 3000,
+                        });
+                    }
+                    this.dispatchedReturnProducts = data.data;
+                },
+                (error) => {
                     this.messageService.add({
                         severity: 'error',
                         summary: 'Error',
-                        detail: data.error.message,
+                        detail: error.error.message,
                         life: 3000,
                     });
                 }
-                this.dispatchedReturnProducts = data.data;
-            },
-            (error) => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error.error.message,
-                    life: 3000,
-                });
-            }
-        );
+            );
     }
 
-    onFromDate(value: Date){
-        this.startDate = value.toISOString().slice(0,-1);
+    onFromDate(value: Date) {
+        this.startDate = value.toISOString().slice(0, -1);
         this.loadDispatchedProductsReturn();
-      }
-      onToDate(value: Date){
-        this.endDate = value.toISOString().slice(0,-1);
+    }
+    onToDate(value: Date) {
+        this.endDate = value.toISOString().slice(0, -1);
         this.loadDispatchedProductsReturn();
-      }
+    }
 
-    dispatchedProductChange(prod: any){
-        this.selectedDispatchedProducts = this.selectedReturnedProduct.dispatchedProducts;
-        this.clients.forEach(client => {
-            client.dispatchedProducts = this.selectedDispatchedProducts.map(product => ({
-                ...product, // Copy each product
-                deliveredQuantity: 0, // Initialize additional fields
-                deliveredProductPrice: 0,
-                clientDeliveredProductPrice: 0,
-                clientAmount: 0
-            }));
+    dispatchedProductChange(prod: any) {
+        this.selectedDispatchedProducts =
+            this.selectedReturnedProduct.dispatchedProducts;
+        this.clients.forEach((client) => {
+            client.dispatchedProducts = this.selectedDispatchedProducts.map(
+                (product) => ({
+                    ...product, // Copy each product
+                    deliveredQuantity: 0, // Initialize additional fields
+                    deliveredProductPrice: 0,
+                    clientDeliveredProductPrice: 0,
+                    clientAmount: 0,
+                })
+            );
         });
-        console.log(this.clients)
-        console.log(this.selectedDispatchedProducts);
         this.total = 0;
         this.balance = 0;
         this.amount = 0;
@@ -261,10 +264,69 @@ export class ProductReturnComponent implements OnInit {
         }
     }
 
-    saveDispatchToClients(){
+    saveDispatchToClients() {
         console.log(this.selectedClients);
         this.submitted = true;
-        this.apiService.createClientDispatchReturn(this.selectedClients).subscribe(
+        this.apiService
+            .createClientDispatchReturn(this.selectedClients)
+            .subscribe(
+                (result: any) => {
+                    if (result.success === true) {
+                        this.loadDispatchedProductsReturn();
+                        this.loadDispatchedProducts();
+                        this.loadClients();   
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: result.message,
+                        });
+                        this.code = result.data;
+                        this.showCode = true;
+                        this.productDispatchDialog1 = false;
+                        this.selectedClients = [];
+                        this.confirmDialog = true;
+                          
+                    }
+                },
+                (error) => {
+                    console.error(error);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: error.error.message,
+                    });
+                }
+            );
+    }
+    proceedToClientDispatch() {
+        this.loadDispatchedProductsReturn();
+        this.loadDispatchedProducts();
+        this.loadClients();  
+        const x = this.filterProductsByDispatchCode(this.dispatchedProducts, this.selectedReturnedProduct.productDispatchCode);
+        this.selectedReturnedProduct =  null;
+        this.selectedReturnedProduct = x[0];
+        this.confirmDialog = false;
+        this.productDispatchDialog2 = true;
+    }
+    cancelDialog() {
+        this.confirmDialog = false;
+    }
+
+    saveProductDispatchReturn() {
+        this.submitted = true;
+
+        const payload = {
+            dispatchedProducts: this.selectedDispatchedProducts,
+            productDispatchCode:
+            this.selectedReturnedProduct.productDispatchCode,
+            cratesIn: this.cratesIn,
+            paymentMode: this.paymentMode.value,
+            balance: this.balance,
+            expenses: this.expenses,
+            amountPaid: this.amount,
+            totalSalesPrice: this.total,
+        };
+        this.apiService.createProductdispatchReturn(payload).subscribe(
             (result: any) => {
                 if (result.success === true) {
                     this.messageService.add({
@@ -277,8 +339,8 @@ export class ProductReturnComponent implements OnInit {
                     this.loadDispatchedProductsReturn();
                     this.loadDispatchedProducts();
                     this.loadClients();
-                    this.productDispatchDialog1 = false;
-                    this.productDispatchDialog2 = true;
+                    this.productDispatchDialog2 = false;
+                    this.productDispatch = {};
                 }
             },
             (error) => {
@@ -291,91 +353,66 @@ export class ProductReturnComponent implements OnInit {
             }
         );
     }
-
-    saveProductDispatchReturn() {
-        this.submitted = true;
-        
-            const payload = {
-                dispatchedProducts: this.selectedDispatchedProducts,
-                productDispatchCode: this.selectedReturnedProduct.productDispatchCode,
-                cratesIn: this.cratesIn,
-                paymentMode: this.paymentMode.value,
-                balance: this.balance,
-                amountPaid: this.amount,
-                totalSalesPrice: this.total,
-            };
-            this.apiService.createProductdispatchReturn(payload).subscribe(
-                (result: any) => {
-                    if (result.success === true) {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Success',
-                            detail: result.message,
-                        });
-                        this.code = result.data;
-                        this.showCode = true;
-                        this.loadDispatchedProductsReturn();
-                        this.productDispatchDialog2 = false;
-                        this.productDispatch = {};
-                    }
-                },
-                (error) => {
-                    console.error(error);
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error',
-                        detail: error.error.message,
-                    });
-                }
-            );
-        
-    }
-    calculateDeliveryPrice(product: any){
-        product.deliveredProductPrice = product.price * product.deliveredQuantity;
-        product.clientDeliveredProductPrice = product.clientAmount * product.deliveredQuantity;
+    calculateDeliveryPrice(product: any) {
+        product.deliveredProductPrice =
+            product.price * product.deliveredQuantity;
+        product.clientDeliveredProductPrice =
+            product.clientAmount * product.deliveredQuantity;
     }
     calculatePrice(product: any) {
-        let returned = (product.returnedQuantity + product.returnedSpoiled);
-        if(product.returnedQuantity>product.quantity){
+        let returned = product.returnedQuantity + product.returnedSpoiled;
+        if (product.returnedQuantity > product.quantity) {
             product.returnedQuantity = product.quantity;
             product.returnedSpoiled = 0;
             product.salesPrice = 0;
         }
-        if(product.returnedSpoiled > product.quantity){
+        if (product.returnedSpoiled > product.quantity) {
             product.returnedSpoiled = product.quantity;
             product.returnedQuantity = 0;
             product.salesPrice = 0;
         }
-        if(returned>product.quantity){
+        if (returned > product.quantity) {
             this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: "Reset! Enter valid quantities!",
+                detail: 'Reset! Enter valid quantities!',
             });
             product.returnedQuantity = 0;
             product.returnedSpoiled = 0;
-            returned= 0;
+            returned = 0;
         }
         product.soldQuantity = product.quantity - returned;
         product.salesPrice = product.price * product.soldQuantity;
-        this.calculateSalesTotal()
+        this.calculateSalesTotal();
         this.calculateBalance();
     }
-    
+
     calculateSalesTotal() {
         this.total = 0;
 
-            for (let prod of this.selectedReturnedProduct.dispatchedProducts) {
-                if(prod.salesPrice==null){
-                    prod.salesPrice = 0;
-                }
-                this.total += prod.salesPrice;
+        for (let prod of this.selectedReturnedProduct.dispatchedProducts) {
+            if (prod.salesPrice == null) {
+                prod.salesPrice = 0;
             }
-            this.calculateBalance();
-        
-
+            this.total += prod.salesPrice;
+        }
+        this.calculateBalance();
     }
-    calculateBalance(){
-        this.balance = this.total - this.amount;
+    calculateBalance() {
+        this.balance = this.total - this.amount - this.expenses;
+    }
+    filterProductsByDispatchCode(
+        products: any[],
+        targetDispatchCode: string
+    ): any {
+        if (!products || !Array.isArray(products)) {
+            console.error("Invalid product list provided.");
+            return [];
+        }
+        if (!targetDispatchCode || typeof targetDispatchCode !== "string") {
+            console.error("Invalid target dispatch code provided.");
+            return [];
+        }
+        return products.filter(product => product.productDispatchCode === targetDispatchCode);
     }
 }
